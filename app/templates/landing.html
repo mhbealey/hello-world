@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>Choose Your Workspace</h2>
+  <div class="role-picker">
+    <label for="role">Role</label>
+    <select id="role">
+      <option value="project_analyst">Project Analyst</option>
+      <option value="advisor">Advisor</option>
+      <option value="senior_advisor">Senior Advisor</option>
+      <option value="operations">Operations</option>
+      <option value="practice_leader">Practice Leader</option>
+      <option value="sales">Sales</option>
+    </select>
+    <button id="enter">Enter</button>
+  </div>
+</section>
+<script>
+  document.getElementById('enter').addEventListener('click', () => {
+    const role = document.getElementById('role').value;
+    window.location.href = `/dashboard?role=${encodeURIComponent(role)}`;
+  })
+</script>
+{% endblock %}
