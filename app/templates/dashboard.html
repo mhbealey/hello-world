@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<section>
+  <h2>{{ role|capitalize }} Dashboard</h2>
+  <div class="grid">
+    <div class="card">
+      <h3>My Tasks</h3>
+      <div id="tasks"></div>
+    </div>
+    <div class="card">
+      <h3>Clients</h3>
+      <div id="clients">Coming soon</div>
+    </div>
+    <div class="card">
+      <h3>Portfolio</h3>
+      <div>Coming soon</div>
+    </div>
+    <div class="card">
+      <h3>Integrations</h3>
+      <pre id="integrations"></pre>
+    </div>
+  </div>
+</section>
+<script>
+async function loadData() {
+  const tasks = await fetch('/tasks').then(r => r.json());
+  document.getElementById('tasks').innerHTML = (tasks.tasks||[]).map(t => `<div>#{${'${t.id}'}} - ${'${t.title}'} <small>(${ '${t.status}' })</small></div>`).join('');
+  const integ = await fetch('/integrations').then(r => r.json());
+  document.getElementById('integrations').textContent = JSON.stringify(integ, null, 2);
+}
+loadData();
+</script>
+{% endblock %}
