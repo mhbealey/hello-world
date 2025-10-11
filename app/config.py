@@ -1,3 +1,4 @@
+import os
 from pydantic import BaseSettings, Field
 from typing import Optional
 
@@ -8,7 +9,11 @@ class Settings(BaseSettings):
     environment: str = Field("local", env="ENVIRONMENT")
 
     # Database
-    database_url: str = Field("sqlite:///./app.db", env="DATABASE_URL")
+    # Use ephemeral /tmp on Vercel by default
+    _default_db = "sqlite:///./app.db"
+    if os.getenv("VERCEL"):
+        _default_db = "sqlite:////tmp/app.db"
+    database_url: str = Field(_default_db, env="DATABASE_URL")
 
     # Salesforce
     sf_username: Optional[str] = Field(None, env="SF_USERNAME")

@@ -24,7 +24,9 @@
 <script>
 async function loadData() {
   const tasks = await fetch('/tasks').then(r => r.json());
-  document.getElementById('tasks').innerHTML = (tasks.tasks||[]).map(t => `<div>#{${'${t.id}'}} - ${'${t.title}'} <small>(${ '${t.status}' })</small></div>`).join('');
+  document.getElementById('tasks').innerHTML = (tasks.tasks||[])
+    .map(t => `<div>#${t.id} - ${t.title} <small>(${t.status})</small></div>`)
+    .join('');
   const integ = await fetch('/integrations').then(r => r.json());
   document.getElementById('integrations').textContent = JSON.stringify(integ, null, 2);
 }

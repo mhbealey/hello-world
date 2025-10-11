@@ -59,3 +59,17 @@ app/
 - Flesh out task CRUD and client pages
 - Implement ingestion syncs from Salesforce/custom app
 - Add Power BI embed flow if needed
+
+## Deploy to Vercel
+
+1. Create a new Vercel project and import this repo.
+2. Set the project to use the Root Directory (repo root).
+3. Ensure `vercel.json` exists (already included). It maps all routes to `api/index.py`.
+4. Set Environment Variables as needed (optional):
+   - `DATABASE_URL` (defaults to `sqlite:////tmp/app.db` on Vercel)
+   - `SF_USERNAME`, `SF_PASSWORD`, `SF_SECURITY_TOKEN`, `SF_DOMAIN`
+   - `CUSTOM_APP_BASE_URL`, `CUSTOM_APP_API_KEY`
+   - `PBI_TENANT_ID`, `PBI_CLIENT_ID`, `PBI_CLIENT_SECRET`
+5. Deploy. Visit `/` for the landing page; `/dashboard?role=project_analyst` for the dashboard; `/docs` for API docs.
+
+Note: Vercel’s file system is ephemeral, so SQLite lives in `/tmp` and resets on each cold start. For persistence, use a hosted DB and set `DATABASE_URL` accordingly.
