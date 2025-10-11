@@ -5,6 +5,8 @@ from fastapi.templating import Jinja2Templates
 from app.routers.dashboard import router as dashboard_router
 from app.routers.tasks import router as tasks_router
 from app.routers.integrations import router as integrations_router
+from app.routers.clients import router as clients_router
+from app.routers.dev import router as dev_router
 
 app = FastAPI(title="Cyber Risk Delivery Agent")
 
@@ -16,6 +18,8 @@ templates = Jinja2Templates(directory="app/templates")
 app.include_router(dashboard_router)
 app.include_router(tasks_router)
 app.include_router(integrations_router)
+app.include_router(clients_router)
+app.include_router(dev_router)
 
 
 @app.get("/health")

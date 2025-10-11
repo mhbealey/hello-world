@@ -15,8 +15,9 @@ SUPPORTED_ROLES = [
 
 
 @router.get("/")
-async def root():
-    return {"message": "Cyber Risk Delivery Agent", "roles": SUPPORTED_ROLES}
+async def root(request: Request):
+    templates = Jinja2Templates(directory="app/templates")
+    return templates.TemplateResponse("landing.html", {"request": request})
 
 
 @router.get("/dashboard")
