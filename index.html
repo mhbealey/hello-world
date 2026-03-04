@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CIS 18 Cyber Risk Assessment</title>
+  <meta name="description" content="Interactive cyber risk assessment tool based on CIS Controls v8. Evaluate your organization's security posture across all 18 controls.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SCREEN: WELCOME                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="screen-welcome" class="screen">
+
+  <nav class="navbar">
+    <div class="navbar-logo">🛡️</div>
+    <div>
+      <div class="navbar-title">CIS 18 Risk Assessment</div>
+      <div class="navbar-sub">CIS Controls v8 — Powered by CIS Benchmarks</div>
+    </div>
+  </nav>
+
+  <div class="welcome-hero">
+    <div class="welcome-badge">⚡ Free &amp; Open Source Assessment Tool</div>
+    <h1>Cyber Risk Assessment<br>Based on CIS Controls v8</h1>
+    <p>Evaluate your organization's cybersecurity posture against all 18 CIS Controls. Get a comprehensive risk score, control-by-control breakdown, and prioritized remediation guidance.</p>
+    <button class="btn btn-primary" onclick="startAssessment()">
+      Begin Assessment →
+    </button>
+  </div>
+
+  <div class="welcome-cards">
+    <div class="welcome-card">
+      <div class="welcome-card-icon">📋</div>
+      <h3>75 Questions</h3>
+      <p>Covering all 18 CIS Controls with weighted questions across three implementation groups.</p>
+    </div>
+    <div class="welcome-card">
+      <div class="welcome-card-icon">📊</div>
+      <h3>Detailed Scoring</h3>
+      <p>Per-control scores, overall risk rating, and visual breakdown of your security posture.</p>
+    </div>
+    <div class="welcome-card">
+      <div class="welcome-card-icon">🎯</div>
+      <h3>Prioritized Guidance</h3>
+      <p>Actionable recommendations ranked by risk priority to guide your remediation efforts.</p>
+    </div>
+    <div class="welcome-card">
+      <div class="welcome-card-icon">📥</div>
+      <h3>Export Report</h3>
+      <p>Download a full CSV report of your assessment results for stakeholders and auditors.</p>
+    </div>
+  </div>
+
+  <div class="welcome-cis-overview">
+    <h3>CIS Controls v8 — Implementation Groups</h3>
+    <div class="ig-grid">
+      <div class="ig-item ig1">
+        <h4>IG1 — Basic (Controls 1–6)</h4>
+        <p>Essential cyber hygiene for all organizations. Minimum security baseline.</p>
+      </div>
+      <div class="ig-item ig2">
+        <h4>IG2 — Foundational (Controls 7–16)</h4>
+        <p>For organizations with multiple IT environments and regulatory obligations.</p>
+      </div>
+      <div class="ig-item ig3">
+        <h4>IG3 — Organizational (Controls 15–18)</h4>
+        <p>For organizations with advanced security teams and complex risk profiles.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="welcome-actions">
+    <button class="btn btn-accent" onclick="startAssessment()">
+      Start Free Assessment →
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SCREEN: ORGANIZATION INFO                                                  -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="screen-info" class="screen hidden">
+
+  <nav class="navbar">
+    <div class="navbar-logo">🛡️</div>
+    <div>
+      <div class="navbar-title">CIS 18 Risk Assessment</div>
+      <div class="navbar-sub">Step 1 of 2 — Organization Details</div>
+    </div>
+  </nav>
+
+  <div class="form-screen">
+    <div class="form-card">
+      <h2>Assessment Details</h2>
+      <p class="form-subtitle">Provide basic information about your organization before beginning the assessment. All data stays in your browser — nothing is sent to any server.</p>
+
+      <div id="info-error" class="error-msg hidden"></div>
+
+      <div class="form-group">
+        <label for="org-name">Organization Name *</label>
+        <input type="text" id="org-name" placeholder="e.g., Acme Corporation" autocomplete="organization">
+      </div>
+
+      <div class="form-group">
+        <label for="assessor-name">Assessor Name *</label>
+        <input type="text" id="assessor-name" placeholder="e.g., Jane Smith" autocomplete="name">
+      </div>
+
+      <div class="form-group">
+        <label for="assessment-date">Assessment Date</label>
+        <input type="date" id="assessment-date">
+      </div>
+
+      <div style="display:flex; gap:.75rem; flex-wrap:wrap; margin-top:1.5rem;">
+        <button class="btn btn-ghost" onclick="state.screen='welcome'; renderScreen();">← Back</button>
+        <button class="btn btn-accent" onclick="submitInfo()" style="flex:1">
+          Start Assessment →
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SCREEN: ASSESSMENT                                                         -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="screen-assessment" class="screen hidden">
+
+  <div class="assessment-nav">
+    <div class="container">
+      <div class="progress-header">
+        <span class="progress-label" id="progress-text">Control 1 of 18</span>
+        <span class="progress-label" id="progress-pct"></span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="assessment-content">
+    <div id="assessment-error" class="error-msg hidden"></div>
+
+    <div class="control-header">
+      <div class="control-meta">
+        <span class="control-number" id="control-number">Control 1</span>
+        <span class="control-category" id="control-category"></span>
+      </div>
+      <h2 id="control-title"></h2>
+      <p class="control-desc" id="control-description"></p>
+    </div>
+
+    <div id="questions-container"></div>
+  </div>
+
+  <div class="assessment-footer">
+    <button class="btn-nav" id="btn-prev" onclick="prevControl()" disabled>← Previous</button>
+    <button class="btn-nav" id="btn-next" onclick="nextControl()">Next Control →</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<!-- SCREEN: RESULTS                                                            -->
+<!-- ═══════════════════════════════════════════════════════════════════════════ -->
+<div id="screen-results" class="screen hidden">
+
+  <div class="results-header">
+    <h1>🛡️ Risk Assessment Results</h1>
+    <div class="results-meta">
+      <span>🏢 <strong id="result-org"></strong></span>
+      <span>👤 <span id="result-assessor"></span></span>
+      <span>📅 <span id="result-date"></span></span>
+    </div>
+  </div>
+
+  <div class="results-body">
+
+    <!-- Overall Score -->
+    <div class="score-card">
+      <div class="score-ring-wrapper">
+        <svg width="130" height="130" class="score-ring-svg">
+          <circle class="score-ring-bg" cx="65" cy="65" r="54"/>
+          <circle class="score-ring-fill" id="score-ring" cx="65" cy="65" r="54"
+            stroke-dasharray="339.3" stroke-dashoffset="339.3"/>
+        </svg>
+        <div class="score-text">
+          <span class="score-number" id="score-value">0</span>
+          <span class="score-pct">/ 100</span>
+        </div>
+      </div>
+
+      <div class="score-info">
+        <h2 id="risk-label">Calculating…</h2>
+        <p id="risk-description"></p>
+        <div class="risk-scale">
+          <div class="risk-tick" style="background:#dc2626" id="tick-0"></div>
+          <div class="risk-tick" style="background:#ea580c" id="tick-1"></div>
+          <div class="risk-tick" style="background:#d97706" id="tick-2"></div>
+          <div class="risk-tick" style="background:#16a34a" id="tick-3"></div>
+          <div class="risk-tick" style="background:#0d9488" id="tick-4"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:.7rem;color:var(--text-3);margin-top:.2rem;">
+          <span>Critical</span><span>High</span><span>Medium</span><span>Low</span><span>Minimal</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Control Breakdown -->
+    <div class="section-card">
+      <h2>📊 Control-by-Control Breakdown</h2>
+      <div id="control-breakdown"></div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="section-card">
+      <h2>🎯 Priority Remediation Recommendations</h2>
+      <p style="font-size:.875rem;color:var(--text-2);margin-bottom:1rem;">Top controls to address, ranked by lowest score and highest risk impact.</p>
+      <div id="recommendations-list"></div>
+    </div>
+
+  </div>
+
+  <!-- Actions -->
+  <div class="results-actions">
+    <button class="btn btn-primary" style="background:var(--primary);color:#fff" onclick="exportReport()">
+      📥 Export CSV Report
+    </button>
+    <button class="btn btn-ghost" onclick="restartAssessment()">
+      🔄 Restart Assessment
+    </button>
+  </div>
+
+</div>
+
+<script src="js/controls.js"></script>
+<script src="js/app.js"></script>
+
+<script>
+// Activate the correct risk scale tick on results render
+const _origRenderResults = renderResults;
+renderResults = function() {
+  _origRenderResults();
+  const score = calcOverallScore();
+  const tickIdx = score < 25 ? 0 : score < 50 ? 1 : score < 70 ? 2 : score < 85 ? 3 : 4;
+  document.querySelectorAll('.risk-tick').forEach((t, i) => {
+    t.classList.toggle('active', i === tickIdx);
+  });
+};
+</script>
+</body>
+</html>
