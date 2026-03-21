@@ -62,9 +62,6 @@ const createStatements = [
   )`,
   `CREATE INDEX IF NOT EXISTS "Recommendation_ticker_status_idx" ON "Recommendation"("ticker", "status")`,
   `CREATE INDEX IF NOT EXISTS "Recommendation_generated_at_idx" ON "Recommendation"("generated_at")`,
-  `CREATE INDEX IF NOT EXISTS "Recommendation_asset_class_status_idx" ON "Recommendation"("asset_class", "status")`,
-  `CREATE INDEX IF NOT EXISTS "Recommendation_benchmark_score_idx" ON "Recommendation"("benchmark_score")`,
-  `CREATE INDEX IF NOT EXISTS "Recommendation_bundle_id_idx" ON "Recommendation"("bundle_id")`,
   `CREATE TABLE IF NOT EXISTS "Trade" (
     "id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "recommendation_id" INTEGER,
@@ -160,6 +157,13 @@ const alterStatements = [
   `ALTER TABLE "WatchlistItem" ADD COLUMN "asset_class" TEXT NOT NULL DEFAULT 'stock'`,
 ];
 
+// Indexes that depend on new columns (must run after ALTER TABLE)
+const postMigrationIndexes = [
+  `CREATE INDEX IF NOT EXISTS "Recommendation_asset_class_status_idx" ON "Recommendation"("asset_class", "status")`,
+  `CREATE INDEX IF NOT EXISTS "Recommendation_benchmark_score_idx" ON "Recommendation"("benchmark_score")`,
+  `CREATE INDEX IF NOT EXISTS "Recommendation_bundle_id_idx" ON "Recommendation"("bundle_id")`,
+];
+
 async function main() {
   console.log("Pushing schema to Turso...");
 
@@ -176,11 +180,17 @@ async function main() {
       await client.execute(sql);
       const col = sql.match(/ADD COLUMN "(\w+)"/)?.[1];
       console.log(`  ✓ Added column: ${col}`);
-    } catch (e) {
-      // Column already exists — expected for fresh installs
+    } catch {
       const col = sql.match(/ADD COLUMN "(\w+)"/)?.[1];
       console.log(`  - Column ${col} already exists`);
     }
+  }
+
+  // Create indexes that depend on new columns
+  for (const sql of postMigrationIndexes) {
+    const name = sql.match(/"(\w+)"/)?.[1];
+    await client.execute(sql);
+    console.log(`  ✓ ${name}`);
   }
 
   console.log("Schema push complete!");
