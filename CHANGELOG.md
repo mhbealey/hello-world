@@ -65,3 +65,8 @@
 - feat(8d): wire haptic feedback into action resolve and step toggle
 - feat(8e): StaggerList component with per-card 50ms entrance delay
 - feat(8f): PWA manifest, root redirect to /home, safe-area toast
+
+## Prompt 9 — Wiring, Drill-In & Export
+- feat(9a): move dev component gallery to app/dev/components route
+- feat(9b-9c): Risk→Actions drill-in with useNavSource, filtered actions view
+- feat(9d): export report button with download flow on Home screen
