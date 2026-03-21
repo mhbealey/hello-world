@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Colors - Dark Mode */
+  --color-bg-base: #0D0D0F;
+  --color-bg-surface: #1A1B23;
+  --color-bg-surface-hover: #22232E;
+  --color-bg-input: #13141A;
+  --color-border-default: rgba(255, 255, 255, 0.05);
+  --color-border-focus: #3B82F6;
+  --color-text-primary: #E8E8ED;
+  --color-text-secondary: #8B8B9E;
+  --color-text-tertiary: #5C5C6F;
+  --color-accent-blue: #3B82F6;
+  --color-accent-blue-hover: #2563EB;
+  --color-gain-green: #22C55E;
+  --color-loss-red: #EF4444;
+  --color-gain-alt-blue: #0066CC;
+  --color-loss-alt-orange: #FF6B00;
+  --color-warning-amber: #F59E0B;
+  --color-score-high: #22C55E;
+  --color-score-mid: #F59E0B;
+  --color-score-low: #EF4444;
+
+  /* Typography */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "SF Mono", "Fira Code", monospace;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-2xl: 48px;
+}
+
+html {
+  background-color: #0D0D0F;
+  color: #E8E8ED;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #0D0D0F;
+  color: #E8E8ED;
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Shimmer animation for skeletons */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1A1B23 25%,
+    #22232E 50%,
+    #1A1B23 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1500ms linear infinite;
+}
