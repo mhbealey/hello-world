@@ -1,7 +1,7 @@
 "use client";
 
 import { DashboardShell } from "@/components/layouts";
-import { Card, CardTitle, ScoreRing, ProgressBar } from "@/components/ui";
+import { Card, CardTitle, ScoreRing, ProgressBar, StaggerList } from "@/components/ui";
 import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
 import { formatALE, formatPct, formatDelta, formatDate } from "@/lib/format";
 import { lpDeadlineStyle } from "@/lib/utils/score";
@@ -16,7 +16,7 @@ export default function HomePage() {
 
   return (
     <DashboardShell title="Home">
-      <div className="space-y-4">
+      <StaggerList className="space-y-4">
         {/* Cyber Score + LP Deadline */}
         {a && (
           <Card className="flex items-start gap-4">
@@ -167,7 +167,7 @@ export default function HomePage() {
           loading={advisor.loading}
           selectedActionIds={advisor.selectedActionIds}
         />
-      </div>
+      </StaggerList>
     </DashboardShell>
   );
 }
