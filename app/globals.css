@@ -2,32 +2,85 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --color-bg: #F5F4F1;
+    --color-surface: #FFFFFF;
+    --color-surface-dim: #EDECE8;
+    --color-text: #0F0F0F;
+    --color-text-secondary: #3D3D3D;
+    --color-text-tertiary: #7A7A74;
+    --color-text-muted: #ADADA6;
+    --color-accent: #E87425;
+    --color-accent-bg: rgba(232,116,37,0.06);
+    --color-success: #15803D;
+    --color-success-bg: rgba(21,128,61,0.07);
+    --color-warning: #B45309;
+    --color-warning-bg: rgba(180,83,9,0.07);
+    --color-danger: #B91C1C;
+    --color-danger-bg: rgba(185,28,28,0.07);
+    --color-border: rgba(0,0,0,0.06);
+    --color-border-light: rgba(0,0,0,0.03);
+  }
+
+  .dark {
+    --color-bg: #0A0A0A;
+    --color-surface: #1A1A19;
+    --color-surface-dim: #141413;
+    --color-text: #E8E5E0;
+    --color-text-secondary: #9B9790;
+    --color-text-tertiary: #5E5C57;
+    --color-text-muted: #3E3D3A;
+    --color-accent: #E87425;
+    --color-accent-bg: rgba(232,116,37,0.12);
+    --color-success: #22C55E;
+    --color-success-bg: rgba(34,197,94,0.12);
+    --color-warning: #F59E0B;
+    --color-warning-bg: rgba(245,158,11,0.12);
+    --color-danger: #EF4444;
+    --color-danger-bg: rgba(239,68,68,0.12);
+    --color-border: rgba(255,255,255,0.07);
+    --color-border-light: rgba(255,255,255,0.04);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  ::selection {
+    background-color: rgba(232, 116, 37, 0.2);
+    color: var(--color-text);
+  }
+
+  /* Hide scrollbar for mobile */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Disable tap highlight on mobile */
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Reduced motion: disable all animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
