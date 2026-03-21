@@ -23,12 +23,12 @@ A personal mobile trading companion app. AI-powered stock analysis via Claude AP
 - [x] Prompt 7: Trade Execution Wizard
 - [x] Prompt 8: Portfolio Dashboard
 - [x] Prompt 9: Settings Screen
-- [ ] Prompt 10: Alerts & Notifications
-- [ ] Prompt 11: Search & On-Demand Analysis
-- [ ] Prompt 12: Polish & Animations
-- [ ] Prompt 13: PWA & Offline
-- [ ] Prompt 14: Testing & Accessibility
-- [ ] Prompt 15: Deployment
+- [x] Prompt 10: Alerts & Notifications
+- [x] Prompt 11: Search & On-Demand Analysis
+- [x] Prompt 12: Polish & Animations
+- [x] Prompt 13: PWA & Offline
+- [x] Prompt 14: Testing & Accessibility
+- [x] Prompt 15: Deployment
 
 ## Build Log
 - Prompt 0: Created CONTEXT.md, CHANGELOG.md, design-tokens.md, content.md, interactions.md
@@ -41,3 +41,8 @@ A personal mobile trading companion app. AI-powered stock analysis via Claude AP
 - Prompt 7: 5-step trade execution wizard with Fidelity handoff, trade/wizard APIs
 - Prompt 8: Portfolio dashboard with holdings, watchlist, analytics, manual trade entry, close trade
 - Prompt 9: Settings with profile, balance, colorblind toggle, API cost tracker, export/import/clear
+- Prompt 10-11: Market quote API, alert system integration, search on-demand analysis
+- Prompt 12: Lightweight Charts v5 portfolio chart with crosshair, CSS polish
+- Prompt 13: PWA manifest, service worker (cache-first shell, network-first API), offline support
+- Prompt 14: Vitest setup, 25 unit tests (format, calculations, archetype, market-hours)
+- Prompt 15: Vercel deployment config, env variables documentation
