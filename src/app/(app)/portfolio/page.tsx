@@ -9,6 +9,7 @@ import { PillSelector } from "@/components/ui/pill-selector";
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { Input } from "@/components/ui/input";
 import { Sparkline } from "@/components/charts/sparkline";
+import { PortfolioChart } from "@/components/charts/portfolio-chart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/components/ui/toast";
 import { PORTFOLIO } from "@/constants/content";
@@ -28,19 +29,25 @@ export default function PortfolioPage() {
   const [showCloseTrade, setShowCloseTrade] = useState<number | null>(null);
   const [tradeForm, setTradeForm] = useState({ ticker: "", action: "buy", shares: "", price: "", stopLoss: "", takeProfit: "", notes: "" });
   const [closeForm, setCloseForm] = useState({ exit_price: "", shares_to_close: "" });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [chartData, setChartData] = useState<any[]>([]);
 
   const market = isMarketOpen();
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/portfolio");
+      const [res, chartRes] = await Promise.all([
+        fetch("/api/portfolio"),
+        fetch(`/api/portfolio/chart?range=${timeframe}`),
+      ]);
       if (res.ok) setData(await res.json());
+      if (chartRes.ok) setChartData(await chartRes.json());
     } catch {
       showToast("Failed to load portfolio", "error");
     } finally {
       setLoading(false);
     }
-  }, [showToast]);
+  }, [showToast, timeframe]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
@@ -120,10 +127,8 @@ export default function PortfolioPage() {
         </div>
       </div>
 
-      {/* Chart placeholder */}
-      <div className="bg-bg-surface rounded-[12px] h-[160px] mb-3 flex items-center justify-center">
-        <span className="text-[14px] text-text-tertiary">Chart loading...</span>
-      </div>
+      {/* Portfolio Chart */}
+      <PortfolioChart data={chartData} height={160} />
       <PillSelector options={timeframes} selected={timeframe} onChange={(v) => setTimeframe(v as string)} />
 
       {/* Holdings */}

@@ -89,3 +89,13 @@ body {
   from { opacity: 0; transform: scale(0.95); }
   to { opacity: 1; transform: scale(1); }
 }
+
+/* Hide scrollbar */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Smooth page transitions */
+main { animation: fadeIn 200ms ease-out; }
+
+/* Touch targets */
+button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
