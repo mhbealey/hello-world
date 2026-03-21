@@ -10,6 +10,9 @@
     },
     "src/app/api/recommendations/analyze/route.ts": {
       "maxDuration": 60
+    },
+    "src/app/api/bundles/route.ts": {
+      "maxDuration": 60
     }
   },
   "headers": [

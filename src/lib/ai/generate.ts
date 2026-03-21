@@ -1,7 +1,8 @@
 import { callClaude } from "./client";
-import { buildRecommendationPrompt, buildSingleStockPrompt } from "./prompts";
-import { claudeResponseSchema } from "@/lib/types/schemas";
-import type { RecommendationItem } from "@/lib/types/schemas";
+import { buildRecommendationPrompt, buildSingleStockPrompt, buildBundlePrompt } from "./prompts";
+import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas";
+import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
+import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
 import { getDataProvider } from "@/lib/data";
 
@@ -21,11 +22,13 @@ async function checkRateLimits(): Promise<{ allowed: boolean; reason?: string }>
 
   const lastRefresh = await prisma.appSettings.findUnique({ where: { key: "last_refresh" } });
   if (lastRefresh?.value && lastRefresh.value !== "null") {
-    const lastTime = new Date(lastRefresh.value).getTime();
-    const elapsed = Date.now() - lastTime;
-    if (elapsed < MIN_REFRESH_INTERVAL_MS) {
-      const minutesLeft = Math.ceil((MIN_REFRESH_INTERVAL_MS - elapsed) / 60000);
-      return { allowed: false, reason: `cooldown_${minutesLeft}` };
+    const parsed = new Date(lastRefresh.value);
+    if (!isNaN(parsed.getTime())) {
+      const elapsed = Date.now() - parsed.getTime();
+      if (elapsed < MIN_REFRESH_INTERVAL_MS) {
+        const minutesLeft = Math.ceil((MIN_REFRESH_INTERVAL_MS - elapsed) / 60000);
+        return { allowed: false, reason: `cooldown_${minutesLeft}` };
+      }
     }
   }
 
@@ -63,7 +66,6 @@ async function fetchMarketData(tickers: string[]) {
 
 function parseClaudeResponse(text: string): RecommendationItem[] | null {
   try {
-    // Strip markdown fences if present
     let cleaned = text.trim();
     if (cleaned.startsWith("```")) {
       cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
@@ -74,6 +76,50 @@ function parseClaudeResponse(text: string): RecommendationItem[] | null {
   } catch (e) {
     console.error("Failed to parse Claude response:", e);
     return null;
+  }
+}
+
+function parseBundleResponse(text: string): BundleResponse | null {
+  try {
+    let cleaned = text.trim();
+    if (cleaned.startsWith("```")) {
+      cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+    }
+    const parsed = JSON.parse(cleaned);
+    return bundleResponseSchema.parse(parsed);
+  } catch (e) {
+    console.error("Failed to parse bundle response:", e);
+    return null;
+  }
+}
+
+function extractFactorScores(rec: RecommendationItem): FactorScores {
+  return {
+    technical: rec.factor_scores.technical.score,
+    fundamental: rec.factor_scores.fundamental.score,
+    sentiment: rec.factor_scores.sentiment.score,
+    momentum: rec.factor_scores.momentum.score,
+    earnings: rec.factor_scores.earnings.score,
+    governance: rec.factor_scores.governance?.score ?? 5,
+  };
+}
+
+async function trackUsage(cost: number) {
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const existing = await prisma.apiUsage.findFirst({ where: { date: today } });
+  if (existing) {
+    await prisma.apiUsage.update({
+      where: { id: existing.id },
+      data: {
+        call_count: existing.call_count + 1,
+        estimated_cost: existing.estimated_cost + cost,
+      },
+    });
+  } else {
+    await prisma.apiUsage.create({
+      data: { date: today, call_count: 1, estimated_cost: cost },
+    });
   }
 }
 
@@ -102,12 +148,16 @@ export async function generateRecommendations(
     return { recommendations: [], error: "no_market_data" };
   }
 
+  let instruments: string[];
+  try { instruments = JSON.parse(profile.instruments); }
+  catch { instruments = []; }
+
   const { system, user } = buildRecommendationPrompt(
     {
       archetype: profile.archetype,
       investing_style: profile.investing_style,
       risk_tolerance: profile.risk_tolerance,
-      instruments: JSON.parse(profile.instruments),
+      instruments,
       portfolio_balance: profile.portfolio_balance,
     },
     holdings,
@@ -118,7 +168,6 @@ export async function generateRecommendations(
   let rawResponse = await callClaude(system, user);
   let recs = parseClaudeResponse(rawResponse);
 
-  // Retry once on validation failure
   if (!recs) {
     console.warn("First Claude response invalid, retrying...");
     rawResponse = await callClaude(
@@ -132,7 +181,7 @@ export async function generateRecommendations(
     return { recommendations: [], error: "validation_failed" };
   }
 
-  // Save recommendations to DB
+  // Save recommendations to DB with benchmark scores
   const now = new Date();
   for (const rec of recs) {
     const existing = await prisma.recommendation.findFirst({
@@ -158,11 +207,17 @@ export async function generateRecommendations(
       });
     }
 
+    const factors = extractFactorScores(rec);
+    const benchmarkScore = computeBenchmarkScore(factors, profile.investing_style);
+    const governanceScore = factors.governance;
+
     await prisma.recommendation.create({
       data: {
         ticker: rec.ticker,
         company_name: rec.company_name,
+        asset_class: rec.asset_class || "stock",
         ai_score: rec.ai_score,
+        benchmark_score: benchmarkScore,
         previous_ai_score: existing?.ai_score ?? null,
         score_change_reason: existing
           ? `Score changed from ${existing.ai_score} to ${rec.ai_score}`
@@ -174,7 +229,9 @@ export async function generateRecommendations(
         bear_case: JSON.stringify(rec.bear_case),
         key_metrics: JSON.stringify(rec.key_metrics),
         factor_scores: JSON.stringify(rec.factor_scores),
-        factor_details: JSON.stringify({}),
+        factor_details: JSON.stringify(rec.governance_details || {}),
+        governance_score: governanceScore,
+        governance_details: JSON.stringify(rec.governance_details || {}),
         position_size_pct: rec.position_size_pct,
         order_type: rec.order_type,
         entry_price: rec.entry_price,
@@ -192,22 +249,7 @@ export async function generateRecommendations(
     });
   }
 
-  // Update usage
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const existingUsage = await prisma.apiUsage.findFirst({ where: { date: today } });
-  if (existingUsage) {
-    await prisma.apiUsage.update({
-      where: { id: existingUsage.id },
-      data: {
-        call_count: existingUsage.call_count + 1,
-        estimated_cost: existingUsage.estimated_cost + COST_PER_CALL,
-      },
-    });
-  } else {
-    await prisma.apiUsage.create({
-      data: { date: today, call_count: 1, estimated_cost: COST_PER_CALL },
-    });
-  }
+  await trackUsage(COST_PER_CALL);
 
   await prisma.appSettings.upsert({
     where: { key: "last_refresh" },
@@ -244,6 +286,10 @@ export async function generateSingleAnalysis(
 
   if (!quote) return { recommendation: null, error: "no_market_data" };
 
+  let instruments: string[];
+  try { instruments = JSON.parse(profile.instruments); }
+  catch { instruments = []; }
+
   const marketData = {
     ticker,
     price: quote.price,
@@ -258,7 +304,7 @@ export async function generateSingleAnalysis(
       archetype: profile.archetype,
       investing_style: profile.investing_style,
       risk_tolerance: profile.risk_tolerance,
-      instruments: JSON.parse(profile.instruments),
+      instruments,
       portfolio_balance: profile.portfolio_balance,
     },
     holdings,
@@ -269,18 +315,102 @@ export async function generateSingleAnalysis(
   const rawResponse = await callClaude(system, user);
   const recs = parseClaudeResponse(rawResponse);
 
-  // Track usage
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const existingUsage = await prisma.apiUsage.findFirst({ where: { date: today } });
-  if (existingUsage) {
-    await prisma.apiUsage.update({
-      where: { id: existingUsage.id },
-      data: { call_count: existingUsage.call_count + 1, estimated_cost: existingUsage.estimated_cost + COST_PER_CALL },
-    });
-  } else {
-    await prisma.apiUsage.create({ data: { date: today, call_count: 1, estimated_cost: COST_PER_CALL } });
-  }
+  await trackUsage(COST_PER_CALL);
 
   return { recommendation: recs?.[0] || null };
+}
+
+export async function generateBundle(
+  bundleSize: number,
+  strategy: string,
+  filters: {
+    asset_classes?: string[];
+    min_score?: number;
+    sectors?: string[];
+  }
+): Promise<{ bundle: BundleResponse | null; error?: string }> {
+  const rateCheck = await checkRateLimits();
+  if (!rateCheck.allowed) {
+    return { bundle: null, error: rateCheck.reason };
+  }
+
+  const profile = await prisma.userProfile.findFirst();
+  if (!profile) return { bundle: null, error: "no_profile" };
+
+  const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
+  const holdings = openTrades.map((t) => ({
+    ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
+  }));
+
+  // Build candidate list: watchlist + popular tickers for the strategy
+  const watchlist = await prisma.watchlistItem.findMany();
+  const watchlistTickers = watchlist.map((w) => w.ticker);
+
+  const strategyTickers: Record<string, string[]> = {
+    growth: ["NVDA", "AMZN", "MSFT", "GOOGL", "META", "TSLA", "CRM", "AMD", "NFLX", "SHOP"],
+    value: ["BRK-B", "JPM", "JNJ", "PG", "KO", "PFE", "CVX", "VZ", "IBM", "T"],
+    balanced: ["AAPL", "MSFT", "GOOGL", "JPM", "JNJ", "PG", "AMZN", "V", "UNH", "HD"],
+    income: ["VZ", "T", "PFE", "KO", "PG", "XOM", "CVX", "ABBV", "MO", "O"],
+    aggressive: ["NVDA", "TSLA", "AMD", "COIN", "MSTR", "PLTR", "SOFI", "RIVN", "MARA", "SQ"],
+  };
+
+  const defaults = strategyTickers[strategy] || strategyTickers.balanced;
+  const candidateTickers = [...new Set([...watchlistTickers, ...defaults])].slice(0, Math.max(bundleSize * 3, 15));
+
+  const marketData = await fetchMarketData(candidateTickers);
+  if (marketData.length === 0) {
+    return { bundle: null, error: "no_market_data" };
+  }
+
+  let instruments: string[];
+  try { instruments = JSON.parse(profile.instruments); }
+  catch { instruments = []; }
+
+  const { system, user } = buildBundlePrompt(
+    {
+      archetype: profile.archetype,
+      investing_style: profile.investing_style,
+      risk_tolerance: profile.risk_tolerance,
+      instruments,
+      portfolio_balance: profile.portfolio_balance,
+    },
+    holdings,
+    bundleSize,
+    { ...filters, strategy },
+    marketData
+  );
+
+  let rawResponse = await callClaude(system, user);
+  let bundle = parseBundleResponse(rawResponse);
+
+  if (!bundle) {
+    console.warn("First bundle response invalid, retrying...");
+    rawResponse = await callClaude(
+      system,
+      user + "\n\nIMPORTANT: Return ONLY valid JSON. No markdown."
+    );
+    bundle = parseBundleResponse(rawResponse);
+  }
+
+  if (!bundle) {
+    return { bundle: null, error: "validation_failed" };
+  }
+
+  // Save bundle to DB
+  await prisma.bundlePortfolio.create({
+    data: {
+      name: bundle.bundle_name,
+      size: bundleSize,
+      strategy,
+      asset_filters: JSON.stringify(filters),
+      total_score: bundle.total_score,
+      allocation: JSON.stringify(bundle.allocations),
+      rationale: bundle.rationale,
+      status: "active",
+    },
+  });
+
+  await trackUsage(COST_PER_CALL);
+
+  return { bundle };
 }
