@@ -7,14 +7,19 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") || "active";
     const sort = searchParams.get("sort") || "score";
     const rating = searchParams.get("rating");
+    const assetClass = searchParams.get("asset_class");
+    const minScore = searchParams.get("min_score");
 
     const where: Record<string, unknown> = {};
     if (status !== "all") where.status = status;
     if (rating) where.rating = rating;
+    if (assetClass) where.asset_class = assetClass;
+    if (minScore) where.benchmark_score = { gte: parseInt(minScore) };
 
     const orderBy: Record<string, string> = {};
     if (sort === "confidence") orderBy.confidence = "desc";
     else if (sort === "time_sensitivity") orderBy.time_sensitivity = "asc";
+    else if (sort === "benchmark") orderBy.benchmark_score = "desc";
     else orderBy.ai_score = "desc";
 
     const recommendations = await prisma.recommendation.findMany({ where, orderBy });

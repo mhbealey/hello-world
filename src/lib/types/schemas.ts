@@ -8,9 +8,16 @@ export const factorScoreSchema = z.object({
   reasoning: z.string(),
 });
 
+export const governanceDetailsSchema = z.object({
+  board_changes: z.string(),
+  ceo_changes: z.string(),
+  ma_activity: z.string(),
+});
+
 export const recommendationItemSchema = z.object({
   ticker: z.string().min(1).max(10),
   company_name: z.string().min(1),
+  asset_class: z.enum(["stock", "etf", "bond", "reit", "commodity", "business", "real_estate", "crypto"]).default("stock"),
   ai_score: z.number().min(1).max(10),
   rating: z.enum(["strong_buy", "buy", "hold", "sell", "strong_sell"]),
   confidence: z.number().min(0).max(1),
@@ -42,7 +49,9 @@ export const recommendationItemSchema = z.object({
     sentiment: factorScoreSchema,
     momentum: factorScoreSchema,
     earnings: factorScoreSchema,
+    governance: factorScoreSchema,
   }),
+  governance_details: governanceDetailsSchema.optional(),
   entry_price: z.number().positive(),
   stop_loss: z.number().positive(),
   take_profit: z.number().positive(),
@@ -82,6 +91,37 @@ export const validatedRecommendationSchema = recommendationItemSchema.refine(
   { message: "For buy recommendations: stop_loss must be < entry_price and take_profit must be > entry_price" }
 );
 
+// ---- Bundle Response Schema ----
+
+export const bundleAllocationSchema = z.object({
+  ticker: z.string().min(1),
+  company_name: z.string().min(1),
+  asset_class: z.enum(["stock", "etf", "bond", "reit", "commodity", "business", "real_estate", "crypto"]).default("stock"),
+  weight_pct: z.number().min(0).max(1),
+  benchmark_score: z.number().min(1).max(99),
+  ai_score: z.number().min(1).max(10),
+  factor_scores: z.object({
+    technical: z.number().min(1).max(10),
+    fundamental: z.number().min(1).max(10),
+    sentiment: z.number().min(1).max(10),
+    momentum: z.number().min(1).max(10),
+    earnings: z.number().min(1).max(10),
+    governance: z.number().min(1).max(10),
+  }),
+  thesis: z.string(),
+  entry_price: z.number().positive(),
+  stop_loss: z.number().positive(),
+  take_profit: z.number().positive(),
+});
+
+export const bundleResponseSchema = z.object({
+  bundle_name: z.string().min(1),
+  strategy: z.string(),
+  total_score: z.number().min(1).max(99),
+  rationale: z.string().min(1),
+  allocations: z.array(bundleAllocationSchema),
+});
+
 // ---- Form Validation Schemas ----
 
 export const profileFormSchema = z.object({
@@ -115,8 +155,19 @@ export const closeTradeSchema = z.object({
   shares_to_close: z.number().positive().optional(),
 });
 
+export const bundleFilterSchema = z.object({
+  size: z.enum(["1", "3", "5", "10", "20"]),
+  strategy: z.enum(["growth", "value", "balanced", "income", "aggressive"]).default("balanced"),
+  asset_classes: z.array(z.enum(["stock", "etf", "bond", "reit", "commodity", "business", "real_estate", "crypto"])).optional(),
+  min_score: z.number().min(1).max(99).optional(),
+  sectors: z.array(z.string()).optional(),
+});
+
 // ---- Type exports ----
 export type RecommendationItem = z.infer<typeof recommendationItemSchema>;
 export type ClaudeResponse = z.infer<typeof claudeResponseSchema>;
 export type ProfileForm = z.infer<typeof profileFormSchema>;
 export type TradeForm = z.infer<typeof tradeFormSchema>;
+export type BundleAllocation = z.infer<typeof bundleAllocationSchema>;
+export type BundleResponse = z.infer<typeof bundleResponseSchema>;
+export type BundleFilter = z.infer<typeof bundleFilterSchema>;
