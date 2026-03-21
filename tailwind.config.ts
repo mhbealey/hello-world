@@ -31,12 +31,14 @@ const config: Config = {
       },
       fontFamily: {
         sans: [
+          "var(--font-sans)",
           "DM Sans",
           "-apple-system",
           "BlinkMacSystemFont",
           "sans-serif",
         ],
         mono: [
+          "var(--font-mono)",
           "JetBrains Mono",
           "monospace",
         ],
