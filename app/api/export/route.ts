@@ -1,12 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { exportParamsSchema } from "@/types/schemas";
 
-export async function GET(request: Request) {
+export const dynamic = "force-dynamic";
+
+export async function POST(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const body = await request.json().catch(() => ({}));
     const parsed = exportParamsSchema.safeParse({
-      screen: searchParams.get("screen"),
-      format: searchParams.get("format") ?? "pdf",
+      screen: body.screen ?? "home",
+      format: body.format ?? "pdf",
     });
 
     if (!parsed.success) {
