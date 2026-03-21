@@ -31,7 +31,16 @@ export async function POST() {
 
     return NextResponse.json({ success: true, count: result.recommendations.length });
   } catch (e) {
-    console.error("POST /api/recommendations/refresh error:", e);
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("POST /api/recommendations/refresh error:", message);
+
+    if (message.includes("ANTHROPIC_API_KEY")) {
+      return NextResponse.json(
+        { error: "AI service not configured. Set ANTHROPIC_API_KEY in Vercel environment variables." },
+        { status: 503 }
+      );
+    }
+
     return NextResponse.json({ error: "Failed to refresh recommendations" }, { status: 500 });
   }
 }
