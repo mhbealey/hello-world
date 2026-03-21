@@ -71,6 +71,11 @@
   * {
     -webkit-tap-highlight-color: transparent;
   }
+
+  /* Safe area padding for bottom nav */
+  .safe-area-pb {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
 }
 
 /* Reduced motion: disable all animations */
