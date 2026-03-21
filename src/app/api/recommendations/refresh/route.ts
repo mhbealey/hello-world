@@ -41,6 +41,14 @@ export async function POST() {
       );
     }
 
-    return NextResponse.json({ error: "Failed to refresh recommendations" }, { status: 500 });
+    // Surface the actual error for debugging
+    const debugInfo = process.env.NODE_ENV === "production"
+      ? message.slice(0, 200)
+      : message;
+
+    return NextResponse.json(
+      { error: `Refresh failed: ${debugInfo}` },
+      { status: 500 }
+    );
   }
 }
