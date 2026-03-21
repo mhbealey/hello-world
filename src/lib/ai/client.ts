@@ -27,7 +27,7 @@ export async function callClaude(
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
       const response = await getClient().messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-haiku-4-5-20251001",
         max_tokens: 4096,
         system: systemPrompt,
         messages: [{ role: "user", content: userMessage }],
