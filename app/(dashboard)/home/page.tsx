@@ -2,12 +2,15 @@
 
 import { DashboardShell } from "@/components/layouts";
 import { Card, CardTitle, ScoreRing, ProgressBar } from "@/components/ui";
+import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
 import { formatALE, formatPct, formatDelta, formatDate } from "@/lib/format";
 import { MOCK_HOME } from "@/lib/mock-data";
+import { useAdvisor } from "@/lib/hooks/useAdvisor";
 
 export default function HomePage() {
   const data = MOCK_HOME;
   const a = data.assessment;
+  const advisor = useAdvisor();
 
   return (
     <DashboardShell title="Home">
@@ -154,6 +157,17 @@ export default function HomePage() {
             ))}
           </div>
         </Card>
+
+        {/* Talk to Advisor */}
+        <TalkToAdvisor onClick={() => advisor.openSheet([], "home")} />
+
+        <AdvisorSheet
+          open={advisor.open}
+          onClose={advisor.closeSheet}
+          onBook={advisor.bookCall}
+          loading={advisor.loading}
+          selectedActionIds={advisor.selectedActionIds}
+        />
       </div>
     </DashboardShell>
   );
