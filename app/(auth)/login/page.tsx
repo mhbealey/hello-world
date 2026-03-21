@@ -35,10 +35,10 @@ export default function LoginPage() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold text-foreground">Sign in</h2>
+      <h2 className="text-xl font-semibold text-text">Sign in</h2>
 
       {error && (
-        <div className="rounded-lg bg-status-critical/10 px-4 py-3 text-sm text-status-critical">
+        <div className="rounded-lg bg-dangerBg px-4 py-3 text-sm text-danger">
           {error}
         </div>
       )}
@@ -46,7 +46,7 @@ export default function LoginPage() {
       <div>
         <label
           htmlFor="email"
-          className="mb-1 block text-sm font-medium text-foreground"
+          className="mb-1 block text-sm font-medium text-text"
         >
           Email
         </label>
@@ -56,7 +56,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-textTertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="you@company.com"
         />
       </div>
@@ -64,7 +64,7 @@ export default function LoginPage() {
       <div>
         <label
           htmlFor="password"
-          className="mb-1 block text-sm font-medium text-foreground"
+          className="mb-1 block text-sm font-medium text-text"
         >
           Password
         </label>
@@ -75,7 +75,7 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-textTertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="••••••••"
         />
       </div>
@@ -83,14 +83,14 @@ export default function LoginPage() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
+        className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent/90 disabled:opacity-50"
       >
         {loading ? "Signing in..." : "Sign in"}
       </button>
 
-      <p className="text-center text-sm text-foreground-secondary">
+      <p className="text-center text-sm text-textSecondary">
         Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-brand hover:underline">
+        <Link href="/signup" className="text-accent hover:underline">
           Sign up
         </Link>
       </p>

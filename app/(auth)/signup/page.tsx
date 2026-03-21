@@ -39,16 +39,16 @@ export default function SignupPage() {
   if (success) {
     return (
       <div className="space-y-4 text-center">
-        <h2 className="text-xl font-semibold text-foreground">
+        <h2 className="text-xl font-semibold text-text">
           Check your email
         </h2>
-        <p className="text-sm text-foreground-secondary">
+        <p className="text-sm text-textSecondary">
           We&apos;ve sent a confirmation link to{" "}
-          <span className="font-medium text-foreground">{email}</span>.
+          <span className="font-medium text-text">{email}</span>.
         </p>
         <Link
           href="/login"
-          className="inline-block text-sm text-brand hover:underline"
+          className="inline-block text-sm text-accent hover:underline"
         >
           Back to sign in
         </Link>
@@ -58,10 +58,10 @@ export default function SignupPage() {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-semibold text-foreground">Create account</h2>
+      <h2 className="text-xl font-semibold text-text">Create account</h2>
 
       {error && (
-        <div className="rounded-lg bg-status-critical/10 px-4 py-3 text-sm text-status-critical">
+        <div className="rounded-lg bg-dangerBg px-4 py-3 text-sm text-danger">
           {error}
         </div>
       )}
@@ -69,7 +69,7 @@ export default function SignupPage() {
       <div>
         <label
           htmlFor="fullName"
-          className="mb-1 block text-sm font-medium text-foreground"
+          className="mb-1 block text-sm font-medium text-text"
         >
           Full name
         </label>
@@ -79,7 +79,7 @@ export default function SignupPage() {
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
           required
-          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-textTertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="Jane Smith"
         />
       </div>
@@ -87,7 +87,7 @@ export default function SignupPage() {
       <div>
         <label
           htmlFor="email"
-          className="mb-1 block text-sm font-medium text-foreground"
+          className="mb-1 block text-sm font-medium text-text"
         >
           Email
         </label>
@@ -97,7 +97,7 @@ export default function SignupPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
-          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-textTertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="you@company.com"
         />
       </div>
@@ -105,7 +105,7 @@ export default function SignupPage() {
       <div>
         <label
           htmlFor="password"
-          className="mb-1 block text-sm font-medium text-foreground"
+          className="mb-1 block text-sm font-medium text-text"
         >
           Password
         </label>
@@ -116,7 +116,7 @@ export default function SignupPage() {
           onChange={(e) => setPassword(e.target.value)}
           required
           minLength={8}
-          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-foreground placeholder:text-foreground-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+          className="w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-textTertiary focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
           placeholder="Min. 8 characters"
         />
       </div>
@@ -124,14 +124,14 @@ export default function SignupPage() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-hover disabled:opacity-50"
+        className="w-full rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent/90 disabled:opacity-50"
       >
         {loading ? "Creating account..." : "Create account"}
       </button>
 
-      <p className="text-center text-sm text-foreground-secondary">
+      <p className="text-center text-sm text-textSecondary">
         Already have an account?{" "}
-        <Link href="/login" className="text-brand hover:underline">
+        <Link href="/login" className="text-accent hover:underline">
           Sign in
         </Link>
       </p>
