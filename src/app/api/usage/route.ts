@@ -12,7 +12,8 @@ export async function GET() {
     });
 
     const monthlyCost = monthlyUsage.reduce((s, u) => s + u.estimated_cost, 0);
-    const todayUsage = monthlyUsage.find((u) => u.date.getTime() === today.getTime());
+    const todayStr = today.toISOString().split("T")[0];
+    const todayUsage = monthlyUsage.find((u) => u.date.toISOString().split("T")[0] === todayStr);
 
     const budgetSetting = await prisma.appSettings.findUnique({ where: { key: "monthly_budget" } });
     const capSetting = await prisma.appSettings.findUnique({ where: { key: "daily_api_cap" } });

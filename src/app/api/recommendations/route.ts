@@ -21,8 +21,9 @@ export async function GET(request: NextRequest) {
 
     // Enrich with existing position data
     const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
+    const tradesByTicker = new Map(openTrades.map((t) => [t.ticker, t]));
     const enriched = recommendations.map((rec) => {
-      const trade = openTrades.find((t) => t.ticker === rec.ticker);
+      const trade = tradesByTicker.get(rec.ticker);
       return {
         ...rec,
         has_existing_position: !!trade,

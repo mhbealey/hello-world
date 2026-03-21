@@ -193,27 +193,21 @@ export async function generateRecommendations(
   }
 
   // Update usage
-  await prisma.apiUsage.create({
-    data: {
-      date: new Date(now.getFullYear(), now.getMonth(), now.getDate()),
-      call_count: 1,
-      estimated_cost: COST_PER_CALL,
-    },
-  }).catch(() => {
-    // May fail if entry exists, try increment
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    return prisma.apiUsage.findFirst({ where: { date: today } }).then((existing) => {
-      if (existing) {
-        return prisma.apiUsage.update({
-          where: { id: existing.id },
-          data: {
-            call_count: existing.call_count + 1,
-            estimated_cost: existing.estimated_cost + COST_PER_CALL,
-          },
-        });
-      }
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const existingUsage = await prisma.apiUsage.findFirst({ where: { date: today } });
+  if (existingUsage) {
+    await prisma.apiUsage.update({
+      where: { id: existingUsage.id },
+      data: {
+        call_count: existingUsage.call_count + 1,
+        estimated_cost: existingUsage.estimated_cost + COST_PER_CALL,
+      },
     });
-  });
+  } else {
+    await prisma.apiUsage.create({
+      data: { date: today, call_count: 1, estimated_cost: COST_PER_CALL },
+    });
+  }
 
   await prisma.appSettings.upsert({
     where: { key: "last_refresh" },

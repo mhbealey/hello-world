@@ -33,9 +33,10 @@ export async function GET() {
         else break;
       }
 
-      const avgHold = closedTrades
-        .filter((t) => t.exit_date)
-        .reduce((s, t) => s + (t.exit_date!.getTime() - t.created_at.getTime()) / 86400000, 0) / closedTrades.filter((t) => t.exit_date).length || 0;
+      const tradesWithExit = closedTrades.filter((t) => t.exit_date);
+      const avgHold = tradesWithExit.length > 0
+        ? tradesWithExit.reduce((s, t) => s + (t.exit_date!.getTime() - t.created_at.getTime()) / 86400000, 0) / tradesWithExit.length
+        : 0;
 
       analytics = {
         win_rate: wins.length / closedTrades.length,
