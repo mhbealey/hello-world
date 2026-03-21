@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { DashboardShell } from "@/components/layouts";
-import { Card, CardTitle, Badge, ScoreRing, ProgressBar } from "@/components/ui";
+import { Card, CardTitle, Badge, ScoreRing, ProgressBar, EmptyState } from "@/components/ui";
 import { formatDelta } from "@/lib/format";
 import { MOCK_AI } from "@/lib/mock-data";
 import type { AIToolStatus, AIRiskLevel } from "@/types";

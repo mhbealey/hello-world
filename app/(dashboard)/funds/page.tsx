@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { DashboardShell } from "@/components/layouts";
-import { Card, CardTitle, ScoreRing, Badge, ProgressBar } from "@/components/ui";
+import { Card, CardTitle, ScoreRing, Badge, ProgressBar, EmptyState } from "@/components/ui";
 import { formatDollars, formatMOIC, formatIRR, formatPct, formatDelta } from "@/lib/format";
+import { content } from "@/lib/utils/content";
 import { MOCK_FUNDS } from "@/lib/mock-data";
 import type { OddStatus } from "@/types";
 
@@ -25,6 +26,9 @@ export default function FundsPage() {
   return (
     <DashboardShell title="Funds">
       <div className="space-y-3">
+        {funds.length === 0 && (
+          <EmptyState message={content.emptyStates.noFunds.message} cta={content.emptyStates.noFunds.cta} />
+        )}
         {funds.map((fund) => {
           const expanded = expandedId === fund.id;
           return (
