@@ -21,7 +21,7 @@
     "dexie": "4.2.0",
     "framer-motion": "11.0.0",
     "lucide-react": "0.383.0",
-    "next": "14.2.0",
+    "next": "^14.2.35",
     "react": "^18",
     "react-dom": "^18",
     "zod": "3.23.0"
@@ -34,7 +34,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
-    "eslint-config-next": "14.2.0",
+    "eslint-config-next": "^14.2.35",
     "jsdom": "^29.0.1",
     "postcss": "^8",
     "prettier": "3.2.0",
