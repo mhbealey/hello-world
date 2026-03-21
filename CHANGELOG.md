@@ -57,3 +57,11 @@
 - feat(7c): integrate ErrorBanner in chat screen with retry
 - feat(7d): add EmptyState to Funds and AI screens
 - feat(7e-7f): pull-to-refresh hook, haptics util, staggered fade animation
+
+## Prompt 8 — Mobile Polish & Production Readiness
+- feat(8a): viewport config, Google Fonts CDN, mobile meta tags
+- feat(8b): error boundaries, not-found page, dashboard loading skeleton
+- feat(8c): integrate pull-to-refresh into DashboardShell
+- feat(8d): wire haptic feedback into action resolve and step toggle
+- feat(8e): StaggerList component with per-card 50ms entrance delay
+- feat(8f): PWA manifest, root redirect to /home, safe-area toast
