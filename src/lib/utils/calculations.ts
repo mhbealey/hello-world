@@ -32,10 +32,22 @@ export function calculateRiskReward(
   entry: number,
   stopLoss: number,
   takeProfit: number
-): { riskDollars: number; rewardDollars: number; ratio: number } {
+): { riskDollars: number; rewardDollars: number; ratio: number; riskPct: number; rewardPct: number } {
   const riskDollars = Math.abs(entry - stopLoss);
   const rewardDollars = Math.abs(takeProfit - entry);
   const ratio = riskDollars > 0 ? rewardDollars / riskDollars : 0;
+  const riskPct = (riskDollars / entry) * 100;
+  const rewardPct = (rewardDollars / entry) * 100;
 
-  return { riskDollars, rewardDollars, ratio };
+  return { riskDollars, rewardDollars, ratio, riskPct, rewardPct };
+}
+
+export function calculatePnl(
+  entryPrice: number,
+  currentPrice: number,
+  shares: number
+): { dollars: number; percent: number } {
+  const dollars = (currentPrice - entryPrice) * shares;
+  const percent = ((currentPrice - entryPrice) / entryPrice) * 100;
+  return { dollars, percent };
 }
