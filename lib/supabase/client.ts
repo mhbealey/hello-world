@@ -11,12 +11,15 @@ export function createClient() {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    // During build/SSR without env vars, return a stub that won't crash
-    // Auth calls will fail at runtime if env vars are truly missing
-    return createBrowserClient(
-      "https://placeholder.supabase.co",
-      "placeholder-key"
-    );
+    // Return a mock client during SSR/build without env vars
+    return {
+      auth: {
+        getUser: async () => ({ data: { user: null }, error: null }),
+        getSession: async () => ({ data: { session: null }, error: null }),
+        signInWithPassword: async () => ({ data: { user: null, session: null }, error: { message: "Supabase not configured" } }),
+        signUp: async () => ({ data: { user: null, session: null }, error: { message: "Supabase not configured" } }),
+      },
+    } as unknown as ReturnType<typeof createBrowserClient>;
   }
 
   client = createBrowserClient(url, key);
