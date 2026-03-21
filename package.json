@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npx tsx scripts/push-turso.ts && prisma generate && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
@@ -41,6 +41,7 @@
     "prisma": "^7.5.0",
     "tailwindcss": "^4",
     "typescript": "^5",
+    "tsx": "^4.19.0",
     "vitest": "^4.1.0"
   }
 }
