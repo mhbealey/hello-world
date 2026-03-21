@@ -13,9 +13,9 @@ A personal mobile trading companion app. AI-powered stock analysis via Claude AP
 - Deployed on Vercel
 
 ## Current Status
-- [ ] Prompt 0: Documentation
-- [ ] Prompt 1: Project Setup
-- [ ] Prompt 2: Database & Data Layer
+- [x] Prompt 0: Documentation
+- [x] Prompt 1: Project Setup
+- [x] Prompt 2: Database & Data Layer
 - [ ] Prompt 3: Design System & Shell
 - [ ] Prompt 4: Onboarding
 - [ ] Prompt 5: AI Recommendation Engine
@@ -31,4 +31,6 @@ A personal mobile trading companion app. AI-powered stock analysis via Claude AP
 - [ ] Prompt 15: Deployment
 
 ## Build Log
-(Updated after each sub-task)
+- Prompt 0: Created CONTEXT.md, CHANGELOG.md, design-tokens.md, content.md, interactions.md
+- Prompt 1: Next.js 15 project init, Tailwind v4 dark theme, project structure, env vars, content constants
+- Prompt 2: Prisma 7 + libSQL adapter, all 7 models + ApiUsage, query helpers, Zod schemas, DataProvider (Yahoo+Finnhub), utilities, demo seed data
