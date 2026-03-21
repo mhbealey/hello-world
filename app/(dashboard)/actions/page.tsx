@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { DashboardShell } from "@/components/layouts";
-import { Card, CardTitle, Badge, ProgressBar } from "@/components/ui";
+import { Card, CardTitle, Badge, ProgressBar, EmptyState } from "@/components/ui";
+import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
 import { toast } from "@/components/ui/toast";
+import { content } from "@/lib/utils/content";
 import { MOCK_ACTIONS } from "@/lib/mock-data";
+import { useAdvisor } from "@/lib/hooks/useAdvisor";
 import type { ActionWithDetails } from "@/types";
 
 export default function ActionsPage() {
   const [actions, setActions] = useState<ActionWithDetails[]>(MOCK_ACTIONS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const advisor = useAdvisor();
 
   function toggleStep(actionId: string, stepIdx: number) {
     setActions((prev) =>
@@ -46,6 +50,9 @@ export default function ActionsPage() {
   return (
     <DashboardShell title="Recommended Actions">
       <div className="space-y-3">
+        {actions.length === 0 && (
+          <EmptyState message={content.emptyStates.noActions.message} />
+        )}
         {actions.map((action) => {
           const expanded = expandedId === action.id;
           return (
@@ -149,6 +156,20 @@ export default function ActionsPage() {
             </Card>
           );
         })}
+        <TalkToAdvisor
+          onClick={() => advisor.openSheet(
+            actions.filter((a) => !a.is_resolved).map((a) => a.id),
+            "actions"
+          )}
+        />
+
+        <AdvisorSheet
+          open={advisor.open}
+          onClose={advisor.closeSheet}
+          onBook={advisor.bookCall}
+          loading={advisor.loading}
+          selectedActionIds={advisor.selectedActionIds}
+        />
       </div>
     </DashboardShell>
   );
