@@ -78,7 +78,11 @@ export async function PUT(request: Request) {
     }
 
     if (body.investing_style || body.risk_tolerance || body.instruments) {
-      const instruments = body.instruments || JSON.parse(existing.instruments);
+      let instruments = body.instruments;
+      if (!instruments) {
+        try { instruments = JSON.parse(existing.instruments); }
+        catch { instruments = []; }
+      }
       const archetype = computeArchetype({
         style: body.investing_style || existing.investing_style,
         riskTolerance: body.risk_tolerance || existing.risk_tolerance,

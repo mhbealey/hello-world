@@ -44,12 +44,12 @@ export async function getRecommendations(filter?: {
   return prisma.recommendation.findMany({ where, orderBy });
 }
 
-export async function createRecommendation(data: Record<string, unknown>) {
-  return prisma.recommendation.create({ data: data as never });
+export async function createRecommendation(data: Parameters<typeof prisma.recommendation.create>[0]["data"]) {
+  return prisma.recommendation.create({ data });
 }
 
-export async function updateRecommendation(id: number, data: Record<string, unknown>) {
-  return prisma.recommendation.update({ where: { id }, data: data as never });
+export async function updateRecommendation(id: number, data: Parameters<typeof prisma.recommendation.update>[0]["data"]) {
+  return prisma.recommendation.update({ where: { id }, data });
 }
 
 export async function getRecommendationById(id: number) {
@@ -64,12 +64,12 @@ export async function getTrades(filter?: { status?: string; ticker?: string }) {
   return prisma.trade.findMany({ where, orderBy: { created_at: "desc" } });
 }
 
-export async function createTrade(data: Record<string, unknown>) {
-  return prisma.trade.create({ data: data as never });
+export async function createTrade(data: Parameters<typeof prisma.trade.create>[0]["data"]) {
+  return prisma.trade.create({ data });
 }
 
-export async function updateTrade(id: number, data: Record<string, unknown>) {
-  return prisma.trade.update({ where: { id }, data: data as never });
+export async function updateTrade(id: number, data: Parameters<typeof prisma.trade.update>[0]["data"]) {
+  return prisma.trade.update({ where: { id }, data });
 }
 
 export async function closeTrade(
