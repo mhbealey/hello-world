@@ -1,8 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { DashboardShell } from "@/components/layouts";
 import { Card, CardTitle, ScoreRing, ProgressBar, StaggerList } from "@/components/ui";
 import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
+import { toast } from "@/components/ui/toast";
+import { content } from "@/lib/utils/content";
 import { formatALE, formatPct, formatDelta, formatDate } from "@/lib/format";
 import { lpDeadlineStyle } from "@/lib/utils/score";
 import { MOCK_HOME } from "@/lib/mock-data";
@@ -12,6 +15,27 @@ export default function HomePage() {
   const data = MOCK_HOME;
   const a = data.assessment;
   const advisor = useAdvisor();
+  const [exporting, setExporting] = useState(false);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const res = await fetch("/api/export", { method: "POST" });
+      if (!res.ok) throw new Error();
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "cybersecurity-report.json";
+      a.click();
+      URL.revokeObjectURL(url);
+      toast(content.toasts.exportReady);
+    } catch {
+      toast(content.errors.exportFailed, "error");
+    } finally {
+      setExporting(false);
+    }
+  }
   const lpStyle = a ? lpDeadlineStyle(a.days_to_lp!) : null;
 
   return (
@@ -157,8 +181,17 @@ export default function HomePage() {
           </div>
         </Card>
 
-        {/* Talk to Advisor */}
-        <TalkToAdvisor onClick={() => advisor.openSheet([], "home")} />
+        {/* Actions */}
+        <div className="flex gap-3">
+          <TalkToAdvisor onClick={() => advisor.openSheet([], "home")} className="flex-1" />
+          <button
+            onClick={handleExport}
+            disabled={exporting}
+            className="flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 py-2.5 text-sm font-medium text-text transition-colors hover:bg-surfaceDim disabled:opacity-50"
+          >
+            {exporting ? content.loading.exporting : "Export Report"}
+          </button>
+        </div>
 
         <AdvisorSheet
           open={advisor.open}
