@@ -43,3 +43,10 @@
 - feat(5e): chat screen with streaming UI and thinking indicator
 - feat(5f): useResolution, useAdvisor, useNavSource hooks
 - feat(5g): score, color, content utilities with unit tests
+
+## Prompt 6 — Shared Components, Tests & Integration
+- feat(6a-6b): advisor sheet, talk-to-advisor, error banner, freshness dot
+- feat(6c-6d): dev component gallery and barrel exports
+- feat(6e): Playwright E2E smoke tests
+- feat(6f): unit tests for score and content utilities
+- feat(6g): wire advisor button and sheet into Home screen
