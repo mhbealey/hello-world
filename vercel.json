@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "installCommand": "npm install && prisma generate",
+  "installCommand": "npm install",
   "buildCommand": "npx tsx scripts/push-turso.ts && next build",
   "regions": ["iad1"],
   "functions": {
