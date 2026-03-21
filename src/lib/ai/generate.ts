@@ -35,9 +35,27 @@ async function checkRateLimits(): Promise<{ allowed: boolean; reason?: string }>
   return { allowed: true };
 }
 
+function inferAssetClass(ticker: string, fundamentals: { sector?: string | null } | null): string {
+  const upper = ticker.toUpperCase();
+  // Common ETFs
+  if (["SPY", "QQQ", "IWM", "DIA", "VTI", "VOO", "VEA", "VWO", "BND", "AGG", "TLT", "GLD", "SLV", "XLF", "XLK", "XLE", "XLV", "ARKK"].includes(upper)) return "etf";
+  // Bond ETFs
+  if (["BND", "AGG", "TLT", "IEF", "SHY", "LQD", "HYG", "TIP", "VCIT", "VCSH"].includes(upper)) return "bond";
+  // REIT tickers
+  if (["O", "VNQ", "AMT", "PLD", "CCI", "SPG", "EQIX", "PSA", "DLR", "WELL"].includes(upper)) return "reit";
+  // Commodity ETFs
+  if (["GLD", "SLV", "USO", "UNG", "DBA", "DBC", "PDBC", "CORN", "WEAT"].includes(upper)) return "commodity";
+  // Crypto
+  if (["BTC", "ETH", "MSTR", "COIN", "GBTC", "ETHE", "BITO", "MARA", "RIOT", "HUT"].includes(upper)) return "crypto";
+  // Check sector for REITs
+  if (fundamentals?.sector === "Real Estate") return "reit";
+  return "stock";
+}
+
 async function fetchMarketData(tickers: string[]) {
   const provider = getDataProvider();
   const results = [];
+  const skipped: string[] = [];
 
   for (const ticker of tickers) {
     try {
@@ -48,6 +66,8 @@ async function fetchMarketData(tickers: string[]) {
         provider.getEarningsCalendar(ticker),
       ]);
 
+      const assetClass = inferAssetClass(ticker, fundamentals);
+
       results.push({
         ticker,
         price: quote?.price || 0,
@@ -55,10 +75,16 @@ async function fetchMarketData(tickers: string[]) {
         analystRatings: JSON.stringify(analysts || {}),
         historicalPrices: "See price data",
         earnings: JSON.stringify(earnings || []),
+        assetClass,
       });
     } catch (e) {
       console.error(`Failed to fetch market data for ${ticker}:`, e);
+      skipped.push(ticker);
     }
+  }
+
+  if (skipped.length > 0) {
+    console.warn(`Skipped tickers due to data fetch failures: ${skipped.join(", ")}`);
   }
 
   return results;
@@ -137,16 +163,24 @@ export async function generateRecommendations(
   }
 
   const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
-  const holdings = openTrades.map((t) => ({
-    ticker: t.ticker,
-    shares: t.shares,
-    avg_cost: t.entry_price,
-  }));
 
   const marketData = await fetchMarketData(tickers);
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
   }
+
+  // Build holdings with sector data from market data when available
+  const holdings = openTrades.map((t) => {
+    const md = marketData.find((m) => m.ticker === t.ticker);
+    let sector: string | undefined;
+    if (md) {
+      try {
+        const f = JSON.parse(md.fundamentals);
+        sector = f.sector || undefined;
+      } catch { /* ignore */ }
+    }
+    return { ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price, sector };
+  });
 
   let instruments: string[];
   try { instruments = JSON.parse(profile.instruments); }
@@ -229,7 +263,7 @@ export async function generateRecommendations(
         bear_case: JSON.stringify(rec.bear_case),
         key_metrics: JSON.stringify(rec.key_metrics),
         factor_scores: JSON.stringify(rec.factor_scores),
-        factor_details: JSON.stringify(rec.governance_details || {}),
+        factor_details: JSON.stringify({}),
         governance_score: governanceScore,
         governance_details: JSON.stringify(rec.governance_details || {}),
         position_size_pct: rec.position_size_pct,

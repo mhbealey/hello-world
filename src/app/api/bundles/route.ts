@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
         validation_failed: "AI response was invalid. Try again.",
       };
       const msg = result.error.startsWith("cooldown_")
-        ? `Try again in ${result.error.split("_")[1]} minutes.`
+        ? `Try again in ${result.error.split("_")[1] || "a few"} minutes.`
         : errorMessages[result.error] || "Failed to generate bundle.";
 
       return NextResponse.json({ error: msg }, { status: 429 });
