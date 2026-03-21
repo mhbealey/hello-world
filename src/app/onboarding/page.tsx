@@ -34,6 +34,7 @@ export default function OnboardingPage() {
   const [portfolioRange, setPortfolioRange] = useState("");
   const [balance, setBalance] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const progress = (step / 5) * 100;
 
@@ -46,6 +47,7 @@ export default function OnboardingPage() {
 
   async function handleSubmit() {
     setLoading(true);
+    setError("");
     try {
       const res = await fetch("/api/profile", {
         method: "POST",
@@ -61,6 +63,7 @@ export default function OnboardingPage() {
       if (!res.ok) throw new Error("Failed to save profile");
       router.push("/home");
     } catch {
+      setError("Something went wrong. Please try again.");
       setLoading(false);
     }
   }
@@ -245,6 +248,9 @@ export default function OnboardingPage() {
               <button onClick={() => setStep(4)} className="text-[14px] text-text-secondary min-h-[44px]">
                 ← Back
               </button>
+              {error && (
+                <p className="text-[14px] text-loss-red text-center">{error}</p>
+              )}
               <Button fullWidth size="lg" loading={loading} onClick={handleSubmit}>
                 {ONBOARDING.step5CTA}
               </Button>
