@@ -3,33 +3,33 @@ import { NextResponse, type NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/signup");
-  const isCallbackRoute = pathname.startsWith("/auth/callback");
-  const isApiRoute = pathname.startsWith("/api");
-  const isDevRoute = pathname.startsWith("/dev");
-
-  // Allow API routes, callback, and dev routes to pass through
-  if (isCallbackRoute || isApiRoute || isDevRoute) {
+  // Routes that bypass auth checks entirely
+  if (
+    pathname === "/" ||
+    pathname.startsWith("/api") ||
+    pathname.startsWith("/auth/callback") ||
+    pathname.startsWith("/dev") ||
+    pathname.startsWith("/_next")
+  ) {
     return NextResponse.next();
   }
 
+  const isAuthRoute = pathname.startsWith("/login") || pathname.startsWith("/signup");
+
   // Check for Supabase auth cookie (sb-*-auth-token)
-  const hasAuthCookie = request.cookies.getAll().some(
+  const cookies = request.cookies.getAll();
+  const hasAuthCookie = cookies.some(
     (c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token")
   );
 
-  // Redirect unauthenticated users to login
+  // Redirect unauthenticated users to login (skip if already on auth page)
   if (!hasAuthCookie && !isAuthRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/login", request.url));
   }
 
   // Redirect authenticated users away from auth pages
   if (hasAuthCookie && isAuthRoute) {
-    const url = request.nextUrl.clone();
-    url.pathname = "/home";
-    return NextResponse.redirect(url);
+    return NextResponse.redirect(new URL("/home", request.url));
   }
 
   return NextResponse.next();
