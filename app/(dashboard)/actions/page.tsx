@@ -6,8 +6,9 @@ import { Card, CardTitle, Badge, ProgressBar, EmptyState } from "@/components/ui
 import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
 import { toast } from "@/components/ui/toast";
 import { content } from "@/lib/utils/content";
-import { MOCK_ACTIONS } from "@/lib/mock-data";
+import { MOCK_ACTIONS, MOCK_RISKS } from "@/lib/mock-data";
 import { useAdvisor } from "@/lib/hooks/useAdvisor";
+import { useNavSource } from "@/lib/hooks/useNavSource";
 import { haptic } from "@/lib/utils/haptics";
 import type { ActionWithDetails } from "@/types";
 
@@ -15,6 +16,15 @@ export default function ActionsPage() {
   const [actions, setActions] = useState<ActionWithDetails[]>(MOCK_ACTIONS);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const advisor = useAdvisor();
+  const { source, sourceId } = useNavSource();
+
+  // Filter to linked actions when drilled in from a risk
+  const linkedRisk = source === "risk" && sourceId
+    ? MOCK_RISKS.find((r) => r.id === sourceId)
+    : null;
+  const visibleActions = linkedRisk
+    ? actions.filter((a) => linkedRisk.linked_action_ids.includes(a.id))
+    : actions;
 
   function toggleStep(actionId: string, stepIdx: number) {
     haptic("light");
@@ -53,10 +63,15 @@ export default function ActionsPage() {
   return (
     <DashboardShell title="Recommended Actions">
       <div className="space-y-3">
-        {actions.length === 0 && (
+        {linkedRisk && (
+          <p className="text-xs text-textTertiary">
+            Showing actions linked to <span className="font-medium text-text">{linkedRisk.name}</span>
+          </p>
+        )}
+        {visibleActions.length === 0 && (
           <EmptyState message={content.emptyStates.noActions.message} />
         )}
-        {actions.map((action) => {
+        {visibleActions.map((action) => {
           const expanded = expandedId === action.id;
           return (
             <Card

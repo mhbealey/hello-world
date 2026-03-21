@@ -1,16 +1,19 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { DashboardShell } from "@/components/layouts";
 import { Card, CardTitle, Badge, EmptyState } from "@/components/ui";
 import { FreshnessDot } from "@/components/shared";
 import { formatALE } from "@/lib/format";
+import { useNavSource } from "@/lib/hooks/useNavSource";
 import { content } from "@/lib/utils/content";
 import { MOCK_RISKS } from "@/lib/mock-data";
 
 export default function RiskPage() {
   const risks = MOCK_RISKS;
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const { buildLink } = useNavSource();
 
   return (
     <DashboardShell title="Risk Scenarios">
@@ -64,10 +67,14 @@ export default function RiskPage() {
                     </div>
                   )}
                   {risk.linked_action_ids.length > 0 && (
-                    <p className="text-xs text-accent">
+                    <Link
+                      href={buildLink("/actions", "risk", risk.id)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="inline-block text-xs font-medium text-accent hover:underline"
+                    >
                       {risk.linked_action_ids.length} linked action
-                      {risk.linked_action_ids.length > 1 ? "s" : ""}
-                    </p>
+                      {risk.linked_action_ids.length > 1 ? "s" : ""} →
+                    </Link>
                   )}
                 </div>
               )}
