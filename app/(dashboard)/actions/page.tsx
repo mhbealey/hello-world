@@ -8,6 +8,7 @@ import { toast } from "@/components/ui/toast";
 import { content } from "@/lib/utils/content";
 import { MOCK_ACTIONS } from "@/lib/mock-data";
 import { useAdvisor } from "@/lib/hooks/useAdvisor";
+import { haptic } from "@/lib/utils/haptics";
 import type { ActionWithDetails } from "@/types";
 
 export default function ActionsPage() {
@@ -16,6 +17,7 @@ export default function ActionsPage() {
   const advisor = useAdvisor();
 
   function toggleStep(actionId: string, stepIdx: number) {
+    haptic("light");
     setActions((prev) =>
       prev.map((a) => {
         if (a.id !== actionId) return a;
@@ -34,6 +36,7 @@ export default function ActionsPage() {
     const action = actions.find((a) => a.id === actionId);
     if (!action) return;
 
+    haptic("medium");
     setActions((prev) =>
       prev.map((a) =>
         a.id === actionId ? { ...a, is_resolved: !a.is_resolved } : a
