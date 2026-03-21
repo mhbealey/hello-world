@@ -1,5 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0D0D0F",
+};
 
 export const metadata: Metadata = {
   title: "AlphaEdge",
@@ -10,13 +18,6 @@ export const metadata: Metadata = {
     statusBarStyle: "black-translucent",
     title: "AlphaEdge",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    viewportFit: "cover",
-  },
-  themeColor: "#0D0D0F",
 };
 
 export default function RootLayout({
