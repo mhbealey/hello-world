@@ -4,6 +4,7 @@ import { DashboardShell } from "@/components/layouts";
 import { Card, CardTitle, ScoreRing, ProgressBar } from "@/components/ui";
 import { TalkToAdvisor, AdvisorSheet } from "@/components/shared";
 import { formatALE, formatPct, formatDelta, formatDate } from "@/lib/format";
+import { lpDeadlineStyle } from "@/lib/utils/score";
 import { MOCK_HOME } from "@/lib/mock-data";
 import { useAdvisor } from "@/lib/hooks/useAdvisor";
 
@@ -11,6 +12,7 @@ export default function HomePage() {
   const data = MOCK_HOME;
   const a = data.assessment;
   const advisor = useAdvisor();
+  const lpStyle = a ? lpDeadlineStyle(a.days_to_lp!) : null;
 
   return (
     <DashboardShell title="Home">
@@ -26,12 +28,9 @@ export default function HomePage() {
                   {formatDelta(a.score!, a.prior_score)} from prior
                 </p>
               )}
-              <div className="mt-2 rounded-md bg-surfaceDim px-2 py-1">
-                <p className="text-xs text-textSecondary">
-                  LP Review in{" "}
-                  <span className={a.days_to_lp! <= 14 ? "font-semibold text-warning" : "font-semibold"}>
-                    {a.days_to_lp} days
-                  </span>
+              <div className={`mt-2 rounded-md px-2 py-1 ${lpStyle?.className.includes("bg-") ? lpStyle.className : "bg-surfaceDim"}`}>
+                <p className={`text-xs ${lpStyle?.className.includes("bg-") ? "text-white" : lpStyle?.className ?? "text-textSecondary"}`}>
+                  {lpStyle?.label}
                 </p>
                 <p className="text-xs text-textTertiary">
                   {formatDate(a.next_lp_review!)}

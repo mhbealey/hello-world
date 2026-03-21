@@ -302,6 +302,7 @@ export interface HomeData {
 export interface RiskWithActions extends Risk {
   linked_action_ids: string[];
   addressed: boolean;
+  days_since_update?: number;
 }
 
 export interface ActionWithDetails extends Action {
