@@ -2,6 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { DashboardShell } from "@/components/layouts";
+import { ErrorBanner } from "@/components/shared";
+import { content } from "@/lib/utils/content";
 
 interface Message {
   role: "user" | "assistant";
@@ -12,6 +14,7 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -32,6 +35,7 @@ export default function ChatPage() {
     setMessages(updatedMessages);
     setInput("");
     setLoading(true);
+    setError(null);
 
     try {
       const res = await fetch("/api/chat", {
@@ -50,14 +54,7 @@ export default function ChatPage() {
         { role: "assistant", content: data.message },
       ]);
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content:
-            "Unable to reach the AI assistant. Try again in a few seconds.",
-        },
-      ]);
+      setError(content.errors.chatError);
     } finally {
       setLoading(false);
       inputRef.current?.focus();
@@ -101,6 +98,21 @@ export default function ChatPage() {
               </div>
             </div>
           ))}
+
+          {error && (
+            <div className="px-1">
+              <ErrorBanner
+                message={error}
+                onRetry={() => {
+                  setError(null);
+                  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user");
+                  if (lastUserMsg) {
+                    setInput(lastUserMsg.content);
+                  }
+                }}
+              />
+            </div>
+          )}
 
           {loading && (
             <div className="flex justify-start">
