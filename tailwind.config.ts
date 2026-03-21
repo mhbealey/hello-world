@@ -70,9 +70,14 @@ const config: Config = {
           "0%": { backgroundPosition: "-200% 0" },
           "100%": { backgroundPosition: "200% 0" },
         },
+        "stagger-in": {
+          from: { opacity: "0", transform: "translateY(8px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "fade-in": "fade-in 300ms ease forwards",
+        "stagger-in": "stagger-in 300ms ease forwards",
         "slide-up": "slide-up 300ms cubic-bezier(.16,1,.3,1)",
         "slide-down": "slide-down 300ms ease",
         shimmer: "shimmer 1.5s ease-in-out infinite",
