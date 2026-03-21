@@ -26,3 +26,13 @@
 - feat(3a-3b): Supabase client/server/middleware helpers with auth guard
 - feat(3c-3e): login, signup pages and auth layout
 - feat(3f-3h): dashboard auth guard, callback route, useUser hook
+
+## Prompt 4 — UI Components & Screens
+- feat(4a-4b): shared UI components and format utilities
+- feat(4c): dashboard shell with TopBar, BottomNav, safe-area support
+- feat(4d): Home screen with KPI tiles, score ring, frameworks
+- feat(4e): Risk Scenarios screen with expandable cards
+- feat(4f): Recommended Actions with step tracking and resolve
+- feat(4g): AI Posture screen with frameworks, tools, use cases
+- feat(4h): Funds screen with milestones and lifecycle
+- fix(4i): auth pages use correct Tailwind design tokens
