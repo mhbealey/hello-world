@@ -1,0 +1,161 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model UserProfile {
+  id                        Int      @id @default(autoincrement())
+  investing_style           String   // enum: growth, value, momentum, income
+  risk_tolerance            Int      // 1-4
+  instruments               String   // JSON array: stocks, etfs, options, crypto
+  portfolio_size_range      String   // enum: 10k-25k, 25k-100k, 100k-500k, 500k+
+  portfolio_balance         Float
+  portfolio_balance_updated_at DateTime
+  archetype                 String
+  risk_score                Float
+  asset_classes             String   @default("[\"stocks\"]") // JSON: stocks, debt, real_estate, physical, businesses
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+}
+
+model Recommendation {
+  id                   Int      @id @default(autoincrement())
+  ticker               String
+  company_name         String
+  asset_class          String   @default("stock") // stock, etf, bond, reit, commodity, business, real_estate, crypto
+  ai_score             Float    // legacy 1-10
+  benchmark_score      Int      @default(50) // 1-99 unified score
+  previous_ai_score    Float?
+  score_change_reason  String?
+  rating               String   // enum: strong_buy, buy, hold, sell, strong_sell
+  confidence           Float
+  thesis               String
+  bull_case            String   // JSON
+  bear_case            String   // JSON
+  key_metrics          String   // JSON
+  factor_scores        String   // JSON — technical, fundamental, sentiment, momentum, earnings
+  factor_details       String   // JSON
+  governance_score     Float?   // board + CEO + M&A factor (1-10)
+  governance_details   String?  // JSON: board_changes, ceo_changes, ma_activity
+  position_size_pct    Float
+  order_type           String
+  entry_price          Float
+  stop_loss            Float
+  take_profit          Float
+  time_sensitivity     String   // enum: act_today, this_week, monitor
+  full_analysis        String
+  catalysts            String   // JSON
+  comparable_companies String   // JSON
+  status               String   @default("active") // enum: active, executed, skipped, expired
+  skipped_outcome_pct  Float?
+  version              Int      @default(1)
+  generated_at         DateTime @default(now())
+  expires_at           DateTime
+  bundle_id            Int?     // links to a BundlePortfolio
+
+  trades       Trade[]
+  wizardStates WizardState[]
+
+  @@index([ticker, status])
+  @@index([generated_at])
+  @@index([asset_class, status])
+  @@index([benchmark_score])
+  @@index([bundle_id])
+}
+
+model Trade {
+  id                Int       @id @default(autoincrement())
+  recommendation_id Int?
+  recommendation    Recommendation? @relation(fields: [recommendation_id], references: [id])
+  parent_trade_id   Int?
+  parent_trade      Trade?    @relation("PartialCloses", fields: [parent_trade_id], references: [id])
+  child_trades      Trade[]   @relation("PartialCloses")
+  ticker            String
+  action            String    // enum: buy, sell
+  shares            Float
+  entry_price       Float
+  stop_loss         Float?
+  take_profit       Float?
+  order_type        String
+  status            String    @default("open") // enum: open, closed, cancelled
+  exit_price        Float?
+  exit_date         DateTime?
+  return_pct        Float?
+  return_dollars    Float?
+  planned_rr_ratio  Float?
+  actual_rr_ratio   Float?
+  notes             String?
+  source            String    // enum: ai_recommendation, manual
+  created_at        DateTime  @default(now())
+
+  @@index([ticker, status])
+  @@index([created_at])
+}
+
+model WatchlistItem {
+  id           Int      @id @default(autoincrement())
+  ticker       String   @unique
+  company_name String
+  asset_class  String   @default("stock")
+  added_at     DateTime @default(now())
+  notes        String?
+
+  @@index([ticker])
+}
+
+model PortfolioSnapshot {
+  id               Int      @id @default(autoincrement())
+  date             DateTime @unique
+  total_value      Float
+  daily_pnl        Float
+  daily_pnl_pct    Float
+  holdings_summary String   // JSON
+  sp500_value      Float
+  created_at       DateTime @default(now())
+
+  @@index([date])
+}
+
+model WizardState {
+  id                Int           @id @default(autoincrement())
+  recommendation_id Int
+  recommendation    Recommendation @relation(fields: [recommendation_id], references: [id])
+  current_step      Int
+  step_data         String        // JSON
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
+}
+
+model AppSettings {
+  key   String @id
+  value String // JSON-encoded
+}
+
+model ApiUsage {
+  id             Int      @id @default(autoincrement())
+  date           DateTime
+  call_count     Int
+  estimated_cost Float
+  created_at     DateTime @default(now())
+
+  @@index([date])
+}
+
+model BundlePortfolio {
+  id              Int      @id @default(autoincrement())
+  name            String
+  size            Int      // 1, 3, 5, 10, 20
+  strategy        String   // growth, value, balanced, income, aggressive
+  asset_filters   String   // JSON: { asset_classes, min_score, max_risk, sectors }
+  total_score     Float    // weighted avg benchmark_score
+  allocation      String   // JSON: [{ ticker, weight_pct, benchmark_score, asset_class }]
+  rationale       String   // AI explanation
+  status          String   @default("active") // active, archived
+  generated_at    DateTime @default(now())
+
+  @@index([status, size])
+}
