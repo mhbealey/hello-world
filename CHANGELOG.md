@@ -21,3 +21,8 @@
 - feat(2h): complete seed data matching prototype
 - feat(2i): TypeScript types and Zod validation schemas
 - feat(2j): optimized database query functions
+
+## Prompt 3 — Authentication
+- feat(3a-3b): Supabase client/server/middleware helpers with auth guard
+- feat(3c-3e): login, signup pages and auth layout
+- feat(3f-3h): dashboard auth guard, callback route, useUser hook
