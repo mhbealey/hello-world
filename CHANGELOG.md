@@ -50,3 +50,10 @@
 - feat(6e): Playwright E2E smoke tests
 - feat(6f): unit tests for score and content utilities
 - feat(6g): wire advisor button and sheet into Home screen
+
+## Prompt 7 — Integration, Polish & Gaps
+- feat(7a): integrate FreshnessDot into Risk screen, lpDeadlineStyle into Home
+- feat(7b): add TalkToAdvisor and AdvisorSheet to Actions screen
+- feat(7c): integrate ErrorBanner in chat screen with retry
+- feat(7d): add EmptyState to Funds and AI screens
+- feat(7e-7f): pull-to-refresh hook, haptics util, staggered fade animation
