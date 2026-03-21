@@ -36,3 +36,10 @@
 - feat(4g): AI Posture screen with frameworks, tools, use cases
 - feat(4h): Funds screen with milestones and lifecycle
 - fix(4i): auth pages use correct Tailwind design tokens
+
+## Prompt 5 — API Routes, Chat & Hooks
+- feat(5a): Anthropic client and chat API with Zod validation
+- feat(5b-5d): advisor, export, and webhook API routes
+- feat(5e): chat screen with streaming UI and thinking indicator
+- feat(5f): useResolution, useAdvisor, useNavSource hooks
+- feat(5g): score, color, content utilities with unit tests
