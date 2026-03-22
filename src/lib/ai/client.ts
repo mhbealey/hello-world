@@ -12,7 +12,10 @@ function getApiKey(): string {
 
 function getClient(): Anthropic {
   if (!client) {
-    client = new Anthropic({ apiKey: getApiKey() });
+    client = new Anthropic({
+      apiKey: getApiKey(),
+      timeout: 45_000, // 45s timeout per request
+    });
   }
   return client;
 }
@@ -21,7 +24,7 @@ export async function callClaude(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
-  const maxRetries = 3;
+  const maxRetries = 2;
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
@@ -39,8 +42,7 @@ export async function callClaude(
       lastError = e as Error;
       console.error(`Claude API attempt ${attempt + 1} failed:`, e);
       if (attempt < maxRetries - 1) {
-        const delay = Math.pow(2, attempt + 1) * 1000;
-        await new Promise((r) => setTimeout(r, delay));
+        await new Promise((r) => setTimeout(r, 2000));
       }
     }
   }

@@ -58,7 +58,13 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
   const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
-      const res = await fetch("/api/recommendations/refresh", { method: "POST" });
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 90_000); // 90s client timeout
+      const res = await fetch("/api/recommendations/refresh", {
+        method: "POST",
+        signal: controller.signal,
+      });
+      clearTimeout(timeout);
       const data = await res.json();
       if (!res.ok) {
         showToast(data.error ?? "Failed to refresh", "error");
@@ -66,8 +72,11 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
         showToast(`Refreshed ${data.count} recommendations`, "success");
         await fetchData();
       }
-    } catch {
-      showToast("Failed to refresh recommendations", "error");
+    } catch (e) {
+      const msg = e instanceof DOMException && e.name === "AbortError"
+        ? "Refresh timed out — try again or check your API keys"
+        : "Failed to refresh recommendations";
+      showToast(msg, "error");
     } finally {
       setRefreshing(false);
     }

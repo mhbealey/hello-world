@@ -91,7 +91,10 @@ export async function fetchFredSeries(
 
   try {
     const url = `${FRED_BASE}/series/observations?series_id=${seriesId}&api_key=${apiKey}&file_type=json&sort_order=desc&limit=${limit}`;
-    const res = await fetch(url, { next: { revalidate: 14400 } }); // 4hr cache
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8_000); // 8s timeout
+    const res = await fetch(url, { signal: controller.signal, next: { revalidate: 14400 } }); // 4hr cache
+    clearTimeout(timeout);
     if (!res.ok) {
       console.error(`FRED API error for ${seriesId}: ${res.status}`);
       return [];

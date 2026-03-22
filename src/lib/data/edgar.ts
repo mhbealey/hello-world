@@ -22,13 +22,20 @@ async function edgarFetch(url: string): Promise<Response> {
   }
   lastRequestTime = Date.now();
 
-  return fetch(url, {
-    headers: {
-      "User-Agent": USER_AGENT,
-      Accept: "application/json",
-    },
-    next: { revalidate: 86400 }, // Cache filings for 24h
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000); // 10s timeout
+  try {
+    return await fetch(url, {
+      headers: {
+        "User-Agent": USER_AGENT,
+        Accept: "application/json",
+      },
+      signal: controller.signal,
+      next: { revalidate: 86400 }, // Cache filings for 24h
+    });
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 // In-memory cache for CIK lookups

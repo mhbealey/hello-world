@@ -7,13 +7,13 @@
   "regions": ["iad1"],
   "functions": {
     "src/app/api/recommendations/refresh/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 120
     },
     "src/app/api/recommendations/analyze/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 120
     },
     "src/app/api/bundles/route.ts": {
-      "maxDuration": 60
+      "maxDuration": 120
     }
   },
   "headers": [
