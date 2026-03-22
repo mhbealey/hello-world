@@ -14,9 +14,17 @@ const FINNHUB_BASE = "https://finnhub.io/api/v1";
 async function finnhubFetch(path: string) {
   const key = process.env.FINNHUB_API_KEY;
   if (!key) throw new Error("FINNHUB_API_KEY not set");
-  const res = await fetch(`${FINNHUB_BASE}${path}&token=${key}`);
-  if (!res.ok) throw new Error(`Finnhub ${res.status}: ${res.statusText}`);
-  return res.json();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8_000);
+  try {
+    const res = await fetch(`${FINNHUB_BASE}${path}&token=${key}`, {
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`Finnhub ${res.status}: ${res.statusText}`);
+    return res.json();
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export class FinnhubProvider implements DataProvider {

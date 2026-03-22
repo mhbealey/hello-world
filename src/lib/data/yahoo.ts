@@ -31,7 +31,7 @@ function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise
   ]);
 }
 
-const CALL_TIMEOUT = 8_000; // 8 seconds per Yahoo call
+const CALL_TIMEOUT = 12_000; // 12 seconds per Yahoo call (cold start can be slow)
 
 // Cache quoteSummary results to avoid redundant calls for the same ticker
 const summaryCache = new Map<string, { data: Record<string, unknown>; ts: number }>();

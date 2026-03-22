@@ -54,34 +54,64 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 }
 
 async function fetchMarketData(tickers: string[]) {
-  // Use bulk Yahoo fetch: 1 API call per ticker instead of 4
-  const bulkData = await fetchBulkYahooData(tickers);
+  // Try bulk Yahoo fetch first (1 API call per ticker)
+  let bulkData: Map<string, import("@/lib/data/yahoo").BulkTickerData>;
+  try {
+    bulkData = await fetchBulkYahooData(tickers);
+  } catch (e) {
+    console.warn("[MARKET DATA] Bulk Yahoo fetch failed:", e);
+    bulkData = new Map();
+  }
 
   const results = [];
-  const skipped: string[] = [];
+  const failedTickers: string[] = [];
 
   for (const ticker of tickers) {
     const data = bulkData.get(ticker);
-    if (!data || !data.quote || data.quote.price === 0) {
-      skipped.push(ticker);
-      continue;
+    if (data?.quote && data.quote.price > 0) {
+      const assetClass = inferAssetClass(ticker, data.fundamentals);
+      results.push({
+        ticker,
+        price: data.quote.price,
+        fundamentals: JSON.stringify(data.fundamentals || {}),
+        analystRatings: JSON.stringify(data.analysts || {}),
+        historicalPrices: "See price data",
+        earnings: JSON.stringify(data.earnings || []),
+        assetClass,
+      });
+    } else {
+      failedTickers.push(ticker);
     }
-
-    const assetClass = inferAssetClass(ticker, data.fundamentals);
-
-    results.push({
-      ticker,
-      price: data.quote.price,
-      fundamentals: JSON.stringify(data.fundamentals || {}),
-      analystRatings: JSON.stringify(data.analysts || {}),
-      historicalPrices: "See price data",
-      earnings: JSON.stringify(data.earnings || []),
-      assetClass,
-    });
   }
 
-  if (skipped.length > 0) {
-    console.warn(`[MARKET DATA] Skipped: ${skipped.join(", ")}`);
+  // Fallback: use Finnhub for tickers that Yahoo missed
+  if (failedTickers.length > 0) {
+    console.log(`[MARKET DATA] Yahoo missed ${failedTickers.length} tickers, trying Finnhub: ${failedTickers.join(", ")}`);
+    const provider = getDataProvider();
+    const fallbackSettled = await Promise.allSettled(
+      failedTickers.map(async (ticker) => {
+        const quote = await provider.getQuote(ticker);
+        if (!quote || quote.price === 0) throw new Error(`No price for ${ticker}`);
+        const fundamentals = await provider.getFundamentals(ticker).catch(() => null);
+        const analysts = await provider.getAnalystRatings(ticker).catch(() => null);
+        const assetClass = inferAssetClass(ticker, fundamentals);
+        return {
+          ticker,
+          price: quote.price,
+          fundamentals: JSON.stringify(fundamentals || {}),
+          analystRatings: JSON.stringify(analysts || {}),
+          historicalPrices: "See price data",
+          earnings: "[]",
+          assetClass,
+        };
+      })
+    );
+
+    for (const result of fallbackSettled) {
+      if (result.status === "fulfilled") {
+        results.push(result.value);
+      }
+    }
   }
 
   console.log(`[MARKET DATA] Fetched ${results.length}/${tickers.length} tickers`);
