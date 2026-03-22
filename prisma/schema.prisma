@@ -37,7 +37,7 @@ model Recommendation {
   bull_case            String   // JSON
   bear_case            String   // JSON
   key_metrics          String   // JSON
-  factor_scores        String   // JSON — technical, fundamental, sentiment, momentum, earnings
+  factor_scores        String   // JSON — technical, fundamental, sentiment, momentum, earnings, governance, macro
   factor_details       String   // JSON
   governance_score     Float?   // board + CEO + M&A factor (1-10)
   governance_details   String?  // JSON: board_changes, ceo_changes, ma_activity

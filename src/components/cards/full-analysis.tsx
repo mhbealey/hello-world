@@ -22,6 +22,8 @@ export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps)
     { key: "sentiment", label: "Sentiment", color: "bg-warning-amber" },
     { key: "momentum", label: "Momentum", color: "bg-accent-blue" },
     { key: "earnings", label: "Earnings", color: "bg-score-high" },
+    { key: "governance", label: "Governance", color: "bg-text-secondary" },
+    { key: "macro", label: "Macro", color: "bg-accent-blue" },
   ];
 
   return (

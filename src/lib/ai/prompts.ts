@@ -212,7 +212,7 @@ ${filterDesc || "No specific filters"}
 
 ## Instructions
 Select exactly ${bundleSize} assets for a diversified portfolio bundle. For each:
-1. Score each asset using the 6-factor model (technical, fundamental, sentiment, momentum, earnings, governance)
+1. Score each asset using the 7-factor model (technical, fundamental, sentiment, momentum, earnings, governance, macro)
 2. Assign a weight_pct (0.0-1.0) that sums to 1.0 across all selections
 3. Optimize for:
    - Diversification across sectors and asset classes
@@ -240,7 +240,8 @@ Return ONLY valid JSON:
         "sentiment": 7.0,
         "momentum": 8.5,
         "earnings": 7.0,
-        "governance": 7.5
+        "governance": 7.5,
+        "macro": 7.0
       },
       "thesis": "Brief thesis",
       "entry_price": 185.50,

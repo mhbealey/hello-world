@@ -24,9 +24,16 @@ export async function GET(request: Request) {
       Promise.resolve(getAvailableSeries()),
     ]);
 
+    // Check if all snapshot values are null (likely missing FRED_API_KEY)
+    const hasData = Object.entries(snapshot)
+      .filter(([k]) => k !== "fetchedAt")
+      .some(([, v]) => v !== null);
+
     return NextResponse.json({
       snapshot,
       availableSeries: series,
+      configured: hasData,
+      ...(!hasData && { warning: "FRED_API_KEY not configured — macro data unavailable" }),
     });
   } catch (e) {
     console.error("Macro API error:", e);

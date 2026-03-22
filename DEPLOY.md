@@ -55,6 +55,7 @@ npm run db:push
 | `TURSO_DATABASE_URL` | `libsql://alphaedge-<username>.turso.io` |
 | `TURSO_AUTH_TOKEN` | Token from Step 1 |
 | `FINNHUB_API_KEY` | Your Finnhub API key |
+| `FRED_API_KEY` | Your FRED API key (from https://fred.stlouisfed.org/docs/api/api_key.html) |
 
 6. Click **Deploy**
 
@@ -82,6 +83,7 @@ vercel --prod
 | `TURSO_DATABASE_URL` | Yes | Turso database connection URL |
 | `TURSO_AUTH_TOKEN` | Yes | Turso authentication token |
 | `FINNHUB_API_KEY` | No | Finnhub API for real-time quotes (falls back to Yahoo Finance) |
+| `FRED_API_KEY` | No | FRED API for macro economic data (recommendations work without it, macro dashboard requires it) |
 
 ## Build Command
 
@@ -115,6 +117,7 @@ This is already configured in `package.json` — no custom build command needed.
 - **Turso**: Free tier (500 databases, 9GB storage)
 - **Anthropic**: ~$0.02/recommendation refresh. Default cap: 20 calls/day (~$0.40/day max)
 - **Finnhub**: Free tier (60 API calls/minute)
+- **FRED**: Free tier (unlimited, requires registration)
 
 ## PWA Installation
 
