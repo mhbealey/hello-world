@@ -53,10 +53,15 @@ export default function HomePage() {
         fetch("/api/alerts"),
       ]);
 
-      if (recsRes.ok) setRecs(await recsRes.json());
+      if (recsRes.ok) {
+        setRecs(await recsRes.json());
+      } else {
+        const errData = await recsRes.json().catch(() => ({}));
+        showToast(errData.error || "Failed to load recommendations", "error");
+      }
       if (alertsRes.ok) setAlerts(await alertsRes.json());
     } catch {
-      showToast("Failed to load data", "error");
+      showToast("Failed to load data — check your connection", "error");
     } finally {
       setLoading(false);
     }

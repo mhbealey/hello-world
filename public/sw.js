@@ -1,4 +1,4 @@
-const CACHE_NAME = "alphaedge-v1";
+const CACHE_NAME = "alphaedge-v2";
 const STATIC_ASSETS = ["/home", "/trade", "/portfolio", "/settings", "/onboarding"];
 
 self.addEventListener("install", (event) => {
@@ -21,22 +21,26 @@ self.addEventListener("fetch", (event) => {
   const { request } = event;
   const url = new URL(request.url);
 
-  // API calls: network-first with stale cache fallback
+  // API calls: network-first with stale cache fallback (GET only)
   if (url.pathname.startsWith("/api/")) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok && request.method === "GET") {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
-        .catch(() => caches.match(request).then((cached) => cached || new Response(JSON.stringify({ error: "offline" }), {
-          headers: { "Content-Type": "application/json" },
-          status: 503,
-        })))
-    );
+    // Only cache and provide offline fallback for GET requests
+    if (request.method === "GET") {
+      event.respondWith(
+        fetch(request)
+          .then((response) => {
+            if (response.ok) {
+              const clone = response.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
+            }
+            return response;
+          })
+          .catch(() => caches.match(request).then((cached) => cached || new Response(JSON.stringify({ error: "offline" }), {
+            headers: { "Content-Type": "application/json" },
+            status: 503,
+          })))
+      );
+    }
+    // Let POST/PUT/DELETE pass through to the network without interception
     return;
   }
 
