@@ -57,7 +57,26 @@ export async function GET() {
     };
   }
 
-  // 3. Data source reachability (quick checks)
+  // 3. Claude API test (quick, minimal call)
+  try {
+    const { callClaude } = await import("@/lib/ai/client");
+    const testResult = await callClaude(
+      "Return ONLY: {\"ok\":true}",
+      "Test",
+      { maxTokens: 32 }
+    );
+    checks.claude = {
+      reachable: true,
+      response_preview: testResult.slice(0, 50),
+    };
+  } catch (e) {
+    checks.claude = {
+      reachable: false,
+      error: e instanceof Error ? e.message.slice(0, 200) : String(e),
+    };
+  }
+
+  // 5. Data source reachability (quick checks)
   const sourceChecks = await Promise.allSettled([
     fetch("https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=1d&interval=1d", {
       signal: AbortSignal.timeout(5000),
@@ -82,7 +101,7 @@ export async function GET() {
     }
   }
 
-  // 4. Pipeline readiness
+  // 6. Pipeline readiness
   const db = checks.db as Record<string, unknown>;
   const env = checks.env as Record<string, boolean | string>;
   const ready =

@@ -150,10 +150,17 @@ function logParseError(label: string, e: unknown, text: string) {
   console.error(`[${label}] First 500 chars:`, text.slice(0, 500));
 }
 
+// Store the last parse error for debugging
+let lastParseError: string | null = null;
+export function getLastParseError(): string | null { return lastParseError; }
+
 function parseClaudeResponse(text: string): RecommendationItem[] | null {
+  lastParseError = null;
+
   const json = extractJson(text);
   if (json === null) {
-    console.error("[PARSE] Could not extract JSON from response. First 500 chars:", text.slice(0, 500));
+    lastParseError = `Could not extract JSON. Response starts with: ${text.slice(0, 100)}`;
+    console.error("[PARSE]", lastParseError);
     return null;
   }
 
@@ -163,7 +170,13 @@ function parseClaudeResponse(text: string): RecommendationItem[] | null {
     console.log(`[PARSE] Parsed ${validated.recommendations.length} recommendations`);
     return validated.recommendations;
   } catch (e) {
-    logParseError("PARSE", e, text);
+    if (e && typeof e === "object" && "issues" in e) {
+      const issues = (e as { issues: Array<{ path: (string | number)[]; message: string }> }).issues;
+      lastParseError = issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+    } else {
+      lastParseError = e instanceof Error ? e.message : String(e);
+    }
+    console.error("[PARSE] Strategy 1 failed:", lastParseError);
   }
 
   // Strategy 2: If the response has a recommendations array, try parsing each item individually
@@ -176,11 +189,15 @@ function parseClaudeResponse(text: string): RecommendationItem[] | null {
         salvaged.push(recommendationItemSchema.parse(item));
       } catch (e) {
         const ticker = (item as Record<string, unknown>)?.ticker ?? "unknown";
-        console.warn(`[PARSE] Skipping recommendation for ${ticker}:`, e instanceof Error ? e.message : e);
+        const msg = e && typeof e === "object" && "issues" in e
+          ? (e as { issues: Array<{ path: (string | number)[]; message: string }> }).issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ")
+          : String(e);
+        console.warn(`[PARSE] Skipping ${ticker}: ${msg}`);
       }
     }
     if (salvaged.length > 0) {
       console.log(`[PARSE] Salvaged ${salvaged.length}/${recsArray.length} recommendations`);
+      lastParseError = null;
       return salvaged;
     }
   }

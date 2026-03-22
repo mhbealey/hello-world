@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/client";
 import { ensureProfile } from "@/lib/db/ensure-profile";
-import { generateRecommendations } from "@/lib/ai/generate";
+import { generateRecommendations, getLastParseError } from "@/lib/ai/generate";
 
 const DEFAULT_TICKERS = ["AAPL", "NVDA", "MSFT", "GOOGL", "AMZN"];
 
@@ -26,11 +26,17 @@ export async function POST() {
 
     if (result.error) {
       console.warn(`[REFRESH] Error after ${elapsed}s: ${result.error}`);
+      const parseError = getLastParseError();
+      if (result.error === "validation_failed" && parseError) {
+        console.error(`[REFRESH] Parse error details: ${parseError}`);
+      }
       const errorMessages: Record<string, string> = {
         daily_cap: "Daily analysis limit reached. Recommendations refresh tomorrow.",
         no_profile: "Complete onboarding first.",
         no_market_data: "Couldn't fetch market data. Try again later.",
-        validation_failed: "AI response was invalid. Showing cached recommendations.",
+        validation_failed: parseError
+          ? `AI parse error: ${parseError.slice(0, 150)}`
+          : "AI response was invalid. Showing cached recommendations.",
       };
       const msg = result.error.startsWith("cooldown_")
         ? `Recommendations were just refreshed. Try again in ${result.error.split("_")[1]} minutes.`
