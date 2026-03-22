@@ -21,6 +21,7 @@ export interface FactorScores {
   momentum: number;    // 1-10
   earnings: number;    // 1-10
   governance: number;  // 1-10
+  macro: number;       // 1-10
 }
 
 interface StyleWeights {
@@ -30,22 +31,24 @@ interface StyleWeights {
   momentum: number;
   earnings: number;
   governance: number;
+  macro: number;
 }
 
 const DEFAULT_WEIGHTS: StyleWeights = {
-  technical: 0.15,
-  fundamental: 0.25,
-  sentiment: 0.10,
-  momentum: 0.15,
-  earnings: 0.15,
-  governance: 0.20,
+  technical: 0.12,
+  fundamental: 0.22,
+  sentiment: 0.08,
+  momentum: 0.13,
+  earnings: 0.13,
+  governance: 0.17,
+  macro: 0.15,
 };
 
 const STYLE_OVERRIDES: Record<string, Partial<StyleWeights>> = {
-  growth: { momentum: 0.20, earnings: 0.20, fundamental: 0.20, governance: 0.15 },
-  value: { fundamental: 0.35, governance: 0.20, technical: 0.10, sentiment: 0.10 },
-  momentum: { technical: 0.25, momentum: 0.25, fundamental: 0.15, governance: 0.10 },
-  income: { fundamental: 0.30, sentiment: 0.15, governance: 0.25, momentum: 0.10 },
+  growth: { momentum: 0.18, earnings: 0.18, fundamental: 0.18, governance: 0.12, macro: 0.17 },
+  value: { fundamental: 0.30, governance: 0.17, technical: 0.08, sentiment: 0.08, macro: 0.17 },
+  momentum: { technical: 0.22, momentum: 0.22, fundamental: 0.13, governance: 0.10, macro: 0.12 },
+  income: { fundamental: 0.25, sentiment: 0.12, governance: 0.20, momentum: 0.08, macro: 0.18 },
 };
 
 function getWeights(investingStyle: string): StyleWeights {
@@ -69,7 +72,8 @@ export function computeBenchmarkScore(
     factors.sentiment * weights.sentiment +
     factors.momentum * weights.momentum +
     factors.earnings * weights.earnings +
-    factors.governance * weights.governance;
+    factors.governance * weights.governance +
+    factors.macro * weights.macro;
 
   // Map 1-10 weighted score to 1-99
   // weighted is in range [1, 10], map to [1, 99]

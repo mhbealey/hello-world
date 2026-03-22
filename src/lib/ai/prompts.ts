@@ -22,6 +22,11 @@ interface MarketDataContext {
   historicalPrices: string;
   earnings: string;
   assetClass?: string;
+  edgarFinancials?: string;
+}
+
+interface MacroContext {
+  summary: string;
 }
 
 const OUTPUT_SCHEMA = `{
@@ -43,7 +48,8 @@ const OUTPUT_SCHEMA = `{
         "sentiment": { "score": 7.0, "inputs": ["input1"], "reasoning": "explanation" },
         "momentum": { "score": 8.5, "inputs": ["input1"], "reasoning": "explanation" },
         "earnings": { "score": 7.0, "inputs": ["input1"], "reasoning": "explanation" },
-        "governance": { "score": 7.5, "inputs": ["board_stability", "ceo_tenure"], "reasoning": "explanation" }
+        "governance": { "score": 7.5, "inputs": ["board_stability", "ceo_tenure"], "reasoning": "explanation" },
+        "macro": { "score": 7.0, "inputs": ["rate_sensitivity", "cycle_positioning"], "reasoning": "explanation" }
       },
       "governance_details": {
         "board_changes": "Summary of recent board changes and impact",
@@ -68,11 +74,16 @@ export function buildRecommendationPrompt(
   profile: ProfileContext,
   holdings: HoldingContext[],
   tickers: string[],
-  marketData: MarketDataContext[]
+  marketData: MarketDataContext[],
+  macro?: MacroContext
 ): { system: string; user: string } {
   const holdingsSummary = holdings.length > 0
     ? holdings.map((h) => `${h.ticker}: ${h.shares} shares @ $${h.avg_cost}, sector: ${h.sector || "Unknown"}, P&L: ${h.current_pnl_pct?.toFixed(1) || "N/A"}%`).join("\n")
     : "No current holdings";
+
+  const macroSection = macro?.summary
+    ? `\n${macro.summary}\n`
+    : "";
 
   const system = `You are AlphaEdge, a senior equity research analyst AI. Your job is to analyze assets and produce structured, scored investment recommendations for a self-directed retail investor.
 
@@ -85,25 +96,26 @@ export function buildRecommendationPrompt(
 
 ## Current Holdings
 ${holdingsSummary}
-
+${macroSection}
 ## Instructions
 Analyze the following assets and return a JSON array of recommendations. For each asset:
 
-1. Compute an AI Score (1.0-10.0) based on SIX weighted factors:
-   - Technical (15%): Moving averages, RSI, MACD, volume trends, support/resistance levels
-   - Fundamental (25%): P/E vs sector, revenue growth, margins, debt ratios, FCF yield, book value
-   - Sentiment (10%): Analyst consensus, price target distance, recent rating changes, short interest
-   - Momentum (15%): Price performance vs benchmark over 1W/1M/3M, relative strength
-   - Earnings (15%): EPS beat history, upcoming earnings proximity, guidance quality, revision trends
-   - Governance (20%): Board composition & recent changes, CEO tenure & transitions, M&A activity & integration risk
+1. Compute an AI Score (1.0-10.0) based on SEVEN weighted factors:
+   - Technical (12%): Moving averages, RSI, MACD, volume trends, support/resistance levels
+   - Fundamental (22%): P/E vs sector, revenue growth, margins, debt ratios, FCF yield, book value. USE THE SEC FILING DATA PROVIDED — it contains real audited financials.
+   - Sentiment (8%): Analyst consensus, price target distance, recent rating changes, short interest
+   - Momentum (13%): Price performance vs benchmark over 1W/1M/3M, relative strength
+   - Earnings (13%): EPS beat history, upcoming earnings proximity, guidance quality, revision trends
+   - Governance (17%): Board composition & recent changes, CEO tenure & transitions, M&A activity & integration risk
+   - Macro Alignment (15%): How well the asset is positioned given the CURRENT MACRO ENVIRONMENT above. Consider: rate sensitivity, sector cyclicality, inflation exposure, credit conditions, and economic cycle positioning.
 
 2. Each factor score must be 1.0-10.0 with explicit reasoning and data inputs.
 
 3. The overall AI Score is the weighted average, adjusted for the user's style:
-   - Growth: weight Momentum and Earnings higher
-   - Value: weight Fundamental higher
+   - Growth: weight Momentum, Earnings, and Macro higher
+   - Value: weight Fundamental and Macro higher
    - Momentum: weight Technical and Momentum higher
-   - Income: weight Fundamental and Sentiment higher
+   - Income: weight Fundamental, Sentiment, and Macro higher
 
 4. For the Governance factor, specifically evaluate:
    - **Board Changes**: New directors, departures, activist involvement, committee restructuring
@@ -112,26 +124,40 @@ Analyze the following assets and return a JSON array of recommendations. For eac
    - Score governance higher (7-10) for: stable experienced board, long-tenured successful CEO, strategic accretive M&A
    - Score governance lower (1-4) for: frequent turnover, activist battles, overpaid acquisitions, CEO departure without succession
 
-5. Flag if the user already holds this stock. Avoid recommending stocks creating >25% single-sector concentration.
+5. For the Macro Alignment factor, evaluate:
+   - How the current interest rate environment affects the company (rate-sensitive sectors, floating vs fixed debt)
+   - Whether the company benefits or suffers in the current inflation/growth regime
+   - Credit spread impact on the company's borrowing costs and sector
+   - VIX/volatility regime implications for entry timing
+   - Score macro higher (7-10) for: well-positioned for current cycle, low rate sensitivity when rates are high, strong pricing power in inflation
+   - Score macro lower (1-4) for: wrong side of the cycle, high rate sensitivity in tight monetary policy, commodity cost pressure
 
-6. Express confidence as probability (0.0-1.0) the asset outperforms over the holding period.
+6. Flag if the user already holds this stock. Avoid recommending stocks creating >25% single-sector concentration.
 
-7. All price targets, stop-losses, and position sizing must be specific numbers.
+7. Express confidence as probability (0.0-1.0) the asset outperforms over the holding period.
 
-8. For non-stock assets (ETFs, bonds, REITs, commodities), adjust factor weights appropriately:
-   - Bonds/debt: emphasize credit quality, yield, duration risk over technical/momentum
-   - REITs/real estate: emphasize FFO, occupancy, cap rates, location quality
-   - Commodities: emphasize supply/demand, inventory levels, seasonal patterns
+8. All price targets, stop-losses, and position sizing must be specific numbers.
+
+9. For non-stock assets (ETFs, bonds, REITs, commodities), adjust factor weights appropriately:
+   - Bonds/debt: emphasize credit quality, yield, duration risk, and macro alignment over technical/momentum
+   - REITs/real estate: emphasize FFO, occupancy, cap rates, location quality, and rate sensitivity
+   - Commodities: emphasize supply/demand, inventory levels, seasonal patterns, and macro cycle
    - Set the "asset_class" field to the correct type
+
+10. When SEC filing data is provided, cross-reference it against market-reported fundamentals. Flag any significant discrepancies.
 
 ## Output Format
 Return ONLY valid JSON matching this exact schema. No markdown, no preamble, no explanation outside the JSON:
 
 ${OUTPUT_SCHEMA}`;
 
-  const marketDataStr = marketData.map((d) => (
-    `--- ${d.ticker} (Current: $${d.price}) [${d.assetClass || "stock"}] ---\nFundamentals: ${d.fundamentals}\nAnalyst Ratings: ${d.analystRatings}\nPrice History: ${d.historicalPrices}\nEarnings: ${d.earnings}`
-  )).join("\n\n");
+  const marketDataStr = marketData.map((d) => {
+    let entry = `--- ${d.ticker} (Current: $${d.price}) [${d.assetClass || "stock"}] ---\nFundamentals: ${d.fundamentals}\nAnalyst Ratings: ${d.analystRatings}\nPrice History: ${d.historicalPrices}\nEarnings: ${d.earnings}`;
+    if (d.edgarFinancials) {
+      entry += `\n\nSEC Filing Data:\n${d.edgarFinancials}`;
+    }
+    return entry;
+  }).join("\n\n");
 
   const user = `Analyze these ${tickers.length} assets and provide scored recommendations:\n\nTickers: ${tickers.join(", ")}\n\n${marketDataStr}`;
 
@@ -142,9 +168,10 @@ export function buildSingleStockPrompt(
   profile: ProfileContext,
   holdings: HoldingContext[],
   ticker: string,
-  marketData: MarketDataContext
+  marketData: MarketDataContext,
+  macro?: MacroContext
 ): { system: string; user: string } {
-  return buildRecommendationPrompt(profile, holdings, [ticker], [marketData]);
+  return buildRecommendationPrompt(profile, holdings, [ticker], [marketData], macro);
 }
 
 export function buildBundlePrompt(

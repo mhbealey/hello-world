@@ -2,6 +2,11 @@ import type { DataProvider } from "./provider";
 import { YahooFinanceProvider } from "./yahoo";
 import { FinnhubProvider } from "./finnhub";
 
+export { buildMacroContext, getMacroSnapshot, getMacroTrend, fetchFredSeries, getAvailableSeries } from "./fred";
+export type { MacroSnapshot, MacroTrend, FredObservation } from "./fred";
+export { buildEdgarContext, getEdgarFinancials, getRecentFilings } from "./edgar";
+export type { EdgarFinancials, EdgarFiling, FinancialSeries } from "./edgar";
+
 let provider: DataProvider | null = null;
 
 export function getDataProvider(): DataProvider {

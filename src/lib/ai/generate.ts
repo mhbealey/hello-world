@@ -4,7 +4,7 @@ import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas"
 import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
 import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
-import { getDataProvider } from "@/lib/data";
+import { getDataProvider, buildMacroContext, buildEdgarContext } from "@/lib/data";
 
 const COST_PER_CALL = 0.02;
 const MIN_REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
@@ -59,11 +59,12 @@ async function fetchMarketData(tickers: string[]) {
 
   for (const ticker of tickers) {
     try {
-      const [quote, fundamentals, analysts, earnings] = await Promise.all([
+      const [quote, fundamentals, analysts, earnings, edgarData] = await Promise.all([
         provider.getQuote(ticker),
         provider.getFundamentals(ticker),
         provider.getAnalystRatings(ticker),
         provider.getEarningsCalendar(ticker),
+        buildEdgarContext(ticker).catch(() => null),
       ]);
 
       const assetClass = inferAssetClass(ticker, fundamentals);
@@ -76,6 +77,7 @@ async function fetchMarketData(tickers: string[]) {
         historicalPrices: "See price data",
         earnings: JSON.stringify(earnings || []),
         assetClass,
+        edgarFinancials: edgarData ?? undefined,
       });
     } catch (e) {
       console.error(`Failed to fetch market data for ${ticker}:`, e);
@@ -127,6 +129,7 @@ function extractFactorScores(rec: RecommendationItem): FactorScores {
     momentum: rec.factor_scores.momentum.score,
     earnings: rec.factor_scores.earnings.score,
     governance: rec.factor_scores.governance?.score ?? 5,
+    macro: rec.factor_scores.macro?.score ?? 5,
   };
 }
 
@@ -164,7 +167,12 @@ export async function generateRecommendations(
 
   const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
 
-  const marketData = await fetchMarketData(tickers);
+  // Fetch market data and macro context in parallel
+  const [marketData, macroContext] = await Promise.all([
+    fetchMarketData(tickers),
+    buildMacroContext().catch(() => ""),
+  ]);
+
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
   }
@@ -186,6 +194,8 @@ export async function generateRecommendations(
   try { instruments = JSON.parse(profile.instruments); }
   catch { instruments = []; }
 
+  const macro = macroContext ? { summary: macroContext } : undefined;
+
   const { system, user } = buildRecommendationPrompt(
     {
       archetype: profile.archetype,
@@ -196,7 +206,8 @@ export async function generateRecommendations(
     },
     holdings,
     tickers,
-    marketData
+    marketData,
+    macro
   );
 
   let rawResponse = await callClaude(system, user);
@@ -311,11 +322,13 @@ export async function generateSingleAnalysis(
   }));
 
   const provider = getDataProvider();
-  const [quote, fundamentals, analysts, earnings] = await Promise.all([
+  const [quote, fundamentals, analysts, earnings, edgarData, macroContext] = await Promise.all([
     provider.getQuote(ticker),
     provider.getFundamentals(ticker),
     provider.getAnalystRatings(ticker),
     provider.getEarningsCalendar(ticker),
+    buildEdgarContext(ticker).catch(() => null),
+    buildMacroContext().catch(() => ""),
   ]);
 
   if (!quote) return { recommendation: null, error: "no_market_data" };
@@ -331,7 +344,10 @@ export async function generateSingleAnalysis(
     analystRatings: JSON.stringify(analysts || {}),
     historicalPrices: "See price data",
     earnings: JSON.stringify(earnings || []),
+    edgarFinancials: edgarData ?? undefined,
   };
+
+  const macro = macroContext ? { summary: macroContext } : undefined;
 
   const { system, user } = buildSingleStockPrompt(
     {
@@ -343,7 +359,8 @@ export async function generateSingleAnalysis(
     },
     holdings,
     ticker,
-    marketData
+    marketData,
+    macro
   );
 
   const rawResponse = await callClaude(system, user);
