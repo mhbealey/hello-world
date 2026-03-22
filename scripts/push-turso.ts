@@ -1,4 +1,10 @@
 import { createClient } from "@libsql/client";
+import { config } from "dotenv";
+import { resolve } from "path";
+
+// Load .env.production since this script runs outside Next.js
+config({ path: resolve(process.cwd(), ".env.production") });
+config({ path: resolve(process.cwd(), ".env") });
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
