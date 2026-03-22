@@ -13,6 +13,7 @@ import { RECOMMENDATIONS } from "@/constants/content";
 import { getGreeting } from "@/lib/utils/format";
 import { isMarketOpen } from "@/lib/utils/market-hours";
 import type { AlertItem } from "@/lib/types";
+import { RefreshCw } from "lucide-react";
 
 const ratingFilters = [
   { label: "All", value: "all" },
@@ -72,7 +73,7 @@ export default function HomePage() {
       if (!res.ok) {
         showToast(data.error || "Failed to refresh", "error");
       } else {
-        showToast(`Refreshed ${data.count} recommendations`, "success");
+        showToast(`${data.count} recommendations updated`, "success");
         await fetchData();
       }
     } catch {
@@ -99,10 +100,10 @@ export default function HomePage() {
   }
 
   return (
-    <div className="p-[16px]">
+    <div className="px-4 pt-2 pb-4">
       {/* Alerts */}
       {visibleAlerts.length > 0 && (
-        <div className="flex flex-col gap-2 mb-4">
+        <div className="flex flex-col gap-2 mb-5">
           {visibleAlerts.map((alert) => (
             <AlertCard
               key={alert.id}
@@ -114,11 +115,11 @@ export default function HomePage() {
       )}
 
       {/* Greeting + Market Status */}
-      <div className="mb-4">
-        <h1 className="text-[22px] font-semibold text-text-primary">{getGreeting()}</h1>
+      <div className="mb-5">
+        <h1 className="text-2xl font-semibold text-text-primary tracking-tight">{getGreeting()}</h1>
         <div className="flex items-center gap-2 mt-1">
-          <span className={`inline-block w-2 h-2 rounded-full ${market.open ? "bg-gain-green" : "bg-text-tertiary"}`} />
-          <span className="text-[14px] text-text-secondary">
+          <span className={`inline-block w-1.5 h-1.5 rounded-full ${market.open ? "bg-gain-green animate-[pulse-glow_2s_ease-in-out_infinite]" : "bg-text-tertiary"}`} />
+          <span className="text-sm text-text-secondary">
             {market.status === "market_open" ? "Market Open" :
              market.status === "pre_market" ? "Pre-Market" :
              market.status === "after_hours" ? "After Hours" : "Market Closed"}
@@ -149,41 +150,51 @@ export default function HomePage() {
         />
       </div>
 
-      {/* Pull to refresh button */}
+      {/* Refresh */}
       <button
         onClick={handleRefresh}
         disabled={refreshing}
-        className="w-full text-center text-[14px] text-accent-blue mb-4 min-h-[44px] disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 text-sm text-accent-blue mb-5 min-h-[44px] disabled:opacity-40 transition-opacity active:opacity-70"
       >
-        {refreshing ? "Refreshing..." : "↻ Refresh Recommendations"}
+        <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
+        {refreshing ? "Refreshing…" : "Refresh Recommendations"}
       </button>
 
       {/* Recommendation Feed */}
       {loading ? (
         <SkeletonCardList count={3} />
       ) : recs.length === 0 ? (
-        <div className="text-center py-12">
-          <p className="text-[16px] text-text-secondary">{RECOMMENDATIONS.emptyFirst}</p>
+        <div className="text-center py-16 px-4">
+          <div className="w-12 h-12 rounded-2xl bg-accent-blue/10 flex items-center justify-center mx-auto mb-4">
+            <RefreshCw className="h-6 w-6 text-accent-blue" />
+          </div>
+          <p className="text-base text-text-secondary mb-1">No recommendations yet</p>
+          <p className="text-sm text-text-tertiary">{RECOMMENDATIONS.emptyFirst}</p>
         </div>
       ) : (
-        <div className="flex flex-col gap-[12px]">
-          {recs.map((rec) => (
-            <RecommendationCard
+        <div className="flex flex-col gap-3">
+          {recs.map((rec, i) => (
+            <div
               key={rec.id}
-              recommendation={rec}
-              isExpanded={expandedId === rec.id}
-              onToggleExpand={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
-              onStartTrade={() => router.push(`/trade?rec=${rec.id}`)}
-              onWatch={async () => {
-                await fetch("/api/watchlist", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({ ticker: rec.ticker, company_name: rec.company_name }),
-                });
-                showToast(`Added ${rec.ticker} to watchlist`, "success");
-              }}
-              onViewAnalysis={() => setFullAnalysis(rec)}
-            />
+              style={{ animationDelay: `${i * 60}ms` }}
+              className="animate-[fadeIn_400ms_cubic-bezier(0.16,1,0.3,1)_backwards]"
+            >
+              <RecommendationCard
+                recommendation={rec}
+                isExpanded={expandedId === rec.id}
+                onToggleExpand={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
+                onStartTrade={() => router.push(`/trade?rec=${rec.id}`)}
+                onWatch={async () => {
+                  await fetch("/api/watchlist", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ ticker: rec.ticker, company_name: rec.company_name }),
+                  });
+                  showToast(`${rec.ticker} added to watchlist`, "success");
+                }}
+                onViewAnalysis={() => setFullAnalysis(rec)}
+              />
+            </div>
           ))}
         </div>
       )}

@@ -17,10 +17,10 @@ export function BottomTabBar() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 right-0 z-40 bg-bg-base border-t border-border-default"
+      className="fixed bottom-0 left-0 right-0 z-40 bg-bg-base/80 backdrop-blur-xl border-t border-border-subtle"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
     >
-      <div className="flex items-center justify-around h-[64px] max-w-[390px] mx-auto">
+      <div className="flex items-center justify-around h-[60px] max-w-[390px] mx-auto">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href || pathname?.startsWith(tab.href + "/");
           const Icon = tab.icon;
@@ -29,15 +29,15 @@ export function BottomTabBar() {
               key={tab.href}
               href={tab.href}
               className={`
-                flex flex-col items-center justify-center gap-1
-                min-w-[48px] min-h-[48px] px-3
-                transition-colors duration-200
-                ${isActive ? "text-accent-blue" : "text-text-secondary"}
+                relative flex flex-col items-center justify-center gap-0.5
+                min-w-[48px] min-h-[48px] px-4
+                transition-colors duration-150
+                ${isActive ? "text-accent-blue" : "text-text-tertiary"}
               `}
               aria-current={isActive ? "page" : undefined}
             >
-              <Icon className="h-5 w-5" />
-              <span className="text-[12px] font-medium">{tab.label}</span>
+              <Icon className={`h-5 w-5 transition-transform duration-150 ${isActive ? "scale-105" : ""}`} strokeWidth={isActive ? 2.5 : 2} />
+              <span className={`text-[11px] ${isActive ? "font-semibold" : "font-medium"}`}>{tab.label}</span>
             </Link>
           );
         })}
