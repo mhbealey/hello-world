@@ -54,21 +54,21 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 
 async function fetchMarketData(tickers: string[]) {
   const provider = getDataProvider();
-  const results = [];
   const skipped: string[] = [];
 
-  for (const ticker of tickers) {
-    try {
+  // Fetch all tickers in parallel to avoid sequential timeout
+  const settled = await Promise.allSettled(
+    tickers.map(async (ticker) => {
       const [quote, fundamentals, analysts, earnings] = await Promise.all([
-        provider.getQuote(ticker),
-        provider.getFundamentals(ticker),
-        provider.getAnalystRatings(ticker),
-        provider.getEarningsCalendar(ticker),
+        provider.getQuote(ticker).catch(() => null),
+        provider.getFundamentals(ticker).catch(() => null),
+        provider.getAnalystRatings(ticker).catch(() => null),
+        provider.getEarningsCalendar(ticker).catch(() => null),
       ]);
 
       const assetClass = inferAssetClass(ticker, fundamentals);
 
-      results.push({
+      return {
         ticker,
         price: quote?.price || 0,
         fundamentals: JSON.stringify(fundamentals || {}),
@@ -76,10 +76,18 @@ async function fetchMarketData(tickers: string[]) {
         historicalPrices: "See price data",
         earnings: JSON.stringify(earnings || []),
         assetClass,
-      });
-    } catch (e) {
-      console.error(`Failed to fetch market data for ${ticker}:`, e);
-      skipped.push(ticker);
+      };
+    })
+  );
+
+  const results = [];
+  for (let i = 0; i < settled.length; i++) {
+    const result = settled[i];
+    if (result.status === "fulfilled") {
+      results.push(result.value);
+    } else {
+      console.error(`Failed to fetch market data for ${tickers[i]}:`, result.reason);
+      skipped.push(tickers[i]);
     }
   }
 

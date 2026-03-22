@@ -69,6 +69,14 @@ export default function HomePage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
+  // Auto-trigger first recommendation generation after onboarding
+  useEffect(() => {
+    if (!loading && recs.length === 0 && !refreshing) {
+      handleRefresh();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
+
   async function handleRefresh() {
     setRefreshing(true);
     try {

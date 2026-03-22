@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db/client";
 import { generateRecommendations } from "@/lib/ai/generate";
 
-const DEFAULT_TICKERS = ["AAPL", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "TSLA"];
+const DEFAULT_TICKERS = ["AAPL", "NVDA", "MSFT", "GOOGL", "AMZN"];
 
 export async function POST() {
   try {
@@ -11,7 +11,7 @@ export async function POST() {
     const watchlistTickers = watchlist.map((w) => w.ticker).filter((t) => !t.includes("SPY") && !t.includes("QQQ"));
 
     // Combine with defaults, deduplicate, limit to 10
-    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 10);
+    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 7);
 
     const result = await generateRecommendations(tickers);
 
