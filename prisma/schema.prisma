@@ -18,8 +18,107 @@ model UserProfile {
   archetype                 String
   risk_score                Float
   asset_classes             String   @default("[\"stocks\"]") // JSON: stocks, debt, real_estate, physical, businesses
+
+  // DDQ-derived fields — populated by the derivation engine after DDQ completion
+  ddq_completed             Boolean  @default(false)
+  ddq_completed_at          DateTime?
+  ddq_version               Int      @default(0)           // tracks which DDQ version was completed
+
+  // Investment objectives
+  time_horizon              String?  // short_term, medium_term, long_term, multi_generational
+  primary_goal              String?  // capital_appreciation, income_generation, capital_preservation, speculation, tax_optimization
+  secondary_goals           String?  // JSON array of goals
+  target_annual_return      Float?   // percentage
+  liquidity_needs           String?  // none, low, moderate, high, critical
+  withdrawal_timeline       String?  // none, 1_year, 3_years, 5_years, 10_plus
+
+  // Risk profile (expanded)
+  risk_capacity             Int?     // 1-10: financial ability to absorb losses
+  risk_willingness          Int?     // 1-10: psychological comfort with volatility
+  max_drawdown_tolerance    Float?   // percentage: max portfolio decline before panic
+  loss_recovery_time        String?  // immediate_buy, wait_weeks, wait_months, exit_fully
+  volatility_comfort        Int?     // 1-10: comfort with daily swings
+
+  // Financial situation
+  annual_income             String?  // bracket: under_50k, 50k_100k, 100k_250k, 250k_500k, 500k_plus
+  net_worth_range           String?  // bracket: under_100k, 100k_500k, 500k_1m, 1m_5m, 5m_plus
+  income_stability          String?  // stable_salary, variable_income, self_employed, retired, student
+  debt_level                String?  // none, low, moderate, high
+  emergency_fund_months     Int?     // 0-24+
+  dependents                Int?     // number of financial dependents
+  insurance_coverage        String?  // none, basic, comprehensive
+
+  // Experience & knowledge
+  years_investing           Int?     // 0-40+
+  experience_level          String?  // beginner, intermediate, advanced, expert
+  asset_classes_traded      String?  // JSON array: what they've actually traded
+  derivatives_experience    String?  // none, basic_options, advanced_options, futures, swaps
+  international_experience  Boolean? // traded non-US markets
+  crypto_experience         String?  // none, holder, active_trader, defi_user
+
+  // Allocation preferences
+  equity_allocation         Float?   // target % in equities
+  fixed_income_allocation   Float?   // target % in bonds/fixed income
+  alternatives_allocation   Float?   // target % in alternatives (real estate, commodities, etc.)
+  cash_allocation           Float?   // target % in cash
+  crypto_allocation         Float?   // target % in crypto
+  max_single_position       Float?   // max % in any single holding
+  sector_concentration_limit Float?  // max % in any single sector
+
+  // Sector & geographic preferences
+  sector_preferences        String?  // JSON array of preferred sectors
+  sector_exclusions         String?  // JSON array of excluded sectors
+  geographic_preference     String?  // domestic_only, developed_markets, global, emerging_focus
+  country_exclusions        String?  // JSON array of excluded countries/regions
+
+  // ESG & values
+  esg_importance            String?  // none, nice_to_have, important, mandatory
+  esg_focus_areas           String?  // JSON array: environmental, social, governance, faith_based
+  excluded_industries       String?  // JSON array: tobacco, weapons, gambling, fossil_fuels, alcohol, etc.
+  impact_investing          Boolean? // interested in impact/social investing
+
+  // Tax & legal
+  tax_bracket               String?  // low, medium, high, highest
+  account_types             String?  // JSON array: taxable, ira, roth_ira, 401k, hsa, trust
+  tax_loss_harvesting       Boolean? // interested in TLH
+  qualified_purchaser       Boolean? // accredited investor status
+  restricted_securities     String?  // JSON array of tickers they can't trade (compliance)
+
+  // Behavioral profile
+  loss_aversion_score       Float?   // 1-10: how much losses hurt vs gains feel good
+  overconfidence_score      Float?   // 1-10: tendency to overestimate own ability
+  recency_bias_score        Float?   // 1-10: tendency to weight recent events too heavily
+  herding_tendency          Float?   // 1-10: tendency to follow crowd
+  anchoring_score           Float?   // 1-10: tendency to anchor to purchase price
+  decision_speed            String?  // impulsive, quick, deliberate, slow, paralyzed
+  information_preference    String?  // headlines, summaries, detailed_analysis, raw_data
+
+  // Trading style
+  holding_period            String?  // day_trade, swing, weeks, months, years, decades
+  trading_frequency         String?  // daily, weekly, monthly, quarterly, rarely
+  order_type_preference     String?  // market, limit, stop_limit, trailing_stop
+  position_sizing_method    String?  // fixed_dollar, fixed_percent, kelly_criterion, equal_weight
+  rebalancing_frequency     String?  // never, quarterly, semi_annual, annual, threshold_based
+  stop_loss_discipline      String?  // never_use, sometimes, always, trailing
+
+  // Income & yield
+  dividend_preference       String?  // no_preference, dividend_growth, high_yield, reinvest_all
+  income_target_pct         Float?   // target annual yield %
+  preferred_payout          String?  // quarterly, monthly, no_preference
+
   created_at                DateTime @default(now())
   updated_at                DateTime @updatedAt
+}
+
+model DdqResponse {
+  id          Int      @id @default(autoincrement())
+  section     String   // e.g., "investment_objectives"
+  question_id String   @unique // e.g., "io_01"
+  answer      String   // JSON-encoded answer
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([section])
 }
 
 model Recommendation {
