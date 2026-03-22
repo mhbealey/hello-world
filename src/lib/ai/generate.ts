@@ -100,15 +100,21 @@ async function fetchMarketData(tickers: string[]) {
  * Tries multiple strategies: direct parse, fence stripping, brace extraction.
  */
 function extractJson(text: string): unknown | null {
-  const cleaned = text.trim();
+  let cleaned = text.trim();
 
   // Strategy 1: Direct parse
   try { return JSON.parse(cleaned); } catch { /* continue */ }
 
-  // Strategy 2: Strip markdown fences (handles ```json ... ``` and nested variants)
+  // Strategy 2: Strip markdown fences (handles ```json ... ```)
   const fenceMatch = cleaned.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
   if (fenceMatch) {
     try { return JSON.parse(fenceMatch[1].trim()); } catch { /* continue */ }
+  }
+
+  // Strategy 2b: Strip opening fence even if closing fence is missing (truncated response)
+  if (cleaned.startsWith("```")) {
+    cleaned = cleaned.replace(/^```(?:json)?\s*\n?/, "").replace(/\n?\s*```\s*$/, "");
+    try { return JSON.parse(cleaned.trim()); } catch { /* continue */ }
   }
 
   // Strategy 3: Find the outermost { ... } or [ ... ] in the text
