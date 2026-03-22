@@ -69,9 +69,9 @@ export function RecommendationCard({
   colorblindMode = false,
   portfolioBalance = 50000,
 }: RecommendationCardProps) {
-  const bull = JSON.parse(rec.bull_case);
-  const bear = JSON.parse(rec.bear_case);
-  const metrics = JSON.parse(rec.key_metrics);
+  const bull = (() => { try { const p = JSON.parse(rec.bull_case); return p.headline ? p : null; } catch { return null; } })();
+  const bear = (() => { try { const p = JSON.parse(rec.bear_case); return p.headline ? p : null; } catch { return null; } })();
+  const metrics = (() => { try { const p = JSON.parse(rec.key_metrics); return Object.keys(p).length > 0 ? p : null; } catch { return null; } })();
   const timeBadge = timeBadges[rec.time_sensitivity] || timeBadges.monitor;
   const suggestedDollars = portfolioBalance * rec.position_size_pct;
   const rr = rec.stop_loss && rec.take_profit
@@ -143,31 +143,39 @@ export function RecommendationCard({
       <div className={`overflow-hidden transition-all duration-250 ease-out ${isExpanded ? "max-h-[2000px] opacity-100" : "max-h-0 opacity-0"}`}>
         <div className="px-[16px] pb-[16px] border-t border-border-default pt-4">
           {/* Bull/Bear Cases */}
-          <div className="grid grid-cols-2 gap-3 mb-4">
-            <div>
-              <h4 className="text-[14px] font-medium text-gain-green mb-1">{bull.headline}</h4>
-              <ul className="space-y-1">
-                {bull.points?.map((p: string, i: number) => (
-                  <li key={i} className="text-[12px] text-text-secondary">• {p}</li>
-                ))}
-              </ul>
+          {(bull || bear) && (
+            <div className="grid grid-cols-2 gap-3 mb-4">
+              {bull && (
+                <div>
+                  <h4 className="text-[14px] font-medium text-gain-green mb-1">{bull.headline}</h4>
+                  <ul className="space-y-1">
+                    {bull.points?.map((p: string, i: number) => (
+                      <li key={i} className="text-[12px] text-text-secondary">• {p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bear && (
+                <div>
+                  <h4 className="text-[14px] font-medium text-loss-red mb-1">{bear.headline}</h4>
+                  <ul className="space-y-1">
+                    {bear.points?.map((p: string, i: number) => (
+                      <li key={i} className="text-[12px] text-text-secondary">• {p}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            <div>
-              <h4 className="text-[14px] font-medium text-loss-red mb-1">{bear.headline}</h4>
-              <ul className="space-y-1">
-                {bear.points?.map((p: string, i: number) => (
-                  <li key={i} className="text-[12px] text-text-secondary">• {p}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          )}
 
           {/* Key Metrics */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {metrics.pe != null && <MetricPill label="P/E" value={metrics.pe.toFixed(1)} context={metrics.pe_sector_avg ? `Sector: ${metrics.pe_sector_avg.toFixed(1)}` : undefined} />}
-            {metrics.ps != null && <MetricPill label="P/S" value={metrics.ps.toFixed(1)} />}
-            {metrics.ev_ebitda != null && <MetricPill label="EV/EBITDA" value={metrics.ev_ebitda.toFixed(1)} />}
-          </div>
+          {metrics && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {metrics.pe != null && <MetricPill label="P/E" value={metrics.pe.toFixed(1)} context={metrics.pe_sector_avg ? `Sector: ${metrics.pe_sector_avg.toFixed(1)}` : undefined} />}
+              {metrics.ps != null && <MetricPill label="P/S" value={metrics.ps.toFixed(1)} />}
+              {metrics.ev_ebitda != null && <MetricPill label="EV/EBITDA" value={metrics.ev_ebitda.toFixed(1)} />}
+            </div>
+          )}
 
           {/* Position Sizing */}
           <div className="bg-bg-input rounded-[8px] p-3 mb-4">

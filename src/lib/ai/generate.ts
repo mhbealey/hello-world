@@ -1,8 +1,8 @@
 import { callClaude } from "./client";
 import { buildRecommendationPrompt, buildSingleStockPrompt, buildBundlePrompt } from "./prompts";
+import type { MarketDataItem } from "./prompts";
 import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas";
 import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
-import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
 import { getDataProvider } from "@/lib/data";
 
@@ -10,9 +10,12 @@ const COST_PER_CALL = 0.02;
 const MIN_REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
 
 async function checkRateLimits(): Promise<{ allowed: boolean; reason?: string }> {
-  const capSetting = await prisma.appSettings.findUnique({ where: { key: "daily_api_cap" } });
-  const dailyCap = parseInt(capSetting?.value || "20");
+  const [capSetting, lastRefresh] = await Promise.all([
+    prisma.appSettings.findUnique({ where: { key: "daily_api_cap" } }),
+    prisma.appSettings.findUnique({ where: { key: "last_refresh" } }),
+  ]);
 
+  const dailyCap = parseInt(capSetting?.value || "20");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const usage = await prisma.apiUsage.findFirst({ where: { date: today } });
@@ -20,7 +23,6 @@ async function checkRateLimits(): Promise<{ allowed: boolean; reason?: string }>
     return { allowed: false, reason: "daily_cap" };
   }
 
-  const lastRefresh = await prisma.appSettings.findUnique({ where: { key: "last_refresh" } });
   if (lastRefresh?.value && lastRefresh.value !== "null") {
     const parsed = new Date(lastRefresh.value);
     if (!isNaN(parsed.getTime())) {
@@ -35,63 +37,35 @@ async function checkRateLimits(): Promise<{ allowed: boolean; reason?: string }>
   return { allowed: true };
 }
 
-function inferAssetClass(ticker: string, fundamentals: { sector?: string | null } | null): string {
-  const upper = ticker.toUpperCase();
-  // Common ETFs
-  if (["SPY", "QQQ", "IWM", "DIA", "VTI", "VOO", "VEA", "VWO", "BND", "AGG", "TLT", "GLD", "SLV", "XLF", "XLK", "XLE", "XLV", "ARKK"].includes(upper)) return "etf";
-  // Bond ETFs
-  if (["BND", "AGG", "TLT", "IEF", "SHY", "LQD", "HYG", "TIP", "VCIT", "VCSH"].includes(upper)) return "bond";
-  // REIT tickers
-  if (["O", "VNQ", "AMT", "PLD", "CCI", "SPG", "EQIX", "PSA", "DLR", "WELL"].includes(upper)) return "reit";
-  // Commodity ETFs
-  if (["GLD", "SLV", "USO", "UNG", "DBA", "DBC", "PDBC", "CORN", "WEAT"].includes(upper)) return "commodity";
-  // Crypto
-  if (["BTC", "ETH", "MSTR", "COIN", "GBTC", "ETHE", "BITO", "MARA", "RIOT", "HUT"].includes(upper)) return "crypto";
-  // Check sector for REITs
-  if (fundamentals?.sector === "Real Estate") return "reit";
-  return "stock";
-}
-
-async function fetchMarketData(tickers: string[]) {
+async function fetchMarketData(tickers: string[]): Promise<MarketDataItem[]> {
   const provider = getDataProvider();
 
   const settled = await Promise.allSettled(
     tickers.map(async (ticker) => {
-      const [quote, fundamentals, analysts, earnings] = await Promise.all([
+      const [quote, fundamentals] = await Promise.all([
         provider.getQuote(ticker),
         provider.getFundamentals(ticker),
-        provider.getAnalystRatings(ticker),
-        provider.getEarningsCalendar(ticker),
       ]);
 
       return {
         ticker,
         price: quote?.price || 0,
-        fundamentals: JSON.stringify(fundamentals || {}),
-        analystRatings: JSON.stringify(analysts || {}),
-        historicalPrices: "See price data",
-        earnings: JSON.stringify(earnings || []),
-        assetClass: inferAssetClass(ticker, fundamentals),
-      };
+        change_pct: quote?.changePercent || 0,
+        fundamentals,
+        assetClass: "stock",
+      } satisfies MarketDataItem;
     })
   );
 
-  const results = [];
-  const skipped: string[] = [];
+  const results: MarketDataItem[] = [];
   for (let i = 0; i < settled.length; i++) {
     const s = settled[i];
     if (s.status === "fulfilled") {
       results.push(s.value);
     } else {
-      console.error(`Failed to fetch market data for ${tickers[i]}:`, s.reason);
-      skipped.push(tickers[i]);
+      console.error(`Failed to fetch ${tickers[i]}:`, s.reason);
     }
   }
-
-  if (skipped.length > 0) {
-    console.warn(`Skipped tickers due to data fetch failures: ${skipped.join(", ")}`);
-  }
-
   return results;
 }
 
@@ -122,17 +96,6 @@ function parseBundleResponse(text: string): BundleResponse | null {
     console.error("Failed to parse bundle response:", e);
     return null;
   }
-}
-
-function extractFactorScores(rec: RecommendationItem): FactorScores {
-  return {
-    technical: rec.factor_scores.technical.score,
-    fundamental: rec.factor_scores.fundamental.score,
-    sentiment: rec.factor_scores.sentiment.score,
-    momentum: rec.factor_scores.momentum.score,
-    earnings: rec.factor_scores.earnings.score,
-    governance: rec.factor_scores.governance?.score ?? 5,
-  };
 }
 
 async function trackUsage(cost: number) {
@@ -167,25 +130,18 @@ export async function generateRecommendations(
     return { recommendations: [], error: "no_profile" };
   }
 
-  const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
+  const [openTrades, marketData] = await Promise.all([
+    prisma.trade.findMany({ where: { status: "open" } }),
+    fetchMarketData(tickers),
+  ]);
 
-  const marketData = await fetchMarketData(tickers);
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
   }
 
-  // Build holdings with sector data from market data when available
-  const holdings = openTrades.map((t) => {
-    const md = marketData.find((m) => m.ticker === t.ticker);
-    let sector: string | undefined;
-    if (md) {
-      try {
-        const f = JSON.parse(md.fundamentals);
-        sector = f.sector || undefined;
-      } catch { /* ignore */ }
-    }
-    return { ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price, sector };
-  });
+  const holdings = openTrades.map((t) => ({
+    ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
+  }));
 
   let instruments: string[];
   try { instruments = JSON.parse(profile.instruments); }
@@ -211,10 +167,9 @@ export async function generateRecommendations(
     return { recommendations: [], error: "validation_failed" };
   }
 
-  // Save recommendations to DB with benchmark scores — all in parallel
+  // Save to DB — all in parallel
   const now = new Date();
 
-  // Fetch all existing active recs in one query
   const existingRecs = await prisma.recommendation.findMany({
     where: { ticker: { in: recs.map((r) => r.ticker) }, status: "active" },
     orderBy: { generated_at: "desc" },
@@ -243,15 +198,14 @@ export async function generateRecommendations(
         });
       }
 
-      const factors = extractFactorScores(rec);
-      const benchmarkScore = computeBenchmarkScore(factors, profile.investing_style);
-      const governanceScore = factors.governance;
+      // Map ai_score (1-10) to benchmark_score (1-99)
+      const benchmarkScore = Math.round(((rec.ai_score - 1) / 9) * 98 + 1);
 
       await prisma.recommendation.create({
         data: {
           ticker: rec.ticker,
           company_name: rec.company_name,
-          asset_class: rec.asset_class || "stock",
+          asset_class: "stock",
           ai_score: rec.ai_score,
           benchmark_score: benchmarkScore,
           previous_ai_score: existing?.ai_score ?? null,
@@ -261,22 +215,20 @@ export async function generateRecommendations(
           rating: rec.rating,
           confidence: rec.confidence,
           thesis: rec.thesis,
-          bull_case: JSON.stringify(rec.bull_case),
-          bear_case: JSON.stringify(rec.bear_case),
-          key_metrics: JSON.stringify(rec.key_metrics),
-          factor_scores: JSON.stringify(rec.factor_scores),
-          factor_details: JSON.stringify({}),
-          governance_score: governanceScore,
-          governance_details: JSON.stringify(rec.governance_details || {}),
+          bull_case: "{}",
+          bear_case: "{}",
+          key_metrics: "{}",
+          factor_scores: "{}",
+          factor_details: "{}",
           position_size_pct: rec.position_size_pct,
-          order_type: rec.order_type,
+          order_type: "limit",
           entry_price: rec.entry_price,
           stop_loss: rec.stop_loss,
           take_profit: rec.take_profit,
           time_sensitivity: rec.time_sensitivity,
-          full_analysis: rec.full_analysis,
-          catalysts: JSON.stringify(rec.catalysts),
-          comparable_companies: JSON.stringify(rec.comparable_companies),
+          full_analysis: rec.thesis,
+          catalysts: "[]",
+          comparable_companies: "[]",
           status: "active",
           version: existing ? existing.version + 1 : 1,
           generated_at: now,
@@ -315,11 +267,9 @@ export async function generateSingleAnalysis(
   }));
 
   const provider = getDataProvider();
-  const [quote, fundamentals, analysts, earnings] = await Promise.all([
+  const [quote, fundamentals] = await Promise.all([
     provider.getQuote(ticker),
     provider.getFundamentals(ticker),
-    provider.getAnalystRatings(ticker),
-    provider.getEarningsCalendar(ticker),
   ]);
 
   if (!quote) return { recommendation: null, error: "no_market_data" };
@@ -328,13 +278,12 @@ export async function generateSingleAnalysis(
   try { instruments = JSON.parse(profile.instruments); }
   catch { instruments = []; }
 
-  const marketData = {
+  const marketData: MarketDataItem = {
     ticker,
     price: quote.price,
-    fundamentals: JSON.stringify(fundamentals || {}),
-    analystRatings: JSON.stringify(analysts || {}),
-    historicalPrices: "See price data",
-    earnings: JSON.stringify(earnings || []),
+    change_pct: quote.changePercent || 0,
+    fundamentals,
+    assetClass: "stock",
   };
 
   const { system, user } = buildSingleStockPrompt(
@@ -380,7 +329,6 @@ export async function generateBundle(
     ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
   }));
 
-  // Build candidate list: watchlist + popular tickers for the strategy
   const watchlist = await prisma.watchlistItem.findMany();
   const watchlistTickers = watchlist.map((w) => w.ticker);
 
@@ -425,7 +373,6 @@ export async function generateBundle(
     return { bundle: null, error: "validation_failed" };
   }
 
-  // Save bundle to DB
   await prisma.bundlePortfolio.create({
     data: {
       name: bundle.bundle_name,
