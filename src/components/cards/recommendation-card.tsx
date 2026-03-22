@@ -4,14 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Sparkline } from "@/components/charts/sparkline";
 import { RECOMMENDATIONS } from "@/constants/content";
-import { formatCurrency, formatPercent, getScoreColor, getScoreBgColor } from "@/lib/utils/format";
+import { formatCurrency, getScoreColor, getScoreBgColor } from "@/lib/utils/format";
 import { ChevronDown, ChevronUp, Eye } from "lucide-react";
-
-interface FactorScore {
-  score: number;
-  inputs: string[];
-  reasoning: string;
-}
 
 interface BullBearCase {
   headline: string;

@@ -18,11 +18,13 @@ export async function GET(request: NextRequest) {
       orderBy: { generated_at: "desc" },
     });
 
-    return NextResponse.json(bundles.map((b) => ({
-      ...b,
-      allocation: JSON.parse(b.allocation),
-      asset_filters: JSON.parse(b.asset_filters),
-    })));
+    return NextResponse.json(bundles.map((b) => {
+      let allocation = [];
+      let asset_filters = {};
+      try { allocation = JSON.parse(b.allocation); } catch { /* use default */ }
+      try { asset_filters = JSON.parse(b.asset_filters); } catch { /* use default */ }
+      return { ...b, allocation, asset_filters };
+    }));
   } catch (e) {
     console.error("GET /api/bundles error:", e);
     return NextResponse.json({ error: "Failed to fetch bundles" }, { status: 500 });

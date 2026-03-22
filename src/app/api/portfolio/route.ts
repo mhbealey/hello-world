@@ -9,7 +9,6 @@ export async function GET() {
     const watchlist = await prisma.watchlistItem.findMany({ orderBy: { added_at: "desc" } });
     const activeRecs = await prisma.recommendation.findMany({ where: { status: "active" }, orderBy: { ai_score: "desc" } });
     const latestSnapshot = await prisma.portfolioSnapshot.findFirst({ orderBy: { date: "desc" } });
-    const prevSnapshot = await prisma.portfolioSnapshot.findFirst({ orderBy: { date: "desc" }, skip: 1 });
 
     const totalValue = latestSnapshot?.total_value ?? profile?.portfolio_balance ?? 0;
     const dailyPnl = latestSnapshot?.daily_pnl ?? 0;
@@ -33,9 +32,9 @@ export async function GET() {
         else break;
       }
 
-      const tradesWithExit = closedTrades.filter((t) => t.exit_date);
+      const tradesWithExit = closedTrades.filter((t): t is typeof t & { exit_date: Date } => t.exit_date != null);
       const avgHold = tradesWithExit.length > 0
-        ? tradesWithExit.reduce((s, t) => s + (t.exit_date!.getTime() - t.created_at.getTime()) / 86400000, 0) / tradesWithExit.length
+        ? tradesWithExit.reduce((s, t) => s + (t.exit_date.getTime() - t.created_at.getTime()) / 86400000, 0) / tradesWithExit.length
         : 0;
 
       analytics = {

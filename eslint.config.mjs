@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Files outside tsconfig — typed lint rules crash on these
+    "*.mjs",
+    "scripts/**",
+    "prisma/**",
   ]),
   {
     rules: {
@@ -23,10 +27,10 @@ const eslintConfig = defineConfig([
           message: "Use `as const` objects instead of enums. See src/lib/types/index.ts for examples.",
         },
       ],
-      // Prefer nullish coalescing over logical or for defaults
-      "@typescript-eslint/prefer-nullish-coalescing": "warn",
     },
   },
+  // Note: @typescript-eslint/prefer-nullish-coalescing removed — requires
+  // parserOptions.project for typed linting, which eslint-config-next doesn't configure.
 ]);
 
 export default eslintConfig;
