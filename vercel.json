@@ -3,7 +3,7 @@
   "framework": "nextjs",
   "outputDirectory": ".next",
   "installCommand": "npm install",
-  "buildCommand": "npx tsx scripts/push-turso.ts && next build",
+  "buildCommand": "npx tsx scripts/check-env.ts && npx tsx scripts/push-turso.ts && npx tsx scripts/seed-turso.ts && next build",
   "regions": ["iad1"],
   "functions": {
     "src/app/api/recommendations/refresh/route.ts": {

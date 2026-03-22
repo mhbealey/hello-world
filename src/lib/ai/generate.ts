@@ -175,10 +175,12 @@ export async function generateRecommendations(
   const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
 
   // Fetch market data and macro context in parallel
+  let t0 = Date.now();
   const [marketData, macroContext] = await Promise.all([
     fetchMarketData(tickers),
     buildMacroContext().catch(() => ""),
   ]);
+  console.log(`[GENERATE] Market data + macro: ${((Date.now() - t0) / 1000).toFixed(1)}s (${marketData.length}/${tickers.length} tickers, macro: ${macroContext ? "yes" : "no"})`);
 
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
@@ -217,15 +219,19 @@ export async function generateRecommendations(
     macro
   );
 
+  t0 = Date.now();
   let rawResponse = await callClaude(system, user);
+  console.log(`[GENERATE] Claude API call 1: ${((Date.now() - t0) / 1000).toFixed(1)}s`);
   let recs = parseClaudeResponse(rawResponse);
 
   if (!recs) {
-    console.warn("First Claude response invalid, retrying...");
+    console.warn("[GENERATE] First Claude response invalid, retrying...");
+    t0 = Date.now();
     rawResponse = await callClaude(
       system,
       user + "\n\nIMPORTANT: Your previous response was not valid JSON. Return ONLY valid JSON matching the exact schema. No markdown."
     );
+    console.log(`[GENERATE] Claude API call 2 (retry): ${((Date.now() - t0) / 1000).toFixed(1)}s`);
     recs = parseClaudeResponse(rawResponse);
   }
 
