@@ -42,10 +42,10 @@ const DEFAULT_WEIGHTS: StyleWeights = {
 };
 
 const STYLE_OVERRIDES: Record<string, Partial<StyleWeights>> = {
-  growth: { momentum: 0.20, earnings: 0.20, fundamental: 0.20, governance: 0.15 },
-  value: { fundamental: 0.35, governance: 0.20, technical: 0.10, sentiment: 0.10 },
-  momentum: { technical: 0.25, momentum: 0.25, fundamental: 0.15, governance: 0.10 },
-  income: { fundamental: 0.30, sentiment: 0.15, governance: 0.25, momentum: 0.10 },
+  growth: { momentum: 0.20, earnings: 0.20, fundamental: 0.20, governance: 0.15 },     // 0.15+0.20+0.10+0.20+0.20+0.15 = 1.0
+  value: { fundamental: 0.35, governance: 0.15, technical: 0.10, sentiment: 0.10 },     // 0.10+0.35+0.10+0.15+0.15+0.15 = 1.0
+  momentum: { technical: 0.25, momentum: 0.25, fundamental: 0.15, governance: 0.10 },   // 0.25+0.15+0.10+0.25+0.15+0.10 = 1.0
+  income: { fundamental: 0.30, technical: 0.10, sentiment: 0.15, governance: 0.20, momentum: 0.10 }, // 0.10+0.30+0.15+0.10+0.15+0.20 = 1.0
 };
 
 function getWeights(investingStyle: string): StyleWeights {

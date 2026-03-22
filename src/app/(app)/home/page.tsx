@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { RecommendationCard } from "@/components/cards/recommendation-card";
 import { AlertCard } from "@/components/cards/alert-card";
@@ -40,6 +40,7 @@ export default function HomePage() {
   const [ratingFilter, setRatingFilter] = useState("all");
   const [sortBy, setSortBy] = useState("score");
   const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
+  const autoRefreshAttempted = useRef(false);
 
   const market = isMarketOpen();
 
@@ -69,9 +70,10 @@ export default function HomePage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  // Auto-trigger first recommendation generation after onboarding
+  // Auto-trigger first recommendation generation after onboarding (once per session)
   useEffect(() => {
-    if (!loading && recs.length === 0 && !refreshing) {
+    if (!loading && recs.length === 0 && !refreshing && !autoRefreshAttempted.current) {
+      autoRefreshAttempted.current = true;
       handleRefresh();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
