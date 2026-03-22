@@ -5,6 +5,7 @@ import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
 import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
 import { getDataProvider, buildMacroContext, buildEdgarContext } from "@/lib/data";
+import { fetchBulkYahooData } from "@/lib/data/yahoo";
 
 const COST_PER_CALL = 0.02;
 const MIN_REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
@@ -53,79 +54,37 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 }
 
 async function fetchMarketData(tickers: string[]) {
-  const provider = getDataProvider();
-
-  // Race all ticker fetches against a 15-second global timeout
-  const globalTimeout = new Promise<never>((_, reject) =>
-    setTimeout(() => reject(new Error("Market data timeout")), 15_000)
-  );
-
-  const fetchAll = Promise.allSettled(
-    tickers.map(async (ticker) => {
-      // Core data only — skip EDGAR (slow, rate-limited) to save time budget
-      const [quote, fundamentals, analysts, earnings] = await Promise.all([
-        provider.getQuote(ticker).catch(() => null),
-        provider.getFundamentals(ticker).catch(() => null),
-        provider.getAnalystRatings(ticker).catch(() => null),
-        provider.getEarningsCalendar(ticker).catch(() => []),
-      ]);
-
-      const assetClass = inferAssetClass(ticker, fundamentals);
-
-      return {
-        ticker,
-        price: quote?.price ?? 0,
-        fundamentals: JSON.stringify(fundamentals || {}),
-        analystRatings: JSON.stringify(analysts || {}),
-        historicalPrices: "See price data",
-        earnings: JSON.stringify(earnings || []),
-        assetClass,
-      };
-    })
-  );
-
-  let settled: PromiseSettledResult<{
-    ticker: string;
-    price: number;
-    fundamentals: string;
-    analystRatings: string;
-    historicalPrices: string;
-    earnings: string;
-    assetClass: string;
-  }>[];
-
-  try {
-    settled = await Promise.race([fetchAll, globalTimeout]) as typeof settled;
-  } catch {
-    console.warn("[MARKET DATA] Global timeout hit — using partial results");
-    // Wait a tiny bit more to collect whatever finished
-    settled = await Promise.allSettled(
-      tickers.map(async (ticker) => ({
-        ticker,
-        price: 0,
-        fundamentals: "{}",
-        analystRatings: "{}",
-        historicalPrices: "See price data",
-        earnings: "[]",
-        assetClass: "stock",
-      }))
-    );
-  }
+  // Use bulk Yahoo fetch: 1 API call per ticker instead of 4
+  const bulkData = await fetchBulkYahooData(tickers);
 
   const results = [];
   const skipped: string[] = [];
-  for (const [i, result] of settled.entries()) {
-    if (result.status === "fulfilled" && result.value.price > 0) {
-      results.push(result.value);
-    } else {
-      skipped.push(tickers[i]);
+
+  for (const ticker of tickers) {
+    const data = bulkData.get(ticker);
+    if (!data || !data.quote || data.quote.price === 0) {
+      skipped.push(ticker);
+      continue;
     }
+
+    const assetClass = inferAssetClass(ticker, data.fundamentals);
+
+    results.push({
+      ticker,
+      price: data.quote.price,
+      fundamentals: JSON.stringify(data.fundamentals || {}),
+      analystRatings: JSON.stringify(data.analysts || {}),
+      historicalPrices: "See price data",
+      earnings: JSON.stringify(data.earnings || []),
+      assetClass,
+    });
   }
 
   if (skipped.length > 0) {
     console.warn(`[MARKET DATA] Skipped: ${skipped.join(", ")}`);
   }
 
+  console.log(`[MARKET DATA] Fetched ${results.length}/${tickers.length} tickers`);
   return results;
 }
 
