@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Check, AlertTriangle, Copy, ExternalLink } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
@@ -54,44 +55,47 @@ function TradePageContent() {
   const [fillPrice, setFillPrice] = useState("");
   const [portfolioBalance, setPortfolioBalance] = useState(50000);
 
-  const fetchRec = useCallback(async () => {
-    if (!recId) {
-      // Check for saved wizard state
-      const res = await fetch("/api/wizard");
-      if (res.ok) {
-        const state = await res.json();
-        if (state?.recommendation) {
-          setRec(state.recommendation);
-          setStep(state.current_step || 1);
-          setStepData(JSON.parse(state.step_data || "{}"));
-          setLoading(false);
-          return;
+  useEffect(() => {
+    let cancelled = false;
+    async function loadTradeData() {
+      if (!recId) {
+        // Check for saved wizard state
+        const res = await fetch("/api/wizard");
+        if (res.ok) {
+          const state = await res.json();
+          if (!cancelled && state?.recommendation) {
+            setRec(state.recommendation);
+            setStep(state.current_step || 1);
+            setStepData(JSON.parse(state.step_data || "{}"));
+            setLoading(false);
+            return;
+          }
         }
+        if (!cancelled) setLoading(false);
+        return;
       }
-      setLoading(false);
-      return;
-    }
 
-    const res = await fetch(`/api/recommendations/${recId}`);
-    if (res.ok) {
-      const data = await res.json();
-      setRec(data);
-      setStepData({
-        orderType: data.order_type,
-        limitPrice: data.entry_price,
-        riskPct: 0.02,
-      });
+      const res = await fetch(`/api/recommendations/${recId}`);
+      if (!cancelled && res.ok) {
+        const data = await res.json();
+        setRec(data);
+        setStepData({
+          orderType: data.order_type,
+          limitPrice: data.entry_price,
+          riskPct: 0.02,
+        });
+      }
+      // Fetch profile for balance
+      const profileRes = await fetch("/api/profile");
+      if (!cancelled && profileRes.ok) {
+        const profile = await profileRes.json();
+        setPortfolioBalance(profile.portfolio_balance ?? 50000);
+      }
+      if (!cancelled) setLoading(false);
     }
-    // Fetch profile for balance
-    const profileRes = await fetch("/api/profile");
-    if (profileRes.ok) {
-      const profile = await profileRes.json();
-      setPortfolioBalance(profile.portfolio_balance ?? 50000);
-    }
-    setLoading(false);
+    loadTradeData();
+    return () => { cancelled = true; };
   }, [recId]);
-
-  useEffect(() => { fetchRec(); }, [fetchRec]);
 
   // Save wizard state on step change
   useEffect(() => {
@@ -421,6 +425,3 @@ function TradeField({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
-// Need Badge import
-import { Badge } from "@/components/ui/badge";

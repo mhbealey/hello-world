@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -27,23 +27,29 @@ interface UsageData {
   daily_cap: number;
 }
 
+function fetchSettingsData() {
+  return Promise.all([
+    fetch("/api/profile").then((r) => r.ok ? r.json() : null),
+    fetch("/api/usage").then((r) => r.json()),
+    fetch("/api/settings").then((r) => r.json()),
+  ]);
+}
+
 function useSettingsData() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [usage, setUsage] = useState<UsageData | null>(null);
   const [settings, setSettings] = useState<Record<string, string>>({});
 
-  const fetchAll = useCallback(async () => {
-    const [p, u, s] = await Promise.all([
-      fetch("/api/profile").then((r) => r.ok ? r.json() : null),
-      fetch("/api/usage").then((r) => r.json()),
-      fetch("/api/settings").then((r) => r.json()),
-    ]);
-    setProfile(p);
-    setUsage(u);
-    setSettings(s);
+  useEffect(() => {
+    let cancelled = false;
+    fetchSettingsData().then(([p, u, s]) => {
+      if (cancelled) return;
+      setProfile(p);
+      setUsage(u);
+      setSettings(s);
+    });
+    return () => { cancelled = true; };
   }, []);
-
-  useEffect(() => { fetchAll(); }, [fetchAll]);
 
   return { profile, setProfile, usage, settings, setSettings };
 }
