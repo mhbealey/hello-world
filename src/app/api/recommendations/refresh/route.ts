@@ -34,9 +34,9 @@ export async function POST() {
     const message = e instanceof Error ? e.message : String(e);
     console.error("POST /api/recommendations/refresh error:", message);
 
-    if (message.includes("ANTHROPIC_API_KEY")) {
+    if (message.includes("TURSO_DATABASE_URL") || message.includes("ANTHROPIC_API_KEY")) {
       return NextResponse.json(
-        { error: "AI service not configured. Set ANTHROPIC_API_KEY in Vercel environment variables." },
+        { error: `Server misconfigured: ${message.slice(0, 150)}` },
         { status: 503 }
       );
     }
