@@ -17,21 +17,28 @@ function getClient(): Anthropic {
   return client;
 }
 
+const CLAUDE_TIMEOUT_MS = 30_000;
+
 export async function callClaude(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
-  const maxRetries = 3;
+  const maxRetries = 2;
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      const response = await getClient().messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userMessage }],
-      });
+      const response = await Promise.race([
+        getClient().messages.create({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 4096,
+          system: systemPrompt,
+          messages: [{ role: "user", content: userMessage }],
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error("Claude API timed out")), CLAUDE_TIMEOUT_MS)
+        ),
+      ]);
 
       const textBlock = response.content.find((b) => b.type === "text");
       return textBlock?.text ?? "";
@@ -39,8 +46,7 @@ export async function callClaude(
       lastError = e as Error;
       console.error(`Claude API attempt ${attempt + 1} failed:`, e);
       if (attempt < maxRetries - 1) {
-        const delay = Math.pow(2, attempt + 1) * 1000;
-        await new Promise((r) => setTimeout(r, delay));
+        await new Promise((r) => setTimeout(r, 2000));
       }
     }
   }

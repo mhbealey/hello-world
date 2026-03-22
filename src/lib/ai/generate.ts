@@ -54,11 +54,9 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 
 async function fetchMarketData(tickers: string[]) {
   const provider = getDataProvider();
-  const results = [];
-  const skipped: string[] = [];
 
-  for (const ticker of tickers) {
-    try {
+  const settled = await Promise.allSettled(
+    tickers.map(async (ticker) => {
       const [quote, fundamentals, analysts, earnings] = await Promise.all([
         provider.getQuote(ticker),
         provider.getFundamentals(ticker),
@@ -66,20 +64,27 @@ async function fetchMarketData(tickers: string[]) {
         provider.getEarningsCalendar(ticker),
       ]);
 
-      const assetClass = inferAssetClass(ticker, fundamentals);
-
-      results.push({
+      return {
         ticker,
         price: quote?.price || 0,
         fundamentals: JSON.stringify(fundamentals || {}),
         analystRatings: JSON.stringify(analysts || {}),
         historicalPrices: "See price data",
         earnings: JSON.stringify(earnings || []),
-        assetClass,
-      });
-    } catch (e) {
-      console.error(`Failed to fetch market data for ${ticker}:`, e);
-      skipped.push(ticker);
+        assetClass: inferAssetClass(ticker, fundamentals),
+      };
+    })
+  );
+
+  const results = [];
+  const skipped: string[] = [];
+  for (let i = 0; i < settled.length; i++) {
+    const s = settled[i];
+    if (s.status === "fulfilled") {
+      results.push(s.value);
+    } else {
+      console.error(`Failed to fetch market data for ${tickers[i]}:`, s.reason);
+      skipped.push(tickers[i]);
     }
   }
 
@@ -199,97 +204,96 @@ export async function generateRecommendations(
     marketData
   );
 
-  let rawResponse = await callClaude(system, user);
-  let recs = parseClaudeResponse(rawResponse);
-
-  if (!recs) {
-    console.warn("First Claude response invalid, retrying...");
-    rawResponse = await callClaude(
-      system,
-      user + "\n\nIMPORTANT: Your previous response was not valid JSON. Return ONLY valid JSON matching the exact schema. No markdown."
-    );
-    recs = parseClaudeResponse(rawResponse);
-  }
+  const rawResponse = await callClaude(system, user);
+  const recs = parseClaudeResponse(rawResponse);
 
   if (!recs) {
     return { recommendations: [], error: "validation_failed" };
   }
 
-  // Save recommendations to DB with benchmark scores
+  // Save recommendations to DB with benchmark scores — all in parallel
   const now = new Date();
-  for (const rec of recs) {
-    const existing = await prisma.recommendation.findFirst({
-      where: { ticker: rec.ticker, status: "active" },
-      orderBy: { generated_at: "desc" },
-    });
 
-    const expiresAt = new Date(now);
-    if (rec.time_sensitivity === "act_today") {
-      expiresAt.setHours(16, 0, 0, 0);
-    } else if (rec.time_sensitivity === "this_week") {
-      const daysUntilFriday = (5 - expiresAt.getDay() + 7) % 7 || 7;
-      expiresAt.setDate(expiresAt.getDate() + daysUntilFriday);
-      expiresAt.setHours(16, 0, 0, 0);
-    } else {
-      expiresAt.setDate(expiresAt.getDate() + 14);
-    }
-
-    if (existing) {
-      await prisma.recommendation.update({
-        where: { id: existing.id },
-        data: { status: "expired" },
-      });
-    }
-
-    const factors = extractFactorScores(rec);
-    const benchmarkScore = computeBenchmarkScore(factors, profile.investing_style);
-    const governanceScore = factors.governance;
-
-    await prisma.recommendation.create({
-      data: {
-        ticker: rec.ticker,
-        company_name: rec.company_name,
-        asset_class: rec.asset_class || "stock",
-        ai_score: rec.ai_score,
-        benchmark_score: benchmarkScore,
-        previous_ai_score: existing?.ai_score ?? null,
-        score_change_reason: existing
-          ? `Score changed from ${existing.ai_score} to ${rec.ai_score}`
-          : null,
-        rating: rec.rating,
-        confidence: rec.confidence,
-        thesis: rec.thesis,
-        bull_case: JSON.stringify(rec.bull_case),
-        bear_case: JSON.stringify(rec.bear_case),
-        key_metrics: JSON.stringify(rec.key_metrics),
-        factor_scores: JSON.stringify(rec.factor_scores),
-        factor_details: JSON.stringify({}),
-        governance_score: governanceScore,
-        governance_details: JSON.stringify(rec.governance_details || {}),
-        position_size_pct: rec.position_size_pct,
-        order_type: rec.order_type,
-        entry_price: rec.entry_price,
-        stop_loss: rec.stop_loss,
-        take_profit: rec.take_profit,
-        time_sensitivity: rec.time_sensitivity,
-        full_analysis: rec.full_analysis,
-        catalysts: JSON.stringify(rec.catalysts),
-        comparable_companies: JSON.stringify(rec.comparable_companies),
-        status: "active",
-        version: existing ? existing.version + 1 : 1,
-        generated_at: now,
-        expires_at: expiresAt,
-      },
-    });
-  }
-
-  await trackUsage(COST_PER_CALL);
-
-  await prisma.appSettings.upsert({
-    where: { key: "last_refresh" },
-    update: { value: now.toISOString() },
-    create: { key: "last_refresh", value: now.toISOString() },
+  // Fetch all existing active recs in one query
+  const existingRecs = await prisma.recommendation.findMany({
+    where: { ticker: { in: recs.map((r) => r.ticker) }, status: "active" },
+    orderBy: { generated_at: "desc" },
   });
+  const existingByTicker = new Map(existingRecs.map((r) => [r.ticker, r]));
+
+  await Promise.all(
+    recs.map(async (rec) => {
+      const existing = existingByTicker.get(rec.ticker);
+
+      const expiresAt = new Date(now);
+      if (rec.time_sensitivity === "act_today") {
+        expiresAt.setHours(16, 0, 0, 0);
+      } else if (rec.time_sensitivity === "this_week") {
+        const daysUntilFriday = (5 - expiresAt.getDay() + 7) % 7 || 7;
+        expiresAt.setDate(expiresAt.getDate() + daysUntilFriday);
+        expiresAt.setHours(16, 0, 0, 0);
+      } else {
+        expiresAt.setDate(expiresAt.getDate() + 14);
+      }
+
+      if (existing) {
+        await prisma.recommendation.update({
+          where: { id: existing.id },
+          data: { status: "expired" },
+        });
+      }
+
+      const factors = extractFactorScores(rec);
+      const benchmarkScore = computeBenchmarkScore(factors, profile.investing_style);
+      const governanceScore = factors.governance;
+
+      await prisma.recommendation.create({
+        data: {
+          ticker: rec.ticker,
+          company_name: rec.company_name,
+          asset_class: rec.asset_class || "stock",
+          ai_score: rec.ai_score,
+          benchmark_score: benchmarkScore,
+          previous_ai_score: existing?.ai_score ?? null,
+          score_change_reason: existing
+            ? `Score changed from ${existing.ai_score} to ${rec.ai_score}`
+            : null,
+          rating: rec.rating,
+          confidence: rec.confidence,
+          thesis: rec.thesis,
+          bull_case: JSON.stringify(rec.bull_case),
+          bear_case: JSON.stringify(rec.bear_case),
+          key_metrics: JSON.stringify(rec.key_metrics),
+          factor_scores: JSON.stringify(rec.factor_scores),
+          factor_details: JSON.stringify({}),
+          governance_score: governanceScore,
+          governance_details: JSON.stringify(rec.governance_details || {}),
+          position_size_pct: rec.position_size_pct,
+          order_type: rec.order_type,
+          entry_price: rec.entry_price,
+          stop_loss: rec.stop_loss,
+          take_profit: rec.take_profit,
+          time_sensitivity: rec.time_sensitivity,
+          full_analysis: rec.full_analysis,
+          catalysts: JSON.stringify(rec.catalysts),
+          comparable_companies: JSON.stringify(rec.comparable_companies),
+          status: "active",
+          version: existing ? existing.version + 1 : 1,
+          generated_at: now,
+          expires_at: expiresAt,
+        },
+      });
+    })
+  );
+
+  await Promise.all([
+    trackUsage(COST_PER_CALL),
+    prisma.appSettings.upsert({
+      where: { key: "last_refresh" },
+      update: { value: now.toISOString() },
+      create: { key: "last_refresh", value: now.toISOString() },
+    }),
+  ]);
 
   return { recommendations: recs };
 }
@@ -414,17 +418,8 @@ export async function generateBundle(
     marketData
   );
 
-  let rawResponse = await callClaude(system, user);
-  let bundle = parseBundleResponse(rawResponse);
-
-  if (!bundle) {
-    console.warn("First bundle response invalid, retrying...");
-    rawResponse = await callClaude(
-      system,
-      user + "\n\nIMPORTANT: Return ONLY valid JSON. No markdown."
-    );
-    bundle = parseBundleResponse(rawResponse);
-  }
+  const rawResponse = await callClaude(system, user);
+  const bundle = parseBundleResponse(rawResponse);
 
   if (!bundle) {
     return { bundle: null, error: "validation_failed" };

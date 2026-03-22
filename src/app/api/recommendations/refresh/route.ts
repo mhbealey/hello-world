@@ -10,8 +10,8 @@ export async function POST() {
     const watchlist = await prisma.watchlistItem.findMany();
     const watchlistTickers = watchlist.map((w) => w.ticker).filter((t) => !t.includes("SPY") && !t.includes("QQQ"));
 
-    // Combine with defaults, deduplicate, limit to 10
-    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 10);
+    // Combine with defaults, deduplicate, limit to 7
+    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 7);
 
     const result = await generateRecommendations(tickers);
 
@@ -41,13 +41,15 @@ export async function POST() {
       );
     }
 
-    // Surface the actual error for debugging
-    const debugInfo = process.env.NODE_ENV === "production"
-      ? message.slice(0, 200)
-      : message;
+    if (message.includes("timed out")) {
+      return NextResponse.json(
+        { error: "Refresh timed out. Try again — data providers may be slow." },
+        { status: 504 }
+      );
+    }
 
     return NextResponse.json(
-      { error: `Refresh failed: ${debugInfo}` },
+      { error: "Refresh failed. Try again in a moment." },
       { status: 500 }
     );
   }
