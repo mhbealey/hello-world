@@ -17,7 +17,7 @@ function getClient(): Anthropic {
   return client;
 }
 
-const CLAUDE_TIMEOUT_MS = 30_000;
+const CLAUDE_TIMEOUT_MS = 45_000;
 
 export async function callClaude(
   systemPrompt: string,
