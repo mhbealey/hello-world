@@ -325,19 +325,8 @@ export async function generateRecommendations(
   console.log(`[GENERATE] Claude API call: ${((Date.now() - t0) / 1000).toFixed(1)}s (${rawResponse.length} chars)`);
   let recs = parseClaudeResponse(rawResponse);
 
-  // Retry once with explicit correction if parsing fails
   if (!recs) {
-    console.warn("[GENERATE] First parse failed, retrying with correction prompt...");
-    const retryResponse = await callClaude(
-      system,
-      `Your previous response could not be parsed. Return ONLY the raw JSON object with no markdown fences, no text before or after. The response must be a JSON object with a "recommendations" array. Each recommendation needs at minimum: ticker, ai_score, rating, confidence, entry_price, stop_loss, take_profit.\n\nOriginal request: ${user}`
-    );
-    console.log(`[GENERATE] Retry Claude call: ${((Date.now() - t0) / 1000).toFixed(1)}s (${retryResponse.length} chars)`);
-    recs = parseClaudeResponse(retryResponse);
-  }
-
-  if (!recs) {
-    console.error("[GENERATE] Claude response parse failed after retry. First 500 chars:", rawResponse.slice(0, 500));
+    console.error("[GENERATE] Claude response parse failed. First 500 chars:", rawResponse.slice(0, 500));
     return { recommendations: [], error: "validation_failed" };
   }
 

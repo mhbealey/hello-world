@@ -14,7 +14,7 @@ function getClient(): Anthropic {
   if (!client) {
     client = new Anthropic({
       apiKey: getApiKey(),
-      timeout: 60_000, // 60s timeout per request
+      timeout: 100_000, // 100s timeout — leaves headroom within Vercel's 120s function limit
     });
   }
   return client;
