@@ -49,7 +49,7 @@ export async function POST() {
     }
 
     return NextResponse.json(
-      { error: "Refresh failed. Try again in a moment." },
+      { error: `Refresh failed: ${message.slice(0, 200)}` },
       { status: 500 }
     );
   }
