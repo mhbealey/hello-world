@@ -66,7 +66,7 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
     setRefreshing(true);
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 120_000); // 120s to match Vercel function limit
+      const timeout = setTimeout(() => controller.abort(), 45_000); // 45s — Haiku + Finnhub should finish in ~15-20s
       const res = await fetch("/api/recommendations/refresh", {
         method: "POST",
         signal: controller.signal,

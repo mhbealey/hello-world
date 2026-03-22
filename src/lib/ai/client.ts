@@ -22,13 +22,14 @@ function getClient(): Anthropic {
 
 export async function callClaude(
   systemPrompt: string,
-  userMessage: string
+  userMessage: string,
+  options?: { model?: string; maxTokens?: number }
 ): Promise<string> {
   // Single attempt — no retries to avoid doubling time budget
   try {
     const response = await getClient().messages.create({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
+      model: options?.model ?? "claude-haiku-4-5-20251001",
+      max_tokens: options?.maxTokens ?? 4096,
       system: systemPrompt,
       messages: [{ role: "user", content: userMessage }],
     });

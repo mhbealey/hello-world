@@ -4,8 +4,8 @@ import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas"
 import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
 import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
-import { getDataProvider, buildMacroContext, buildEdgarContext } from "@/lib/data";
-import { fetchBulkYahooData } from "@/lib/data/yahoo";
+import { buildMacroContext } from "@/lib/data";
+import { FinnhubProvider } from "@/lib/data/finnhub";
 
 const COST_PER_CALL = 0.02;
 const MIN_REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
@@ -54,67 +54,44 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 }
 
 async function fetchMarketData(tickers: string[]) {
-  // Try bulk Yahoo fetch first (1 API call per ticker)
-  let bulkData: Map<string, import("@/lib/data/yahoo").BulkTickerData>;
-  try {
-    bulkData = await fetchBulkYahooData(tickers);
-  } catch (e) {
-    console.warn("[MARKET DATA] Bulk Yahoo fetch failed:", e);
-    bulkData = new Map();
-  }
+  // Use Finnhub directly — simple REST calls, fast and reliable from serverless
+  const finnhub = new FinnhubProvider();
+  const t0 = Date.now();
+
+  const settled = await Promise.allSettled(
+    tickers.map(async (ticker) => {
+      // Fetch quote + fundamentals in parallel per ticker
+      const [quote, fundamentals, analysts] = await Promise.all([
+        finnhub.getQuote(ticker),
+        finnhub.getFundamentals(ticker).catch(() => null),
+        finnhub.getAnalystRatings(ticker).catch(() => null),
+      ]);
+
+      if (!quote || quote.price === 0) {
+        throw new Error(`No price for ${ticker}`);
+      }
+
+      const assetClass = inferAssetClass(ticker, fundamentals);
+      return {
+        ticker,
+        price: quote.price,
+        fundamentals: JSON.stringify(fundamentals || {}),
+        analystRatings: JSON.stringify(analysts || {}),
+        historicalPrices: "See price data",
+        earnings: "[]",
+        assetClass,
+      };
+    })
+  );
 
   const results = [];
-  const failedTickers: string[] = [];
-
-  for (const ticker of tickers) {
-    const data = bulkData.get(ticker);
-    if (data?.quote && data.quote.price > 0) {
-      const assetClass = inferAssetClass(ticker, data.fundamentals);
-      results.push({
-        ticker,
-        price: data.quote.price,
-        fundamentals: JSON.stringify(data.fundamentals || {}),
-        analystRatings: JSON.stringify(data.analysts || {}),
-        historicalPrices: "See price data",
-        earnings: JSON.stringify(data.earnings || []),
-        assetClass,
-      });
-    } else {
-      failedTickers.push(ticker);
+  for (const result of settled) {
+    if (result.status === "fulfilled") {
+      results.push(result.value);
     }
   }
 
-  // Fallback: use Finnhub for tickers that Yahoo missed
-  if (failedTickers.length > 0) {
-    console.log(`[MARKET DATA] Yahoo missed ${failedTickers.length} tickers, trying Finnhub: ${failedTickers.join(", ")}`);
-    const provider = getDataProvider();
-    const fallbackSettled = await Promise.allSettled(
-      failedTickers.map(async (ticker) => {
-        const quote = await provider.getQuote(ticker);
-        if (!quote || quote.price === 0) throw new Error(`No price for ${ticker}`);
-        const fundamentals = await provider.getFundamentals(ticker).catch(() => null);
-        const analysts = await provider.getAnalystRatings(ticker).catch(() => null);
-        const assetClass = inferAssetClass(ticker, fundamentals);
-        return {
-          ticker,
-          price: quote.price,
-          fundamentals: JSON.stringify(fundamentals || {}),
-          analystRatings: JSON.stringify(analysts || {}),
-          historicalPrices: "See price data",
-          earnings: "[]",
-          assetClass,
-        };
-      })
-    );
-
-    for (const result of fallbackSettled) {
-      if (result.status === "fulfilled") {
-        results.push(result.value);
-      }
-    }
-  }
-
-  console.log(`[MARKET DATA] Fetched ${results.length}/${tickers.length} tickers`);
+  console.log(`[MARKET DATA] Finnhub fetched ${results.length}/${tickers.length} tickers in ${Date.now() - t0}ms`);
   return results;
 }
 
@@ -193,13 +170,16 @@ export async function generateRecommendations(
 
   const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
 
-  // Fetch market data and macro context in parallel
+  // Fetch market data — macro context is fetched non-blocking (3s max, empty if slow)
   let t0 = Date.now();
   const [marketData, macroContext] = await Promise.all([
     fetchMarketData(tickers),
-    buildMacroContext().catch(() => ""),
+    Promise.race([
+      buildMacroContext().catch(() => ""),
+      new Promise<string>((resolve) => setTimeout(() => resolve(""), 3_000)),
+    ]),
   ]);
-  console.log(`[GENERATE] Market data + macro: ${((Date.now() - t0) / 1000).toFixed(1)}s (${marketData.length}/${tickers.length} tickers, macro: ${macroContext ? "yes" : "no"})`);
+  console.log(`[GENERATE] Data fetch: ${((Date.now() - t0) / 1000).toFixed(1)}s (${marketData.length}/${tickers.length} tickers, macro: ${macroContext ? "yes" : "no"})`);
 
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
@@ -343,14 +323,15 @@ export async function generateSingleAnalysis(
     ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
   }));
 
-  const provider = getDataProvider();
-  const [quote, fundamentals, analysts, earnings, edgarData, macroContext] = await Promise.all([
-    provider.getQuote(ticker),
-    provider.getFundamentals(ticker),
-    provider.getAnalystRatings(ticker),
-    provider.getEarningsCalendar(ticker),
-    buildEdgarContext(ticker).catch(() => null),
-    buildMacroContext().catch(() => ""),
+  const finnhub = new FinnhubProvider();
+  const [quote, fundamentals, analysts, macroContext] = await Promise.all([
+    finnhub.getQuote(ticker),
+    finnhub.getFundamentals(ticker).catch(() => null),
+    finnhub.getAnalystRatings(ticker).catch(() => null),
+    Promise.race([
+      buildMacroContext().catch(() => ""),
+      new Promise<string>((resolve) => setTimeout(() => resolve(""), 3_000)),
+    ]),
   ]);
 
   if (!quote) return { recommendation: null, error: "no_market_data" };
@@ -365,8 +346,7 @@ export async function generateSingleAnalysis(
     fundamentals: JSON.stringify(fundamentals || {}),
     analystRatings: JSON.stringify(analysts || {}),
     historicalPrices: "See price data",
-    earnings: JSON.stringify(earnings || []),
-    edgarFinancials: edgarData ?? undefined,
+    earnings: "[]",
   };
 
   const macro = macroContext ? { summary: macroContext } : undefined;
