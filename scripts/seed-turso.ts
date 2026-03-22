@@ -4,6 +4,7 @@
  * Safe to re-run: skips if data already exists.
  */
 import { config } from "dotenv";
+config({ path: ".env.production" });
 config({ path: ".env" });
 import { createClient } from "@libsql/client";
 

@@ -1,4 +1,5 @@
 import { config } from "dotenv";
+config({ path: ".env.production" });
 config({ path: ".env" });
 import { createClient } from "@libsql/client";
 

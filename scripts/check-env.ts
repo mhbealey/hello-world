@@ -3,7 +3,7 @@
  * Runs during deployment to surface missing config in the build log.
  */
 import { config } from "dotenv";
-// In local dev, load from .env files; on Vercel, env vars are injected automatically
+config({ path: ".env.production" });
 config({ path: ".env" });
 
 const required: [string, string][] = [
