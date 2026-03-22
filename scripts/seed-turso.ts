@@ -3,6 +3,9 @@
  * Run during build: creates profile + seed recommendations if tables are empty.
  * Safe to re-run: skips if data already exists.
  */
+import { config } from "dotenv";
+config({ path: ".env.production" });
+config({ path: ".env" });
 import { createClient } from "@libsql/client";
 
 const url = process.env.TURSO_DATABASE_URL;

@@ -1,4 +1,6 @@
-import "dotenv/config";
+import { config } from "dotenv";
+config({ path: ".env.production" });
+config({ path: ".env" });
 import { defineConfig } from "prisma/config";
 
 export default defineConfig({
