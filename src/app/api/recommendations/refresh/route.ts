@@ -17,8 +17,8 @@ export async function POST() {
     const watchlist = await prisma.watchlistItem.findMany();
     const watchlistTickers = watchlist.map((w) => w.ticker).filter((t) => !t.includes("SPY") && !t.includes("QQQ"));
 
-    // Combine with defaults, deduplicate, limit to 10
-    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 10);
+    // Combine with defaults, deduplicate, limit to 7 (keeps pipeline under 60s)
+    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 7);
     console.log(`[REFRESH] Tickers: ${tickers.join(", ")} (${tickers.length} total)`);
 
     const result = await generateRecommendations(tickers);

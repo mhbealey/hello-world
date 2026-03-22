@@ -66,7 +66,7 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
     setRefreshing(true);
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 90_000); // 90s client timeout
+      const timeout = setTimeout(() => controller.abort(), 120_000); // 120s to match Vercel function limit
       const res = await fetch("/api/recommendations/refresh", {
         method: "POST",
         signal: controller.signal,

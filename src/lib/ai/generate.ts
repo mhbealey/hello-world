@@ -55,15 +55,19 @@ function inferAssetClass(ticker: string, fundamentals: { sector?: string | null 
 async function fetchMarketData(tickers: string[]) {
   const provider = getDataProvider();
 
-  // Fetch all tickers in parallel instead of sequentially
-  const settled = await Promise.allSettled(
+  // Race all ticker fetches against a 15-second global timeout
+  const globalTimeout = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error("Market data timeout")), 15_000)
+  );
+
+  const fetchAll = Promise.allSettled(
     tickers.map(async (ticker) => {
-      const [quote, fundamentals, analysts, earnings, edgarData] = await Promise.all([
+      // Core data only — skip EDGAR (slow, rate-limited) to save time budget
+      const [quote, fundamentals, analysts, earnings] = await Promise.all([
         provider.getQuote(ticker).catch(() => null),
         provider.getFundamentals(ticker).catch(() => null),
         provider.getAnalystRatings(ticker).catch(() => null),
         provider.getEarningsCalendar(ticker).catch(() => []),
-        buildEdgarContext(ticker).catch(() => null),
       ]);
 
       const assetClass = inferAssetClass(ticker, fundamentals);
@@ -76,24 +80,50 @@ async function fetchMarketData(tickers: string[]) {
         historicalPrices: "See price data",
         earnings: JSON.stringify(earnings || []),
         assetClass,
-        edgarFinancials: edgarData ?? undefined,
       };
     })
   );
 
+  let settled: PromiseSettledResult<{
+    ticker: string;
+    price: number;
+    fundamentals: string;
+    analystRatings: string;
+    historicalPrices: string;
+    earnings: string;
+    assetClass: string;
+  }>[];
+
+  try {
+    settled = await Promise.race([fetchAll, globalTimeout]) as typeof settled;
+  } catch {
+    console.warn("[MARKET DATA] Global timeout hit — using partial results");
+    // Wait a tiny bit more to collect whatever finished
+    settled = await Promise.allSettled(
+      tickers.map(async (ticker) => ({
+        ticker,
+        price: 0,
+        fundamentals: "{}",
+        analystRatings: "{}",
+        historicalPrices: "See price data",
+        earnings: "[]",
+        assetClass: "stock",
+      }))
+    );
+  }
+
   const results = [];
   const skipped: string[] = [];
   for (const [i, result] of settled.entries()) {
-    if (result.status === "fulfilled") {
+    if (result.status === "fulfilled" && result.value.price > 0) {
       results.push(result.value);
     } else {
-      console.error(`Failed to fetch market data for ${tickers[i]}:`, result.reason);
       skipped.push(tickers[i]);
     }
   }
 
   if (skipped.length > 0) {
-    console.warn(`Skipped tickers due to data fetch failures: ${skipped.join(", ")}`);
+    console.warn(`[MARKET DATA] Skipped: ${skipped.join(", ")}`);
   }
 
   return results;
@@ -220,22 +250,12 @@ export async function generateRecommendations(
   );
 
   t0 = Date.now();
-  let rawResponse = await callClaude(system, user);
-  console.log(`[GENERATE] Claude API call 1: ${((Date.now() - t0) / 1000).toFixed(1)}s`);
-  let recs = parseClaudeResponse(rawResponse);
+  const rawResponse = await callClaude(system, user);
+  console.log(`[GENERATE] Claude API call: ${((Date.now() - t0) / 1000).toFixed(1)}s (${rawResponse.length} chars)`);
+  const recs = parseClaudeResponse(rawResponse);
 
   if (!recs) {
-    console.warn("[GENERATE] First Claude response invalid, retrying...");
-    t0 = Date.now();
-    rawResponse = await callClaude(
-      system,
-      user + "\n\nIMPORTANT: Your previous response was not valid JSON. Return ONLY valid JSON matching the exact schema. No markdown."
-    );
-    console.log(`[GENERATE] Claude API call 2 (retry): ${((Date.now() - t0) / 1000).toFixed(1)}s`);
-    recs = parseClaudeResponse(rawResponse);
-  }
-
-  if (!recs) {
+    console.error("[GENERATE] Claude response parse failed. First 500 chars:", rawResponse.slice(0, 500));
     return { recommendations: [], error: "validation_failed" };
   }
 

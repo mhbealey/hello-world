@@ -14,7 +14,7 @@ function getClient(): Anthropic {
   if (!client) {
     client = new Anthropic({
       apiKey: getApiKey(),
-      timeout: 45_000, // 45s timeout per request
+      timeout: 60_000, // 60s timeout per request
     });
   }
   return client;
@@ -24,28 +24,19 @@ export async function callClaude(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
-  const maxRetries = 2;
-  let lastError: Error | null = null;
+  // Single attempt — no retries to avoid doubling time budget
+  try {
+    const response = await getClient().messages.create({
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userMessage }],
+    });
 
-  for (let attempt = 0; attempt < maxRetries; attempt++) {
-    try {
-      const response = await getClient().messages.create({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 4096,
-        system: systemPrompt,
-        messages: [{ role: "user", content: userMessage }],
-      });
-
-      const textBlock = response.content.find((b) => b.type === "text");
-      return textBlock?.text ?? "";
-    } catch (e) {
-      lastError = e as Error;
-      console.error(`Claude API attempt ${attempt + 1} failed:`, e);
-      if (attempt < maxRetries - 1) {
-        await new Promise((r) => setTimeout(r, 2000));
-      }
-    }
+    const textBlock = response.content.find((b) => b.type === "text");
+    return textBlock?.text ?? "";
+  } catch (e) {
+    console.error("Claude API call failed:", e);
+    throw e;
   }
-
-  throw lastError || new Error("Claude API failed after retries");
 }
