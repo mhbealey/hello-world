@@ -1,6 +1,6 @@
 import { callClaude } from "./client";
 import { buildRecommendationPrompt, buildSingleStockPrompt, buildBundlePrompt } from "./prompts";
-import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas";
+import { lenientClaudeResponseSchema, recommendationItemSchema, bundleResponseSchema } from "@/lib/types/schemas";
 import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
 import { computeBenchmarkScore, type FactorScores } from "./scoring";
 import { prisma } from "@/lib/db/client";
@@ -157,13 +157,35 @@ function parseClaudeResponse(text: string): RecommendationItem[] | null {
     return null;
   }
 
+  // Strategy 1: Parse entire response with lenient schema
   try {
-    const validated = claudeResponseSchema.parse(json);
+    const validated = lenientClaudeResponseSchema.parse(json);
+    console.log(`[PARSE] Parsed ${validated.recommendations.length} recommendations`);
     return validated.recommendations;
   } catch (e) {
     logParseError("PARSE", e, text);
-    return null;
   }
+
+  // Strategy 2: If the response has a recommendations array, try parsing each item individually
+  const obj = json as Record<string, unknown>;
+  const recsArray = Array.isArray(obj) ? obj : Array.isArray(obj?.recommendations) ? obj.recommendations : null;
+  if (recsArray) {
+    const salvaged: RecommendationItem[] = [];
+    for (const item of recsArray) {
+      try {
+        salvaged.push(recommendationItemSchema.parse(item));
+      } catch (e) {
+        const ticker = (item as Record<string, unknown>)?.ticker ?? "unknown";
+        console.warn(`[PARSE] Skipping recommendation for ${ticker}:`, e instanceof Error ? e.message : e);
+      }
+    }
+    if (salvaged.length > 0) {
+      console.log(`[PARSE] Salvaged ${salvaged.length}/${recsArray.length} recommendations`);
+      return salvaged;
+    }
+  }
+
+  return null;
 }
 
 function parseBundleResponse(text: string): BundleResponse | null {
@@ -278,10 +300,21 @@ export async function generateRecommendations(
   t0 = Date.now();
   const rawResponse = await callClaude(system, user);
   console.log(`[GENERATE] Claude API call: ${((Date.now() - t0) / 1000).toFixed(1)}s (${rawResponse.length} chars)`);
-  const recs = parseClaudeResponse(rawResponse);
+  let recs = parseClaudeResponse(rawResponse);
+
+  // Retry once with explicit correction if parsing fails
+  if (!recs) {
+    console.warn("[GENERATE] First parse failed, retrying with correction prompt...");
+    const retryResponse = await callClaude(
+      system,
+      `Your previous response could not be parsed. Return ONLY the raw JSON object with no markdown fences, no text before or after. The response must be a JSON object with a "recommendations" array. Each recommendation needs at minimum: ticker, ai_score, rating, confidence, entry_price, stop_loss, take_profit.\n\nOriginal request: ${user}`
+    );
+    console.log(`[GENERATE] Retry Claude call: ${((Date.now() - t0) / 1000).toFixed(1)}s (${retryResponse.length} chars)`);
+    recs = parseClaudeResponse(retryResponse);
+  }
 
   if (!recs) {
-    console.error("[GENERATE] Claude response parse failed. First 500 chars:", rawResponse.slice(0, 500));
+    console.error("[GENERATE] Claude response parse failed after retry. First 500 chars:", rawResponse.slice(0, 500));
     return { recommendations: [], error: "validation_failed" };
   }
 

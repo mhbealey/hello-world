@@ -8,28 +8,37 @@ export const factorScoreSchema = z.object({
   reasoning: z.string().default(""),
 });
 
+// Lenient factor score: accepts number or object
+const lenientFactorScore = z.union([
+  factorScoreSchema,
+  z.number().min(1).max(10).transform((n) => ({ score: n, inputs: [], reasoning: "" })),
+]).default({ score: 5, inputs: [], reasoning: "" });
+
 export const governanceDetailsSchema = z.object({
   board_changes: z.string().default(""),
   ceo_changes: z.string().default(""),
   ma_activity: z.string().default(""),
 });
 
+// Lenient bull/bear case: accepts object or string
+const lenientCase = z.union([
+  z.object({
+    headline: z.string().default(""),
+    points: z.array(z.string()).default([]),
+  }),
+  z.string().transform((s) => ({ headline: s, points: [] })),
+]).default({ headline: "", points: [] });
+
 export const recommendationItemSchema = z.object({
   ticker: z.string().min(1).max(10),
-  company_name: z.string().min(1),
+  company_name: z.string().default("Unknown"),
   asset_class: z.enum(["stock", "etf", "bond", "reit", "commodity", "business", "real_estate", "crypto"]).default("stock"),
   ai_score: z.number().min(1).max(10),
   rating: z.enum(["strong_buy", "buy", "hold", "sell", "strong_sell"]),
   confidence: z.number().min(0).max(1),
-  thesis: z.string().min(1),
-  bull_case: z.object({
-    headline: z.string(),
-    points: z.array(z.string()).min(1),
-  }),
-  bear_case: z.object({
-    headline: z.string(),
-    points: z.array(z.string()).min(1),
-  }),
+  thesis: z.string().default(""),
+  bull_case: lenientCase,
+  bear_case: lenientCase,
   key_metrics: z.object({
     pe: z.number().nullable().default(null),
     pe_sector_avg: z.number().nullable().default(null),
@@ -44,34 +53,42 @@ export const recommendationItemSchema = z.object({
     }).default({ gross: null, operating: null, net: null }),
   }).default({ pe: null, pe_sector_avg: null, ps: null, ev_ebitda: null, debt_equity: null, revenue_growth: null, margins: { gross: null, operating: null, net: null } }),
   factor_scores: z.object({
-    technical: factorScoreSchema,
-    fundamental: factorScoreSchema,
-    sentiment: factorScoreSchema,
-    momentum: factorScoreSchema,
-    earnings: factorScoreSchema,
-    governance: factorScoreSchema.optional().default({ score: 5, inputs: [], reasoning: "" }),
-    macro: factorScoreSchema.optional().default({ score: 5, inputs: [], reasoning: "" }),
+    technical: lenientFactorScore,
+    fundamental: lenientFactorScore,
+    sentiment: lenientFactorScore,
+    momentum: lenientFactorScore,
+    earnings: lenientFactorScore,
+    governance: lenientFactorScore,
+    macro: lenientFactorScore,
+  }).default({
+    technical: { score: 5, inputs: [], reasoning: "" },
+    fundamental: { score: 5, inputs: [], reasoning: "" },
+    sentiment: { score: 5, inputs: [], reasoning: "" },
+    momentum: { score: 5, inputs: [], reasoning: "" },
+    earnings: { score: 5, inputs: [], reasoning: "" },
+    governance: { score: 5, inputs: [], reasoning: "" },
+    macro: { score: 5, inputs: [], reasoning: "" },
   }),
   governance_details: governanceDetailsSchema.optional(),
   entry_price: z.number().positive(),
   stop_loss: z.number().positive(),
   take_profit: z.number().positive(),
   order_type: z.enum(["market", "limit", "stop_limit"]).default("limit"),
-  position_size_pct: z.number().min(0.005).max(0.1).default(0.03),
+  position_size_pct: z.number().min(0).max(1).default(0.03),
   time_sensitivity: z.enum(["act_today", "this_week", "monitor"]).default("this_week"),
   holding_period: z.string().default("2-4 weeks"),
   catalysts: z.array(
     z.object({
       date: z.string(),
       event: z.string(),
-      description: z.string(),
+      description: z.string().default(""),
     })
   ).default([]),
   comparable_companies: z.array(
     z.object({
       ticker: z.string(),
       ai_score: z.number(),
-      brief: z.string(),
+      brief: z.string().default(""),
     })
   ).default([]),
   full_analysis: z.string().default(""),
@@ -80,6 +97,12 @@ export const recommendationItemSchema = z.object({
 export const claudeResponseSchema = z.object({
   recommendations: z.array(recommendationItemSchema),
 });
+
+// Also accept a bare array of recommendations (Claude sometimes omits the wrapper)
+export const lenientClaudeResponseSchema = z.union([
+  claudeResponseSchema,
+  z.array(recommendationItemSchema).transform((recs) => ({ recommendations: recs })),
+]);
 
 // Custom refinement: stop_loss < entry_price and take_profit > entry_price for buys
 export const validatedRecommendationSchema = recommendationItemSchema.refine(

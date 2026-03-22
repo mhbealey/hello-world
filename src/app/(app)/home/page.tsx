@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { RecommendationCard } from "@/components/cards/recommendation-card";
 import { AlertCard } from "@/components/cards/alert-card";
@@ -105,6 +105,44 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
   return { recs, alerts, loading, refreshing, refresh, fetchData };
 }
 
+const REFRESH_STEPS = [
+  { at: 0, label: "Fetching market data..." },
+  { at: 4, label: "Analyzing fundamentals..." },
+  { at: 10, label: "Running AI analysis..." },
+  { at: 25, label: "Scoring recommendations..." },
+  { at: 45, label: "Almost done..." },
+];
+
+function RefreshProgress() {
+  const [elapsed, setElapsed] = useState(0);
+  const startRef = useRef(0);
+
+  useEffect(() => {
+    startRef.current = Date.now();
+    const interval = setInterval(() => {
+      setElapsed(Math.floor((Date.now() - startRef.current) / 1000));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentStep = [...REFRESH_STEPS].reverse().find((s) => elapsed >= s.at);
+  const progress = Math.min(95, (elapsed / 60) * 100);
+
+  return (
+    <div className="mb-4">
+      <div className="h-1.5 bg-bg-input rounded-full overflow-hidden mb-2">
+        <div
+          className="h-full bg-accent-blue rounded-full transition-all duration-1000"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+      <p className="text-[13px] text-text-secondary text-center">
+        {currentStep?.label} ({elapsed}s)
+      </p>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const router = useRouter();
   const { showToast } = useToast();
@@ -190,8 +228,9 @@ export default function HomePage() {
         disabled={refreshing}
         className="w-full text-center text-[14px] text-accent-blue mb-4 min-h-[44px] disabled:opacity-50"
       >
-        {refreshing ? "Refreshing..." : "↻ Refresh Recommendations"}
+        {refreshing ? null : "↻ Refresh Recommendations"}
       </button>
+      {refreshing && <RefreshProgress />}
 
       {/* Recommendation Feed */}
       {loading ? (
