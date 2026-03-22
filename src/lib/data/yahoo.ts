@@ -22,7 +22,8 @@ async function getYF() {
   return yahooFinance;
 }
 
-function withTimeout<T>(promise: Promise<T>, label: string): Promise<T> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function withTimeout(promise: Promise<any>, label: string): Promise<any> {
   return Promise.race([
     promise,
     new Promise<never>((_, reject) =>
