@@ -2,6 +2,7 @@
  * Build-time environment variable validation.
  * Runs during deployment to surface missing config in the build log.
  */
+import "dotenv/config";
 
 const required: [string, string][] = [
   ["TURSO_DATABASE_URL", "Database connection — app will not function without this"],

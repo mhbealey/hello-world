@@ -44,10 +44,17 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
         fetch("/api/alerts"),
       ]);
 
-      if (recsRes.ok) setRecs(await recsRes.json());
-      if (alertsRes.ok) setAlerts(await alertsRes.json());
+      if (recsRes.ok) {
+        const data = await recsRes.json();
+        // Guard against stale SW cache returning { error: "offline" } or non-array
+        if (Array.isArray(data)) setRecs(data);
+      }
+      if (alertsRes.ok) {
+        const data = await alertsRes.json();
+        if (Array.isArray(data)) setAlerts(data);
+      }
     } catch {
-      showToast("Failed to load data", "error");
+      // Don't show error toast — stale SW cache may serve old data
     } finally {
       setLoading(false);
     }

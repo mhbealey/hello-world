@@ -31,7 +31,7 @@ export default function RootLayout({
         {children}
         <script
           dangerouslySetInnerHTML={{
-            __html: `if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js')})}`,
+            __html: `if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('/sw.js').then(function(reg){reg.update()});caches.keys().then(function(keys){keys.forEach(function(k){if(k!=='alphaedge-v2')caches.delete(k)})})})}`,
           }}
         />
       </body>
