@@ -84,9 +84,12 @@ export function RecommendationCard({
   colorblindMode = false,
   portfolioBalance = 50000,
 }: RecommendationCardProps) {
-  const bull: BullBearCase = JSON.parse(rec.bull_case);
-  const bear: BullBearCase = JSON.parse(rec.bear_case);
-  const metrics: KeyMetrics = JSON.parse(rec.key_metrics);
+  let bull: BullBearCase = { headline: "", points: [] };
+  let bear: BullBearCase = { headline: "", points: [] };
+  let metrics: KeyMetrics = { pe: null, pe_sector_avg: null, ps: null, ev_ebitda: null };
+  try { bull = JSON.parse(rec.bull_case); } catch { /* use defaults */ }
+  try { bear = JSON.parse(rec.bear_case); } catch { /* use defaults */ }
+  try { metrics = JSON.parse(rec.key_metrics); } catch { /* use defaults */ }
   const timeBadge = timeBadges[rec.time_sensitivity] || timeBadges.monitor;
   const suggestedDollars = portfolioBalance * rec.position_size_pct;
   const rr = rec.stop_loss && rec.take_profit

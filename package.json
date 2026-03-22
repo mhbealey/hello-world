@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "npx tsx scripts/push-turso.ts && prisma generate && next build",
+    "build": "npx tsx scripts/check-env.ts && npx tsx scripts/push-turso.ts && npx tsx scripts/seed-turso.ts && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",

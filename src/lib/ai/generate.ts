@@ -95,38 +95,88 @@ async function fetchMarketData(tickers: string[]) {
   return results;
 }
 
-function parseClaudeResponse(text: string): RecommendationItem[] | null {
-  try {
-    let cleaned = text.trim();
-    if (cleaned.startsWith("```")) {
-      cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
+/**
+ * Extract JSON from LLM output that may contain surrounding text or markdown fences.
+ * Tries multiple strategies: direct parse, fence stripping, brace extraction.
+ */
+function extractJson(text: string): unknown | null {
+  const cleaned = text.trim();
+
+  // Strategy 1: Direct parse
+  try { return JSON.parse(cleaned); } catch { /* continue */ }
+
+  // Strategy 2: Strip markdown fences (handles ```json ... ``` and nested variants)
+  const fenceMatch = cleaned.match(/```(?:json)?\s*\n?([\s\S]*?)\n?\s*```/);
+  if (fenceMatch) {
+    try { return JSON.parse(fenceMatch[1].trim()); } catch { /* continue */ }
+  }
+
+  // Strategy 3: Find the outermost { ... } or [ ... ] in the text
+  const firstBrace = cleaned.indexOf("{");
+  const firstBracket = cleaned.indexOf("[");
+  const startChar = firstBrace === -1 ? "[" : firstBracket === -1 ? "{" : firstBrace < firstBracket ? "{" : "[";
+  const startIdx = startChar === "{" ? firstBrace : firstBracket;
+  const endChar = startChar === "{" ? "}" : "]";
+
+  if (startIdx !== -1) {
+    // Find matching closing brace/bracket by counting depth
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+    for (let i = startIdx; i < cleaned.length; i++) {
+      const ch = cleaned[i];
+      if (escape) { escape = false; continue; }
+      if (ch === "\\") { escape = true; continue; }
+      if (ch === '"') { inString = !inString; continue; }
+      if (inString) continue;
+      if (ch === startChar) depth++;
+      if (ch === endChar) depth--;
+      if (depth === 0) {
+        try { return JSON.parse(cleaned.slice(startIdx, i + 1)); } catch { break; }
+      }
     }
-    const parsed = JSON.parse(cleaned);
-    const validated = claudeResponseSchema.parse(parsed);
+  }
+
+  return null;
+}
+
+function logParseError(label: string, e: unknown, text: string) {
+  if (e && typeof e === "object" && "issues" in e) {
+    const issues = (e as { issues: Array<{ path: (string | number)[]; message: string }> }).issues;
+    console.error(`[${label}] Zod validation failed:`, issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; "));
+  } else {
+    console.error(`[${label}] Parse error:`, e);
+  }
+  console.error(`[${label}] First 500 chars:`, text.slice(0, 500));
+}
+
+function parseClaudeResponse(text: string): RecommendationItem[] | null {
+  const json = extractJson(text);
+  if (json === null) {
+    console.error("[PARSE] Could not extract JSON from response. First 500 chars:", text.slice(0, 500));
+    return null;
+  }
+
+  try {
+    const validated = claudeResponseSchema.parse(json);
     return validated.recommendations;
   } catch (e) {
-    // Log detailed Zod validation errors
-    if (e && typeof e === "object" && "issues" in e) {
-      const issues = (e as { issues: Array<{ path: (string | number)[]; message: string }> }).issues;
-      console.error("[PARSE] Zod validation failed:", issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; "));
-    } else {
-      console.error("[PARSE] Failed to parse Claude response:", e);
-    }
-    console.error("[PARSE] First 500 chars:", text.slice(0, 500));
+    logParseError("PARSE", e, text);
     return null;
   }
 }
 
 function parseBundleResponse(text: string): BundleResponse | null {
+  const json = extractJson(text);
+  if (json === null) {
+    console.error("[BUNDLE] Could not extract JSON from response. First 500 chars:", text.slice(0, 500));
+    return null;
+  }
+
   try {
-    let cleaned = text.trim();
-    if (cleaned.startsWith("```")) {
-      cleaned = cleaned.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
-    }
-    const parsed = JSON.parse(cleaned);
-    return bundleResponseSchema.parse(parsed);
+    return bundleResponseSchema.parse(json);
   } catch (e) {
-    console.error("Failed to parse bundle response:", e);
+    logParseError("BUNDLE", e, text);
     return null;
   }
 }

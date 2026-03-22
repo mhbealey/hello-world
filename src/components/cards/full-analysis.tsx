@@ -11,10 +11,14 @@ interface FullAnalysisProps {
 }
 
 export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps) {
-  const factorScores = typeof rec.factor_scores === "string" ? JSON.parse(rec.factor_scores) : rec.factor_scores;
-  const metrics = typeof rec.key_metrics === "string" ? JSON.parse(rec.key_metrics) : rec.key_metrics;
-  const comparables = rec.comparable_companies ? (typeof rec.comparable_companies === "string" ? JSON.parse(rec.comparable_companies) : rec.comparable_companies) : [];
-  const catalysts = rec.catalysts ? (typeof rec.catalysts === "string" ? JSON.parse(rec.catalysts) : rec.catalysts) : [];
+  let factorScores: Record<string, { score: number; inputs?: string[]; reasoning?: string }> = {};
+  let metrics: { pe?: number | null; pe_sector_avg?: number | null; ps?: number | null; ev_ebitda?: number | null; debt_equity?: number | null; revenue_growth?: number | null; margins?: { gross?: number | null; operating?: number | null; net?: number | null } } = {};
+  let comparables: Array<{ ticker: string; ai_score: number; brief: string }> = [];
+  let catalysts: Array<{ date: string; event: string; description: string }> = [];
+  try { factorScores = typeof rec.factor_scores === "string" ? JSON.parse(rec.factor_scores) : rec.factor_scores; } catch { /* use defaults */ }
+  try { metrics = typeof rec.key_metrics === "string" ? JSON.parse(rec.key_metrics) : rec.key_metrics; } catch { /* use defaults */ }
+  try { comparables = rec.comparable_companies ? (typeof rec.comparable_companies === "string" ? JSON.parse(rec.comparable_companies) : rec.comparable_companies) : []; } catch { /* use defaults */ }
+  try { catalysts = rec.catalysts ? (typeof rec.catalysts === "string" ? JSON.parse(rec.catalysts) : rec.catalysts) : []; } catch { /* use defaults */ }
 
   const factors = [
     { key: "technical", label: "Technical", color: "bg-accent-blue" },
