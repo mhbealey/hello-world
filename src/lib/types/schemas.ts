@@ -4,14 +4,14 @@ import { z } from "zod";
 
 export const factorScoreSchema = z.object({
   score: z.number().min(1).max(10),
-  inputs: z.array(z.string()),
-  reasoning: z.string(),
+  inputs: z.array(z.string()).default([]),
+  reasoning: z.string().default(""),
 });
 
 export const governanceDetailsSchema = z.object({
-  board_changes: z.string(),
-  ceo_changes: z.string(),
-  ma_activity: z.string(),
+  board_changes: z.string().default(""),
+  ceo_changes: z.string().default(""),
+  ma_activity: z.string().default(""),
 });
 
 export const recommendationItemSchema = z.object({
@@ -24,57 +24,57 @@ export const recommendationItemSchema = z.object({
   thesis: z.string().min(1),
   bull_case: z.object({
     headline: z.string(),
-    points: z.array(z.string()).min(2).max(3),
+    points: z.array(z.string()).min(1),
   }),
   bear_case: z.object({
     headline: z.string(),
-    points: z.array(z.string()).min(2).max(3),
+    points: z.array(z.string()).min(1),
   }),
   key_metrics: z.object({
-    pe: z.number().nullable(),
-    pe_sector_avg: z.number().nullable(),
-    ps: z.number().nullable(),
-    ev_ebitda: z.number().nullable(),
-    debt_equity: z.number().nullable(),
-    revenue_growth: z.number().nullable(),
+    pe: z.number().nullable().default(null),
+    pe_sector_avg: z.number().nullable().default(null),
+    ps: z.number().nullable().default(null),
+    ev_ebitda: z.number().nullable().default(null),
+    debt_equity: z.number().nullable().default(null),
+    revenue_growth: z.number().nullable().default(null),
     margins: z.object({
-      gross: z.number().nullable(),
-      operating: z.number().nullable(),
-      net: z.number().nullable(),
-    }),
-  }),
+      gross: z.number().nullable().default(null),
+      operating: z.number().nullable().default(null),
+      net: z.number().nullable().default(null),
+    }).default({ gross: null, operating: null, net: null }),
+  }).default({ pe: null, pe_sector_avg: null, ps: null, ev_ebitda: null, debt_equity: null, revenue_growth: null, margins: { gross: null, operating: null, net: null } }),
   factor_scores: z.object({
     technical: factorScoreSchema,
     fundamental: factorScoreSchema,
     sentiment: factorScoreSchema,
     momentum: factorScoreSchema,
     earnings: factorScoreSchema,
-    governance: factorScoreSchema,
-    macro: factorScoreSchema.optional(),
+    governance: factorScoreSchema.optional().default({ score: 5, inputs: [], reasoning: "" }),
+    macro: factorScoreSchema.optional().default({ score: 5, inputs: [], reasoning: "" }),
   }),
   governance_details: governanceDetailsSchema.optional(),
   entry_price: z.number().positive(),
   stop_loss: z.number().positive(),
   take_profit: z.number().positive(),
-  order_type: z.enum(["market", "limit", "stop_limit"]),
-  position_size_pct: z.number().min(0.005).max(0.1),
-  time_sensitivity: z.enum(["act_today", "this_week", "monitor"]),
-  holding_period: z.string(),
+  order_type: z.enum(["market", "limit", "stop_limit"]).default("limit"),
+  position_size_pct: z.number().min(0.005).max(0.1).default(0.03),
+  time_sensitivity: z.enum(["act_today", "this_week", "monitor"]).default("this_week"),
+  holding_period: z.string().default("2-4 weeks"),
   catalysts: z.array(
     z.object({
       date: z.string(),
       event: z.string(),
       description: z.string(),
     })
-  ),
+  ).default([]),
   comparable_companies: z.array(
     z.object({
       ticker: z.string(),
       ai_score: z.number(),
       brief: z.string(),
     })
-  ),
-  full_analysis: z.string().min(1),
+  ).default([]),
+  full_analysis: z.string().default(""),
 });
 
 export const claudeResponseSchema = z.object({

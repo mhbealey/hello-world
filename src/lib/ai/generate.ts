@@ -105,7 +105,14 @@ function parseClaudeResponse(text: string): RecommendationItem[] | null {
     const validated = claudeResponseSchema.parse(parsed);
     return validated.recommendations;
   } catch (e) {
-    console.error("Failed to parse Claude response:", e);
+    // Log detailed Zod validation errors
+    if (e && typeof e === "object" && "issues" in e) {
+      const issues = (e as { issues: Array<{ path: (string | number)[]; message: string }> }).issues;
+      console.error("[PARSE] Zod validation failed:", issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; "));
+    } else {
+      console.error("[PARSE] Failed to parse Claude response:", e);
+    }
+    console.error("[PARSE] First 500 chars:", text.slice(0, 500));
     return null;
   }
 }
