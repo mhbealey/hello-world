@@ -60,10 +60,13 @@ export default function OnboardingPage() {
           portfolio_balance: parseFloat(balance) || RANGE_MAP[portfolioRange] || 50000,
         }),
       });
-      if (!res.ok) throw new Error("Failed to save profile");
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || "Failed to save profile");
+      }
       router.push("/home");
-    } catch {
-      setError("Something went wrong. Please try again.");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Something went wrong. Please try again.");
       setLoading(false);
     }
   }

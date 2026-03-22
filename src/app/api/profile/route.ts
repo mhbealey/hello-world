@@ -54,8 +54,9 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true, archetype: archetype.name, riskScore });
   } catch (e) {
-    console.error("POST /api/profile error:", e);
-    return NextResponse.json({ error: "Failed to save profile" }, { status: 500 });
+    const message = e instanceof Error ? e.message : String(e);
+    console.error("POST /api/profile error:", message);
+    return NextResponse.json({ error: `Failed to save profile: ${message.slice(0, 200)}` }, { status: 500 });
   }
 }
 
