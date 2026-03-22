@@ -17,11 +17,12 @@ function getClient(): Anthropic {
   return client;
 }
 
-const CLAUDE_TIMEOUT_MS = 45_000;
+const CLAUDE_TIMEOUT_MS = 60_000; // Increased for larger market scans
 
 export async function callClaude(
   systemPrompt: string,
-  userMessage: string
+  userMessage: string,
+  maxTokens = 1500
 ): Promise<string> {
   const maxRetries = 2;
   let lastError: Error | null = null;
@@ -31,7 +32,7 @@ export async function callClaude(
       const response = await Promise.race([
         getClient().messages.create({
           model: "claude-sonnet-4-20250514",
-          max_tokens: 1500,
+          max_tokens: maxTokens,
           system: systemPrompt,
           messages: [{ role: "user", content: userMessage }],
         }),

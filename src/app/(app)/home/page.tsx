@@ -73,7 +73,8 @@ export default function HomePage() {
       if (!res.ok) {
         showToast(data.error || "Failed to refresh", "error");
       } else {
-        showToast(`${data.count} recommendations updated`, "success");
+        const scannedMsg = data.scanned ? ` from ${data.scanned} stocks scanned` : "";
+        showToast(`${data.count} recommendations${scannedMsg}`, "success");
         await fetchData();
       }
     } catch {
@@ -157,7 +158,7 @@ export default function HomePage() {
         className="w-full flex items-center justify-center gap-2 text-sm text-accent-blue mb-5 min-h-[44px] disabled:opacity-40 transition-opacity active:opacity-70"
       >
         <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin" : ""}`} />
-        {refreshing ? "Refreshing…" : "Refresh Recommendations"}
+        {refreshing ? "Scanning market…" : "Scan Entire Market"}
       </button>
 
       {/* Recommendation Feed */}

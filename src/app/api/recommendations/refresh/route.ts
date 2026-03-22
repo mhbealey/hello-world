@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db/client";
-import { generateRecommendations } from "@/lib/ai/generate";
-
-const DEFAULT_TICKERS = ["NVDA", "AAPL", "MSFT", "GOOGL", "AMZN"];
+import { generateMarketScan } from "@/lib/ai/generate";
 
 export async function POST() {
   try {
-    // Get watchlist tickers
-    const watchlist = await prisma.watchlistItem.findMany();
-    const watchlistTickers = watchlist.map((w) => w.ticker).filter((t) => !t.includes("SPY") && !t.includes("QQQ"));
-
-    // Combine with defaults, deduplicate, limit to 5
-    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 5);
-
-    const result = await generateRecommendations(tickers);
+    const result = await generateMarketScan();
 
     if (result.error) {
       const errorMessages: Record<string, string> = {
@@ -29,7 +19,11 @@ export async function POST() {
       return NextResponse.json({ error: msg, cached: true }, { status: 429 });
     }
 
-    return NextResponse.json({ success: true, count: result.recommendations.length });
+    return NextResponse.json({
+      success: true,
+      count: result.recommendations.length,
+      scanned: result.scannedCount,
+    });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     console.error("POST /api/recommendations/refresh error:", message);

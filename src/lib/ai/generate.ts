@@ -1,10 +1,12 @@
 import { callClaude } from "./client";
-import { buildRecommendationPrompt, buildSingleStockPrompt, buildBundlePrompt } from "./prompts";
+import { buildRecommendationPrompt, buildSingleStockPrompt, buildBundlePrompt, buildMarketScanPrompt } from "./prompts";
 import type { MarketDataItem } from "./prompts";
 import { claudeResponseSchema, bundleResponseSchema } from "@/lib/types/schemas";
 import type { RecommendationItem, BundleResponse } from "@/lib/types/schemas";
 import { prisma } from "@/lib/db/client";
 import { getDataProvider } from "@/lib/data";
+import { scanMarket, scanMarketFallback } from "@/lib/data/screener";
+import { getAllTickers } from "@/lib/data/universe";
 
 const COST_PER_CALL = 0.02;
 const MIN_REFRESH_INTERVAL_MS = 15 * 60 * 1000; // 15 minutes
@@ -117,6 +119,187 @@ async function trackUsage(cost: number) {
   }
 }
 
+async function saveRecommendations(recs: RecommendationItem[]) {
+  const now = new Date();
+
+  const existingRecs = await prisma.recommendation.findMany({
+    where: { ticker: { in: recs.map((r) => r.ticker) }, status: "active" },
+    orderBy: { generated_at: "desc" },
+  });
+  const existingByTicker = new Map(existingRecs.map((r) => [r.ticker, r]));
+
+  await Promise.all(
+    recs.map(async (rec) => {
+      const existing = existingByTicker.get(rec.ticker);
+
+      const expiresAt = new Date(now);
+      if (rec.time_sensitivity === "act_today") {
+        expiresAt.setHours(16, 0, 0, 0);
+      } else if (rec.time_sensitivity === "this_week") {
+        const daysUntilFriday = (5 - expiresAt.getDay() + 7) % 7 || 7;
+        expiresAt.setDate(expiresAt.getDate() + daysUntilFriday);
+        expiresAt.setHours(16, 0, 0, 0);
+      } else {
+        expiresAt.setDate(expiresAt.getDate() + 14);
+      }
+
+      if (existing) {
+        await prisma.recommendation.update({
+          where: { id: existing.id },
+          data: { status: "expired" },
+        });
+      }
+
+      const benchmarkScore = Math.round(((rec.ai_score - 1) / 9) * 98 + 1);
+
+      await prisma.recommendation.create({
+        data: {
+          ticker: rec.ticker,
+          company_name: rec.company_name,
+          asset_class: "stock",
+          ai_score: rec.ai_score,
+          benchmark_score: benchmarkScore,
+          previous_ai_score: existing?.ai_score ?? null,
+          score_change_reason: existing
+            ? `Score changed from ${existing.ai_score} to ${rec.ai_score}`
+            : null,
+          rating: rec.rating,
+          confidence: rec.confidence,
+          thesis: rec.thesis,
+          bull_case: "{}",
+          bear_case: "{}",
+          key_metrics: "{}",
+          factor_scores: "{}",
+          factor_details: "{}",
+          position_size_pct: rec.position_size_pct,
+          order_type: "limit",
+          entry_price: rec.entry_price,
+          stop_loss: rec.stop_loss,
+          take_profit: rec.take_profit,
+          time_sensitivity: rec.time_sensitivity,
+          full_analysis: rec.thesis,
+          catalysts: "[]",
+          comparable_companies: "[]",
+          status: "active",
+          version: existing ? existing.version + 1 : 1,
+          generated_at: now,
+          expires_at: expiresAt,
+        },
+      });
+    })
+  );
+}
+
+/**
+ * Full market scan → AI scoring pipeline.
+ *
+ * 1. Runs every Yahoo Finance screener to pull candidates from the entire market
+ * 2. Pre-ranks by composite interest score (volume, momentum, multi-screener appearance)
+ * 3. Sends top candidates to Claude for deep analysis
+ * 4. Stores scored recommendations
+ */
+export async function generateMarketScan(): Promise<{
+  recommendations: RecommendationItem[];
+  scannedCount: number;
+  error?: string;
+}> {
+  const rateCheck = await checkRateLimits();
+  if (!rateCheck.allowed) {
+    return { recommendations: [], scannedCount: 0, error: rateCheck.reason };
+  }
+
+  const profile = await prisma.userProfile.findFirst();
+  if (!profile) {
+    return { recommendations: [], scannedCount: 0, error: "no_profile" };
+  }
+
+  // Step 1: Scan the entire market via screeners
+  let candidates = await scanMarket(30);
+
+  // If screeners failed, fall back to static universe + trending
+  if (candidates.length === 0) {
+    console.warn("Screeners returned 0 results, falling back to static universe");
+    const fallbackTickers = getAllTickers().slice(0, 50);
+    candidates = await scanMarketFallback(fallbackTickers);
+  }
+
+  if (candidates.length === 0) {
+    return { recommendations: [], scannedCount: 0, error: "no_market_data" };
+  }
+
+  const scannedCount = candidates.length;
+
+  // Step 2: Include watchlist tickers that might not be in screener results
+  const watchlist = await prisma.watchlistItem.findMany();
+  const watchlistTickers = watchlist
+    .map((w) => w.ticker)
+    .filter((t) => !candidates.some((c) => c.ticker === t));
+
+  // Fetch data for watchlist tickers not already in candidates
+  if (watchlistTickers.length > 0) {
+    const watchlistResults = await scanMarketFallback(watchlistTickers);
+    candidates = [...candidates, ...watchlistResults];
+  }
+
+  // Step 3: Build market data for Claude
+  const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
+  const holdings = openTrades.map((t) => ({
+    ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
+  }));
+
+  let instruments: string[];
+  try { instruments = JSON.parse(profile.instruments); }
+  catch { instruments = []; }
+
+  // Step 4: Send to Claude for scoring
+  const { system, user } = buildMarketScanPrompt(
+    {
+      archetype: profile.archetype,
+      investing_style: profile.investing_style,
+      risk_tolerance: profile.risk_tolerance,
+      instruments,
+      portfolio_balance: profile.portfolio_balance,
+    },
+    holdings,
+    candidates.map((c) => ({
+      ticker: c.ticker,
+      name: c.name,
+      price: c.price,
+      changePercent: c.changePercent,
+      volume: c.volume,
+      marketCap: c.marketCap,
+      pe: c.pe,
+      fiftyTwoWeekChangePercent: c.fiftyTwoWeekChangePercent,
+      analystRating: c.analystRating,
+      sources: c.sources,
+    }))
+  );
+
+  const rawResponse = await callClaude(system, user, 4096);
+  const recs = parseClaudeResponse(rawResponse);
+
+  if (!recs) {
+    return { recommendations: [], scannedCount, error: "validation_failed" };
+  }
+
+  // Step 5: Save to DB
+  await saveRecommendations(recs);
+
+  await Promise.all([
+    trackUsage(COST_PER_CALL),
+    prisma.appSettings.upsert({
+      where: { key: "last_refresh" },
+      update: { value: new Date().toISOString() },
+      create: { key: "last_refresh", value: new Date().toISOString() },
+    }),
+  ]);
+
+  return { recommendations: recs, scannedCount };
+}
+
+/**
+ * Legacy: score a specific list of tickers (used by watchlist, manual analysis).
+ */
 export async function generateRecommendations(
   tickers: string[]
 ): Promise<{ recommendations: RecommendationItem[]; error?: string }> {
@@ -167,83 +350,14 @@ export async function generateRecommendations(
     return { recommendations: [], error: "validation_failed" };
   }
 
-  // Save to DB — all in parallel
-  const now = new Date();
-
-  const existingRecs = await prisma.recommendation.findMany({
-    where: { ticker: { in: recs.map((r) => r.ticker) }, status: "active" },
-    orderBy: { generated_at: "desc" },
-  });
-  const existingByTicker = new Map(existingRecs.map((r) => [r.ticker, r]));
-
-  await Promise.all(
-    recs.map(async (rec) => {
-      const existing = existingByTicker.get(rec.ticker);
-
-      const expiresAt = new Date(now);
-      if (rec.time_sensitivity === "act_today") {
-        expiresAt.setHours(16, 0, 0, 0);
-      } else if (rec.time_sensitivity === "this_week") {
-        const daysUntilFriday = (5 - expiresAt.getDay() + 7) % 7 || 7;
-        expiresAt.setDate(expiresAt.getDate() + daysUntilFriday);
-        expiresAt.setHours(16, 0, 0, 0);
-      } else {
-        expiresAt.setDate(expiresAt.getDate() + 14);
-      }
-
-      if (existing) {
-        await prisma.recommendation.update({
-          where: { id: existing.id },
-          data: { status: "expired" },
-        });
-      }
-
-      // Map ai_score (1-10) to benchmark_score (1-99)
-      const benchmarkScore = Math.round(((rec.ai_score - 1) / 9) * 98 + 1);
-
-      await prisma.recommendation.create({
-        data: {
-          ticker: rec.ticker,
-          company_name: rec.company_name,
-          asset_class: "stock",
-          ai_score: rec.ai_score,
-          benchmark_score: benchmarkScore,
-          previous_ai_score: existing?.ai_score ?? null,
-          score_change_reason: existing
-            ? `Score changed from ${existing.ai_score} to ${rec.ai_score}`
-            : null,
-          rating: rec.rating,
-          confidence: rec.confidence,
-          thesis: rec.thesis,
-          bull_case: "{}",
-          bear_case: "{}",
-          key_metrics: "{}",
-          factor_scores: "{}",
-          factor_details: "{}",
-          position_size_pct: rec.position_size_pct,
-          order_type: "limit",
-          entry_price: rec.entry_price,
-          stop_loss: rec.stop_loss,
-          take_profit: rec.take_profit,
-          time_sensitivity: rec.time_sensitivity,
-          full_analysis: rec.thesis,
-          catalysts: "[]",
-          comparable_companies: "[]",
-          status: "active",
-          version: existing ? existing.version + 1 : 1,
-          generated_at: now,
-          expires_at: expiresAt,
-        },
-      });
-    })
-  );
+  await saveRecommendations(recs);
 
   await Promise.all([
     trackUsage(COST_PER_CALL),
     prisma.appSettings.upsert({
       where: { key: "last_refresh" },
-      update: { value: now.toISOString() },
-      create: { key: "last_refresh", value: now.toISOString() },
+      update: { value: new Date().toISOString() },
+      create: { key: "last_refresh", value: new Date().toISOString() },
     }),
   ]);
 
@@ -329,21 +443,21 @@ export async function generateBundle(
     ticker: t.ticker, shares: t.shares, avg_cost: t.entry_price,
   }));
 
-  const watchlist = await prisma.watchlistItem.findMany();
-  const watchlistTickers = watchlist.map((w) => w.ticker);
+  // Use market scan results as candidates instead of hardcoded lists
+  let candidates = await scanMarket(Math.max(bundleSize * 3, 20));
 
-  const strategyTickers: Record<string, string[]> = {
-    growth: ["NVDA", "AMZN", "MSFT", "GOOGL", "META", "TSLA", "CRM", "AMD", "NFLX", "SHOP"],
-    value: ["BRK-B", "JPM", "JNJ", "PG", "KO", "PFE", "CVX", "VZ", "IBM", "T"],
-    balanced: ["AAPL", "MSFT", "GOOGL", "JPM", "JNJ", "PG", "AMZN", "V", "UNH", "HD"],
-    income: ["VZ", "T", "PFE", "KO", "PG", "XOM", "CVX", "ABBV", "MO", "O"],
-    aggressive: ["NVDA", "TSLA", "AMD", "COIN", "MSTR", "PLTR", "SOFI", "RIVN", "MARA", "SQ"],
-  };
+  if (candidates.length === 0) {
+    // Fallback to static universe
+    const fallbackTickers = getAllTickers().slice(0, 30);
+    candidates = await scanMarketFallback(fallbackTickers);
+  }
 
-  const defaults = strategyTickers[strategy] || strategyTickers.balanced;
-  const candidateTickers = [...new Set([...watchlistTickers, ...defaults])].slice(0, Math.max(bundleSize * 3, 15));
+  if (candidates.length === 0) {
+    return { bundle: null, error: "no_market_data" };
+  }
 
-  const marketData = await fetchMarketData(candidateTickers);
+  // Fetch full fundamentals for candidates
+  const marketData = await fetchMarketData(candidates.map((c) => c.ticker));
   if (marketData.length === 0) {
     return { bundle: null, error: "no_market_data" };
   }
@@ -366,7 +480,7 @@ export async function generateBundle(
     marketData
   );
 
-  const rawResponse = await callClaude(system, user);
+  const rawResponse = await callClaude(system, user, 4096);
   const bundle = parseBundleResponse(rawResponse);
 
   if (!bundle) {
