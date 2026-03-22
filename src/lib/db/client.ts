@@ -2,7 +2,19 @@ import { PrismaClient } from "../../generated/prisma/client";
 import { PrismaLibSql } from "@prisma/adapter-libsql";
 
 function createPrismaClient() {
-  const url = process.env.TURSO_DATABASE_URL || "file:./prisma/dev.db";
+  const url = process.env.TURSO_DATABASE_URL;
+
+  if (!url) {
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "TURSO_DATABASE_URL is not set. Add it to your Vercel project environment variables."
+      );
+    }
+    // Local dev fallback to SQLite file
+    const adapter = new PrismaLibSql({ url: "file:./prisma/dev.db" });
+    return new PrismaClient({ adapter });
+  }
+
   const adapter = new PrismaLibSql({
     url,
     authToken: process.env.TURSO_AUTH_TOKEN,

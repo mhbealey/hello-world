@@ -1,10 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Forward server-side env vars from build time into the runtime bundle.
-  // On Vercel, .env.production is loaded at build time but NOT deployed to
-  // serverless functions. This config inlines the values so they're available
-  // at runtime via process.env.
+  // Vercel injects env vars from project settings into process.env at both
+  // build time and runtime. This explicit `env` block ensures they're also
+  // available in the client-side bundle (for any that need it) and provides
+  // a clear manifest of which env vars the app depends on.
   env: {
     TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL,
     TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
