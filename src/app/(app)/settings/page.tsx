@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -11,30 +11,50 @@ import { useToast } from "@/components/ui/toast";
 import { SETTINGS } from "@/constants/content";
 import { formatCurrency, formatDate } from "@/lib/utils/format";
 
-export default function SettingsPage() {
-  const router = useRouter();
-  const { showToast } = useToast();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [profile, setProfile] = useState<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [usage, setUsage] = useState<any>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [settings, setSettings] = useState<any>({});
-  const [showBalance, setShowBalance] = useState(false);
-  const [balanceInput, setBalanceInput] = useState("");
-  const [showClear, setShowClear] = useState(false);
+interface UserProfile {
+  archetype: string;
+  investing_style: string;
+  risk_tolerance: number;
+  instruments: string;
+  portfolio_balance: number;
+  portfolio_balance_updated_at: string;
+}
 
-  useEffect(() => {
-    Promise.all([
+interface UsageData {
+  monthly_cost: number;
+  monthly_budget: number;
+  daily_calls: number;
+  daily_cap: number;
+}
+
+function useSettingsData() {
+  const [profile, setProfile] = useState<UserProfile | null>(null);
+  const [usage, setUsage] = useState<UsageData | null>(null);
+  const [settings, setSettings] = useState<Record<string, string>>({});
+
+  const fetchAll = useCallback(async () => {
+    const [p, u, s] = await Promise.all([
       fetch("/api/profile").then((r) => r.ok ? r.json() : null),
       fetch("/api/usage").then((r) => r.json()),
       fetch("/api/settings").then((r) => r.json()),
-    ]).then(([p, u, s]) => {
-      setProfile(p);
-      setUsage(u);
-      setSettings(s);
-    });
+    ]);
+    setProfile(p);
+    setUsage(u);
+    setSettings(s);
   }, []);
+
+  useEffect(() => { fetchAll(); }, [fetchAll]);
+
+  return { profile, setProfile, usage, settings, setSettings };
+}
+
+export default function SettingsPage() {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const { profile, setProfile, usage, settings, setSettings } = useSettingsData();
+  const [showBalance, setShowBalance] = useState(false);
+  const [balanceInput, setBalanceInput] = useState("");
+  const [showClear, setShowClear] = useState(false);
 
   async function handleBalanceUpdate() {
     const val = parseFloat(balanceInput);

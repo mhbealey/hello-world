@@ -12,6 +12,18 @@ import { WIZARD } from "@/constants/content";
 import { formatCurrency, formatPercent } from "@/lib/utils/format";
 import { calculatePositionSize, calculateRiskReward } from "@/lib/utils/calculations";
 
+interface TradeRecommendation {
+  id: number;
+  ticker: string;
+  company_name: string;
+  order_type: string;
+  entry_price: number;
+  stop_loss: number;
+  take_profit: number;
+  thesis: string;
+  ai_score: number;
+}
+
 interface StepData {
   orderType?: string;
   limitPrice?: number;
@@ -34,8 +46,7 @@ function TradePageContent() {
   const { showToast } = useToast();
   const recId = searchParams.get("rec");
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [rec, setRec] = useState<any>(null);
+  const [rec, setRec] = useState<TradeRecommendation | null>(null);
   const [step, setStep] = useState(1);
   const [stepData, setStepData] = useState<StepData>({});
   const [loading, setLoading] = useState(true);
@@ -75,7 +86,7 @@ function TradePageContent() {
     const profileRes = await fetch("/api/profile");
     if (profileRes.ok) {
       const profile = await profileRes.json();
-      setPortfolioBalance(profile.portfolio_balance || 50000);
+      setPortfolioBalance(profile.portfolio_balance ?? 50000);
     }
     setLoading(false);
   }, [recId]);
@@ -110,7 +121,8 @@ function TradePageContent() {
   const rr = calculateRiskReward(entryPrice, rec.stop_loss, rec.take_profit);
 
   async function handleConfirmTrade(actualFillPrice?: number) {
-    const price = actualFillPrice || entryPrice;
+    if (!rec) return;
+    const price = actualFillPrice ?? entryPrice;
     const res = await fetch("/api/trades", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -121,7 +133,7 @@ function TradePageContent() {
         entry_price: price,
         stop_loss: rec.stop_loss,
         take_profit: rec.take_profit,
-        order_type: stepData.orderType || "limit",
+        order_type: stepData.orderType ?? "limit",
         source: "ai_recommendation",
         recommendation_id: rec.id,
       }),
@@ -136,6 +148,7 @@ function TradePageContent() {
   }
 
   async function handleSkip() {
+    if (!rec) return;
     await fetch("/api/wizard", { method: "DELETE" });
     await fetch(`/api/recommendations/${rec.id}`, {
       method: "PATCH",

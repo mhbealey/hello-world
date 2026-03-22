@@ -21,7 +21,7 @@ export async function GET() {
     return NextResponse.json({
       monthly_cost: monthlyCost,
       monthly_budget: parseFloat(budgetSetting?.value || "15"),
-      daily_calls: todayUsage?.call_count || 0,
+      daily_calls: todayUsage?.call_count ?? 0,
       daily_cap: parseInt(capSetting?.value || "20"),
     });
   } catch (e) {

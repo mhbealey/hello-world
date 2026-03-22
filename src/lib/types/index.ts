@@ -1,59 +1,68 @@
-export enum InvestingStyle {
-  Growth = "growth",
-  Value = "value",
-  Momentum = "momentum",
-  Income = "income",
-}
+export const InvestingStyle = {
+  Growth: "growth",
+  Value: "value",
+  Momentum: "momentum",
+  Income: "income",
+} as const;
+export type InvestingStyle = typeof InvestingStyle[keyof typeof InvestingStyle];
 
-export enum RiskTolerance {
-  SellEverything = 1,
-  TrimLosers = 2,
-  HoldSteady = 3,
-  BuyTheDip = 4,
-}
+export const RiskTolerance = {
+  SellEverything: 1,
+  TrimLosers: 2,
+  HoldSteady: 3,
+  BuyTheDip: 4,
+} as const;
+export type RiskTolerance = typeof RiskTolerance[keyof typeof RiskTolerance];
 
-export enum Rating {
-  StrongBuy = "strong_buy",
-  Buy = "buy",
-  Hold = "hold",
-  Sell = "sell",
-  StrongSell = "strong_sell",
-}
+export const Rating = {
+  StrongBuy: "strong_buy",
+  Buy: "buy",
+  Hold: "hold",
+  Sell: "sell",
+  StrongSell: "strong_sell",
+} as const;
+export type Rating = typeof Rating[keyof typeof Rating];
 
-export enum TimeSensitivity {
-  ActToday = "act_today",
-  ThisWeek = "this_week",
-  Monitor = "monitor",
-}
+export const TimeSensitivity = {
+  ActToday: "act_today",
+  ThisWeek: "this_week",
+  Monitor: "monitor",
+} as const;
+export type TimeSensitivity = typeof TimeSensitivity[keyof typeof TimeSensitivity];
 
-export enum TradeAction {
-  Buy = "buy",
-  Sell = "sell",
-}
+export const TradeAction = {
+  Buy: "buy",
+  Sell: "sell",
+} as const;
+export type TradeAction = typeof TradeAction[keyof typeof TradeAction];
 
-export enum TradeStatus {
-  Open = "open",
-  Closed = "closed",
-  Cancelled = "cancelled",
-}
+export const TradeStatus = {
+  Open: "open",
+  Closed: "closed",
+  Cancelled: "cancelled",
+} as const;
+export type TradeStatus = typeof TradeStatus[keyof typeof TradeStatus];
 
-export enum TradeSource {
-  AiRecommendation = "ai_recommendation",
-  Manual = "manual",
-}
+export const TradeSource = {
+  AiRecommendation: "ai_recommendation",
+  Manual: "manual",
+} as const;
+export type TradeSource = typeof TradeSource[keyof typeof TradeSource];
 
-export enum OrderType {
-  Market = "market",
-  Limit = "limit",
-  StopLimit = "stop_limit",
-}
+export const OrderType = {
+  Market: "market",
+  Limit: "limit",
+  StopLimit: "stop_limit",
+} as const;
+export type OrderType = typeof OrderType[keyof typeof OrderType];
 
-export enum RecommendationStatus {
-  Active = "active",
-  Executed = "executed",
-  Skipped = "skipped",
-  Expired = "expired",
-}
+export const RecommendationStatus = {
+  Active: "active",
+  Executed: "executed",
+  Skipped: "skipped",
+  Expired: "expired",
+} as const;
+export type RecommendationStatus = typeof RecommendationStatus[keyof typeof RecommendationStatus];
 
 export interface Quote {
   ticker: string;

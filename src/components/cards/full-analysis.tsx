@@ -3,17 +3,18 @@
 import { ArrowLeft } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { formatCurrency } from "@/lib/utils/format";
+import type { Recommendation } from "@/components/cards/recommendation-card";
 
 interface FullAnalysisProps {
-  recommendation: Record<string, unknown>;
+  recommendation: Recommendation;
   onBack: () => void;
 }
 
 export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps) {
-  const factorScores = typeof rec.factor_scores === "string" ? JSON.parse(rec.factor_scores as string) : rec.factor_scores;
-  const metrics = typeof rec.key_metrics === "string" ? JSON.parse(rec.key_metrics as string) : rec.key_metrics;
-  const comparables = typeof rec.comparable_companies === "string" ? JSON.parse(rec.comparable_companies as string) : rec.comparable_companies;
-  const catalysts = typeof rec.catalysts === "string" ? JSON.parse(rec.catalysts as string) : rec.catalysts;
+  const factorScores = typeof rec.factor_scores === "string" ? JSON.parse(rec.factor_scores) : rec.factor_scores;
+  const metrics = typeof rec.key_metrics === "string" ? JSON.parse(rec.key_metrics) : rec.key_metrics;
+  const comparables = rec.comparable_companies ? (typeof rec.comparable_companies === "string" ? JSON.parse(rec.comparable_companies) : rec.comparable_companies) : [];
+  const catalysts = rec.catalysts ? (typeof rec.catalysts === "string" ? JSON.parse(rec.catalysts) : rec.catalysts) : [];
 
   const factors = [
     { key: "technical", label: "Technical", color: "bg-accent-blue" },
@@ -32,8 +33,8 @@ export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps)
             <ArrowLeft className="h-5 w-5 text-text-primary" />
           </button>
           <div>
-            <span className="text-[14px] font-mono font-medium text-text-primary">{rec.ticker as string}</span>
-            <span className="text-[14px] text-text-secondary ml-2">{rec.company_name as string}</span>
+            <span className="text-[14px] font-mono font-medium text-text-primary">{rec.ticker}</span>
+            <span className="text-[14px] text-text-secondary ml-2">{rec.company_name}</span>
           </div>
         </div>
 
@@ -62,7 +63,7 @@ export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps)
 
         {/* Full Analysis Text */}
         <h3 className="text-[18px] font-semibold text-text-primary mb-3">Why This Score?</h3>
-        <p className="text-[14px] text-text-secondary mb-6 whitespace-pre-line">{rec.full_analysis as string}</p>
+        <p className="text-[14px] text-text-secondary mb-6 whitespace-pre-line">{rec.full_analysis}</p>
 
         {/* Catalysts */}
         {catalysts?.length > 0 && (
@@ -117,14 +118,14 @@ export function FullAnalysis({ recommendation: rec, onBack }: FullAnalysisProps)
                 ["Gross Margin", metrics?.margins?.gross ? `${(metrics.margins.gross * 100).toFixed(1)}%` : null],
                 ["Operating Margin", metrics?.margins?.operating ? `${(metrics.margins.operating * 100).toFixed(1)}%` : null],
                 ["Net Margin", metrics?.margins?.net ? `${(metrics.margins.net * 100).toFixed(1)}%` : null],
-                ["Entry Price", formatCurrency(rec.entry_price as number)],
-                ["Stop-Loss", formatCurrency(rec.stop_loss as number)],
-                ["Take-Profit", formatCurrency(rec.take_profit as number)],
+                ["Entry Price", formatCurrency(rec.entry_price)],
+                ["Stop-Loss", formatCurrency(rec.stop_loss)],
+                ["Take-Profit", formatCurrency(rec.take_profit)],
               ].filter(([, v]) => v != null).map(([label, value]) => (
-                <tr key={label as string}>
-                  <td className="py-2 text-[14px] text-text-secondary">{label as string}</td>
+                <tr key={String(label)}>
+                  <td className="py-2 text-[14px] text-text-secondary">{String(label)}</td>
                   <td className="py-2 text-[14px] text-text-primary text-right tabular-nums">
-                    {typeof value === "number" ? value.toFixed(2) : value as string}
+                    {typeof value === "number" ? value.toFixed(2) : String(value)}
                   </td>
                 </tr>
               ))}

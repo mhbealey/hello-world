@@ -70,7 +70,7 @@ async function fetchMarketData(tickers: string[]) {
 
       results.push({
         ticker,
-        price: quote?.price || 0,
+        price: quote?.price ?? 0,
         fundamentals: JSON.stringify(fundamentals || {}),
         analystRatings: JSON.stringify(analysts || {}),
         historicalPrices: "See price data",

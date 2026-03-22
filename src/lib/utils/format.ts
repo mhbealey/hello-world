@@ -45,13 +45,13 @@ export function getGreeting(): string {
   return "Good evening";
 }
 
-export function getGainLossColor(value: number, colorblind: boolean): string {
+export function getGainLossColor(value: number, colorblind = false): string {
   if (value > 0) return colorblind ? "text-gain-alt-blue" : "text-gain-green";
   if (value < 0) return colorblind ? "text-loss-alt-orange" : "text-loss-red";
   return "text-text-secondary";
 }
 
-export function getGainLossBg(value: number, colorblind: boolean): string {
+export function getGainLossBg(value: number, colorblind = false): string {
   if (value > 0) return colorblind ? "bg-gain-alt-blue" : "bg-gain-green";
   if (value < 0) return colorblind ? "bg-loss-alt-orange" : "bg-loss-red";
   return "bg-text-secondary";

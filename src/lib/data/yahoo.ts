@@ -9,6 +9,7 @@ import type {
   SearchResult,
 } from "@/lib/types";
 
+// Dynamic import for yahoo-finance2 to avoid bundling on the client
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let yahooFinance: any = null;
 

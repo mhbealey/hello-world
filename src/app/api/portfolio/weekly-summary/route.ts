@@ -23,7 +23,7 @@ export async function GET() {
     const last = snapshots[snapshots.length - 1];
     const pnl = last.total_value - first.total_value;
     const pnlPct = first.total_value > 0 ? (pnl / first.total_value) * 100 : 0;
-    const wins = closedThisWeek.filter((t) => (t.return_pct || 0) > 0);
+    const wins = closedThisWeek.filter((t) => (t.return_pct ?? 0) > 0);
     const winRate = closedThisWeek.length ? (wins.length / closedThisWeek.length * 100) : 0;
 
     const spFirst = first.sp500_value;

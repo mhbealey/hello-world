@@ -13,35 +13,26 @@ import { RECOMMENDATIONS } from "@/constants/content";
 import { getGreeting } from "@/lib/utils/format";
 import { isMarketOpen } from "@/lib/utils/market-hours";
 import type { AlertItem } from "@/lib/types";
+import type { Recommendation } from "@/components/cards/recommendation-card";
 
-const ratingFilters = [
+const RATING_FILTERS = [
   { label: "All", value: "all" },
   { label: "Strong Buy", value: "strong_buy" },
   { label: "Buy", value: "buy" },
   { label: "Hold", value: "hold" },
-];
-const sortOptions = [
+] as const;
+const SORT_OPTIONS = [
   { label: "By Score", value: "score" },
   { label: "By Confidence", value: "confidence" },
   { label: "By Urgency", value: "time_sensitivity" },
-];
+] as const;
 
-export default function HomePage() {
-  const router = useRouter();
+function useHomePageData(sortBy: string, ratingFilter: string) {
   const { showToast } = useToast();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [recs, setRecs] = useState<any[]>([]);
+  const [recs, setRecs] = useState<Recommendation[]>([]);
   const [alerts, setAlerts] = useState<AlertItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [expandedId, setExpandedId] = useState<number | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [fullAnalysis, setFullAnalysis] = useState<any>(null);
-  const [ratingFilter, setRatingFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("score");
-  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
-
-  const market = isMarketOpen();
 
   const fetchData = useCallback(async () => {
     try {
@@ -64,13 +55,13 @@ export default function HomePage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  async function handleRefresh() {
+  const refresh = useCallback(async () => {
     setRefreshing(true);
     try {
       const res = await fetch("/api/recommendations/refresh", { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        showToast(data.error || "Failed to refresh", "error");
+        showToast(data.error ?? "Failed to refresh", "error");
       } else {
         showToast(`Refreshed ${data.count} recommendations`, "success");
         await fetchData();
@@ -80,7 +71,22 @@ export default function HomePage() {
     } finally {
       setRefreshing(false);
     }
-  }
+  }, [fetchData, showToast]);
+
+  return { recs, alerts, loading, refreshing, refresh, fetchData };
+}
+
+export default function HomePage() {
+  const router = useRouter();
+  const { showToast } = useToast();
+  const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [fullAnalysis, setFullAnalysis] = useState<Recommendation | null>(null);
+  const [ratingFilter, setRatingFilter] = useState("all");
+  const [sortBy, setSortBy] = useState("score");
+  const [dismissedAlerts, setDismissedAlerts] = useState<Set<string>>(new Set());
+
+  const market = isMarketOpen();
+  const { recs, alerts, loading, refreshing, refresh } = useHomePageData(sortBy, ratingFilter);
 
   async function handleSearch(query: string) {
     const res = await fetch(`/api/market/search?q=${encodeURIComponent(query)}`);
@@ -138,12 +144,12 @@ export default function HomePage() {
       {/* Filters */}
       <div className="flex flex-col gap-2 mb-4">
         <PillSelector
-          options={ratingFilters}
+          options={RATING_FILTERS as unknown as { label: string; value: string }[]}
           selected={ratingFilter}
           onChange={(v) => setRatingFilter(v as string)}
         />
         <PillSelector
-          options={sortOptions}
+          options={SORT_OPTIONS as unknown as { label: string; value: string }[]}
           selected={sortBy}
           onChange={(v) => setSortBy(v as string)}
         />
@@ -151,7 +157,7 @@ export default function HomePage() {
 
       {/* Pull to refresh button */}
       <button
-        onClick={handleRefresh}
+        onClick={refresh}
         disabled={refreshing}
         className="w-full text-center text-[14px] text-accent-blue mb-4 min-h-[44px] disabled:opacity-50"
       >

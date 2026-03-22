@@ -13,6 +13,20 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
   ]),
+  {
+    rules: {
+      // Prefer as const objects over TypeScript enums
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "TSEnumDeclaration",
+          message: "Use `as const` objects instead of enums. See src/lib/types/index.ts for examples.",
+        },
+      ],
+      // Prefer nullish coalescing over logical or for defaults
+      "@typescript-eslint/prefer-nullish-coalescing": "warn",
+    },
+  },
 ]);
 
 export default eslintConfig;

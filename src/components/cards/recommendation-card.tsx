@@ -13,7 +13,19 @@ interface FactorScore {
   reasoning: string;
 }
 
-interface Recommendation {
+interface BullBearCase {
+  headline: string;
+  points: string[];
+}
+
+interface KeyMetrics {
+  pe: number | null;
+  pe_sector_avg: number | null;
+  ps: number | null;
+  ev_ebitda: number | null;
+}
+
+export interface Recommendation {
   id: number;
   ticker: string;
   company_name: string;
@@ -32,6 +44,9 @@ interface Recommendation {
   stop_loss: number;
   take_profit: number;
   time_sensitivity: string;
+  full_analysis?: string;
+  comparable_companies?: string;
+  catalysts?: string;
   has_existing_position?: boolean;
   existing_position_details?: { shares: number; avg_cost: number } | null;
 }
@@ -69,9 +84,9 @@ export function RecommendationCard({
   colorblindMode = false,
   portfolioBalance = 50000,
 }: RecommendationCardProps) {
-  const bull = JSON.parse(rec.bull_case);
-  const bear = JSON.parse(rec.bear_case);
-  const metrics = JSON.parse(rec.key_metrics);
+  const bull: BullBearCase = JSON.parse(rec.bull_case);
+  const bear: BullBearCase = JSON.parse(rec.bear_case);
+  const metrics: KeyMetrics = JSON.parse(rec.key_metrics);
   const timeBadge = timeBadges[rec.time_sensitivity] || timeBadges.monitor;
   const suggestedDollars = portfolioBalance * rec.position_size_pct;
   const rr = rec.stop_loss && rec.take_profit

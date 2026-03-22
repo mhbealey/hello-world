@@ -16,23 +16,58 @@ import { PORTFOLIO } from "@/constants/content";
 import { formatCurrency, formatPercent, getGainLossColor, getGainLossArrow } from "@/lib/utils/format";
 import { isMarketOpen } from "@/lib/utils/market-hours";
 
-const timeframes = ["1D", "1W", "1M", "3M", "YTD", "1Y", "ALL"].map((t) => ({ label: t, value: t }));
+interface TradeRecord {
+  id: number;
+  ticker: string;
+  shares: number;
+  entry_price: number;
+  stop_loss: number | null;
+  take_profit: number | null;
+  status: string;
+  source: string;
+  return_pct: number | null;
+}
 
-export default function PortfolioPage() {
+interface WatchlistRecord {
+  id: number;
+  ticker: string;
+  company_name: string;
+}
+
+interface TradeAnalytics {
+  win_rate: number;
+  win_count: number;
+  total_count: number;
+  avg_return: number;
+  best_trade: { ticker: string; return_pct: number | null } | null;
+  worst_trade: { ticker: string; return_pct: number | null } | null;
+  current_streak: number;
+  avg_hold_days: number;
+  ai_avg_return: number;
+  manual_avg_return: number;
+}
+
+interface PortfolioData {
+  total_value: number;
+  daily_pnl: number;
+  daily_pnl_pct: number;
+  holdings: TradeRecord[];
+  watchlist: WatchlistRecord[];
+  analytics: TradeAnalytics | null;
+}
+
+interface ChartPoint {
+  date: string;
+  total_value: number;
+}
+
+const TIMEFRAMES = ["1D", "1W", "1M", "3M", "YTD", "1Y", "ALL"].map((t) => ({ label: t, value: t }));
+
+function usePortfolioData(timeframe: string) {
   const { showToast } = useToast();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<PortfolioData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [timeframe, setTimeframe] = useState("1M");
-  const [expandedTrade, setExpandedTrade] = useState<number | null>(null);
-  const [showAddTrade, setShowAddTrade] = useState(false);
-  const [showCloseTrade, setShowCloseTrade] = useState<number | null>(null);
-  const [tradeForm, setTradeForm] = useState({ ticker: "", action: "buy", shares: "", price: "", stopLoss: "", takeProfit: "", notes: "" });
-  const [closeForm, setCloseForm] = useState({ exit_price: "", shares_to_close: "" });
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [chartData, setChartData] = useState<any[]>([]);
-
-  const market = isMarketOpen();
+  const [chartData, setChartData] = useState<ChartPoint[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -50,6 +85,21 @@ export default function PortfolioPage() {
   }, [showToast, timeframe]);
 
   useEffect(() => { fetchData(); }, [fetchData]);
+
+  return { data, loading, chartData, fetchData };
+}
+
+export default function PortfolioPage() {
+  const { showToast } = useToast();
+  const [timeframe, setTimeframe] = useState("1M");
+  const [expandedTrade, setExpandedTrade] = useState<number | null>(null);
+  const [showAddTrade, setShowAddTrade] = useState(false);
+  const [showCloseTrade, setShowCloseTrade] = useState<number | null>(null);
+  const [tradeForm, setTradeForm] = useState({ ticker: "", action: "buy", shares: "", price: "", stopLoss: "", takeProfit: "", notes: "" });
+  const [closeForm, setCloseForm] = useState({ exit_price: "", shares_to_close: "" });
+
+  const market = isMarketOpen();
+  const { data, loading, chartData, fetchData } = usePortfolioData(timeframe);
 
   async function handleAddTrade() {
     const res = await fetch("/api/trades", {
@@ -115,11 +165,11 @@ export default function PortfolioPage() {
       {/* Hero */}
       <div className="mb-4">
         <p className="text-[28px] font-bold text-text-primary tabular-nums">
-          {formatCurrency(data?.total_value || 0)}
+          {formatCurrency(data?.total_value ?? 0)}
         </p>
         <div className="flex items-center gap-2">
-          <span className={`text-[16px] font-medium tabular-nums ${getGainLossColor(data?.daily_pnl || 0, colorblind)}`}>
-            {getGainLossArrow(data?.daily_pnl || 0)} {formatCurrency(Math.abs(data?.daily_pnl || 0))} / {formatPercent(data?.daily_pnl_pct || 0)}
+          <span className={`text-[16px] font-medium tabular-nums ${getGainLossColor(data?.daily_pnl ?? 0, colorblind)}`}>
+            {getGainLossArrow(data?.daily_pnl ?? 0)} {formatCurrency(Math.abs(data?.daily_pnl ?? 0))} / {formatPercent(data?.daily_pnl_pct ?? 0)}
           </span>
           {!market.open && (
             <Badge color="amber" size="sm">{PORTFOLIO.afterHours}</Badge>
@@ -129,7 +179,7 @@ export default function PortfolioPage() {
 
       {/* Portfolio Chart */}
       <PortfolioChart data={chartData} height={160} />
-      <PillSelector options={timeframes} selected={timeframe} onChange={(v) => setTimeframe(v as string)} />
+      <PillSelector options={TIMEFRAMES} selected={timeframe} onChange={(v) => setTimeframe(v as string)} />
 
       {/* Holdings */}
       <div className="mt-6">
@@ -144,33 +194,33 @@ export default function PortfolioPage() {
           <p className="text-[14px] text-text-secondary py-4">{PORTFOLIO.emptyHoldings}</p>
         ) : (
           <div className="flex flex-col gap-[12px]">
-            {data.holdings.map((trade: Record<string, unknown>) => (
-              <Card key={trade.id as number} onClick={() => setExpandedTrade(expandedTrade === (trade.id as number) ? null : trade.id as number)}>
+            {data.holdings.map((trade) => (
+              <Card key={trade.id} onClick={() => setExpandedTrade(expandedTrade === trade.id ? null : trade.id)}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-bg-input flex items-center justify-center text-[14px] font-mono font-medium text-text-primary">
-                      {(trade.ticker as string).charAt(0)}
+                      {trade.ticker.charAt(0)}
                     </div>
                     <div>
-                      <p className="text-[14px] font-mono font-medium text-text-primary">{trade.ticker as string}</p>
-                      <p className="text-[12px] text-text-secondary">{trade.shares as number} shares @ {formatCurrency(trade.entry_price as number)}</p>
+                      <p className="text-[14px] font-mono font-medium text-text-primary">{trade.ticker}</p>
+                      <p className="text-[12px] text-text-secondary">{trade.shares} shares @ {formatCurrency(trade.entry_price)}</p>
                     </div>
                   </div>
                   <Sparkline data={[100, 102, 99, 103, 105, 104, 107]} width={60} height={20} />
                 </div>
 
-                {expandedTrade === (trade.id as number) && (
+                {expandedTrade === trade.id && (
                   <div className="mt-3 pt-3 border-t border-border-default space-y-2">
                     <div className="flex justify-between text-[14px]">
                       <span className="text-text-secondary">Stop-Loss</span>
-                      <span className="text-text-primary tabular-nums">{trade.stop_loss ? formatCurrency(trade.stop_loss as number) : "—"}</span>
+                      <span className="text-text-primary tabular-nums">{trade.stop_loss ? formatCurrency(trade.stop_loss) : "—"}</span>
                     </div>
                     <div className="flex justify-between text-[14px]">
                       <span className="text-text-secondary">Take-Profit</span>
-                      <span className="text-text-primary tabular-nums">{trade.take_profit ? formatCurrency(trade.take_profit as number) : "—"}</span>
+                      <span className="text-text-primary tabular-nums">{trade.take_profit ? formatCurrency(trade.take_profit) : "—"}</span>
                     </div>
                     <div className="flex gap-2 mt-3">
-                      <Button size="sm" variant="danger" onClick={(e) => { e.stopPropagation(); setShowCloseTrade(trade.id as number); setCloseForm({ exit_price: "", shares_to_close: "" }); }}>
+                      <Button size="sm" variant="danger" onClick={(e) => { e.stopPropagation(); setShowCloseTrade(trade.id); setCloseForm({ exit_price: "", shares_to_close: "" }); }}>
                         {PORTFOLIO.closeTrade}
                       </Button>
                     </div>
@@ -189,11 +239,11 @@ export default function PortfolioPage() {
           <p className="text-[14px] text-text-secondary">{PORTFOLIO.emptyWatchlist}</p>
         ) : (
           <div className="flex flex-col gap-2">
-            {data.watchlist.map((item: Record<string, unknown>) => (
-              <div key={item.id as number} className="border border-dashed border-border-default rounded-[12px] p-3 flex items-center justify-between">
+            {data.watchlist.map((item) => (
+              <div key={item.id} className="border border-dashed border-border-default rounded-[12px] p-3 flex items-center justify-between">
                 <div>
-                  <span className="text-[14px] font-mono font-medium text-text-primary">{item.ticker as string}</span>
-                  <span className="text-[12px] text-text-secondary ml-2">{item.company_name as string}</span>
+                  <span className="text-[14px] font-mono font-medium text-text-primary">{item.ticker}</span>
+                  <span className="text-[12px] text-text-secondary ml-2">{item.company_name}</span>
                 </div>
                 <Sparkline data={[50, 52, 51, 53, 55]} width={50} height={16} />
               </div>
@@ -210,8 +260,8 @@ export default function PortfolioPage() {
             <div className="space-y-2">
               <AnalyticRow label="Win Rate" value={`${(data.analytics.win_rate * 100).toFixed(0)}% (${data.analytics.win_count} of ${data.analytics.total_count})`} />
               <AnalyticRow label="Avg Return" value={formatPercent(data.analytics.avg_return)} />
-              {data.analytics.best_trade && <AnalyticRow label="Best Trade" value={`${data.analytics.best_trade.ticker} ${formatPercent(data.analytics.best_trade.return_pct)}`} />}
-              {data.analytics.worst_trade && <AnalyticRow label="Worst Trade" value={`${data.analytics.worst_trade.ticker} ${formatPercent(data.analytics.worst_trade.return_pct)}`} />}
+              {data.analytics.best_trade && <AnalyticRow label="Best Trade" value={`${data.analytics.best_trade.ticker} ${formatPercent(data.analytics.best_trade.return_pct ?? 0)}`} />}
+              {data.analytics.worst_trade && <AnalyticRow label="Worst Trade" value={`${data.analytics.worst_trade.ticker} ${formatPercent(data.analytics.worst_trade.return_pct ?? 0)}`} />}
               <AnalyticRow label="Win Streak" value={`${data.analytics.current_streak} wins`} />
               <AnalyticRow label="Avg Hold Time" value={`${data.analytics.avg_hold_days} days`} />
               <AnalyticRow label="AI Avg Return" value={formatPercent(data.analytics.ai_avg_return)} />
