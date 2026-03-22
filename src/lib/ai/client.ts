@@ -12,7 +12,10 @@ function getApiKey(): string {
 
 function getClient(): Anthropic {
   if (!client) {
-    client = new Anthropic({ apiKey: getApiKey() });
+    client = new Anthropic({
+      apiKey: getApiKey(),
+      timeout: 45_000, // 45s hard timeout on all requests
+    });
   }
   return client;
 }
@@ -21,11 +24,12 @@ export async function callClaude(
   systemPrompt: string,
   userMessage: string
 ): Promise<string> {
-  const maxRetries = 3;
+  const maxRetries = 2; // Reduced from 3 — each attempt can take 45s
   let lastError: Error | null = null;
 
   for (let attempt = 0; attempt < maxRetries; attempt++) {
     try {
+      console.log(`[Claude API] Attempt ${attempt + 1}/${maxRetries}...`);
       const response = await getClient().messages.create({
         model: "claude-sonnet-4-20250514",
         max_tokens: 8192,
@@ -34,13 +38,14 @@ export async function callClaude(
       });
 
       const textBlock = response.content.find((b) => b.type === "text");
+      console.log(`[Claude API] Success, response length: ${textBlock?.text?.length ?? 0}`);
       return textBlock?.text ?? "";
     } catch (e) {
       lastError = e as Error;
-      console.error(`Claude API attempt ${attempt + 1} failed:`, e);
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error(`[Claude API] Attempt ${attempt + 1} failed: ${msg}`);
       if (attempt < maxRetries - 1) {
-        const delay = Math.pow(2, attempt + 1) * 1000;
-        await new Promise((r) => setTimeout(r, delay));
+        await new Promise((r) => setTimeout(r, 2000));
       }
     }
   }

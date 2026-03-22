@@ -20,11 +20,21 @@ async function getYF() {
   return yahooFinance;
 }
 
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${ms}ms`)), ms)
+    ),
+  ]);
+}
+
 export class YahooFinanceProvider implements DataProvider {
   async getQuote(ticker: string): Promise<Quote | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quote(ticker);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const q: any = await withTimeout(yf.quote(ticker), 5000, `Yahoo getQuote(${ticker})`);
       return {
         ticker,
         price: q.regularMarketPrice ?? 0,
@@ -50,7 +60,8 @@ export class YahooFinanceProvider implements DataProvider {
         "6M": "6mo", "YTD": "ytd", "1Y": "1y", "ALL": "max",
       };
       const period = periodMap[range] || "1mo";
-      const result = await yf.chart(ticker, { period1: period });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result: any = await withTimeout(yf.chart(ticker, { period1: period }), 5000, `Yahoo chart(${ticker})`);
       return (result.quotes || []).map((bar: Record<string, unknown>) => ({
         date: new Date(bar.date as string).toISOString().split("T")[0],
         open: (bar.open as number) ?? 0,
@@ -68,9 +79,10 @@ export class YahooFinanceProvider implements DataProvider {
   async getFundamentals(ticker: string): Promise<Fundamentals | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const q: any = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["defaultKeyStatistics", "financialData", "summaryProfile"],
-      });
+      }), 5000, `Yahoo getFundamentals(${ticker})`);
       const stats = q.defaultKeyStatistics;
       const fin = q.financialData;
       return {
@@ -97,9 +109,10 @@ export class YahooFinanceProvider implements DataProvider {
   async getAnalystRatings(ticker: string): Promise<AnalystData | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const q: any = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["recommendationTrend", "financialData"],
-      });
+      }), 5000, `Yahoo getAnalystRatings(${ticker})`);
       const trend = q.recommendationTrend?.trend?.[0];
       const fin = q.financialData;
       return {
@@ -119,7 +132,8 @@ export class YahooFinanceProvider implements DataProvider {
   async getEarningsCalendar(ticker: string): Promise<EarningsDate[]> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, { modules: ["calendarEvents"] });
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const q: any = await withTimeout(yf.quoteSummary(ticker, { modules: ["calendarEvents"] }), 5000, `Yahoo getEarningsCalendar(${ticker})`);
       const earnings = q.calendarEvents?.earnings;
       if (!earnings?.earningsDate) return [];
       return earnings.earningsDate.map((d: Date) => ({
@@ -136,9 +150,10 @@ export class YahooFinanceProvider implements DataProvider {
   async getCompanyInfo(ticker: string): Promise<CompanyInfo | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const q: any = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["summaryProfile", "price"],
-      });
+      }), 5000, `Yahoo getCompanyInfo(${ticker})`);
       const profile = q.summaryProfile;
       const price = q.price;
       return {
@@ -158,7 +173,8 @@ export class YahooFinanceProvider implements DataProvider {
   async searchTicker(query: string): Promise<SearchResult[]> {
     try {
       const yf = await getYF();
-      const results = await yf.search(query);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const results: any = await withTimeout(yf.search(query), 5000, `Yahoo searchTicker(${query})`);
       return (results.quotes || [])
         .filter((q: Record<string, unknown>) => q.quoteType === "EQUITY")
         .slice(0, 8)

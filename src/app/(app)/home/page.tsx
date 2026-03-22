@@ -82,7 +82,10 @@ export default function HomePage() {
   async function handleRefresh() {
     setRefreshing(true);
     try {
-      const res = await fetch("/api/recommendations/refresh", { method: "POST" });
+      const res = await fetch("/api/recommendations/refresh", {
+        method: "POST",
+        signal: AbortSignal.timeout(55000),
+      });
       const data = await res.json();
       if (!res.ok) {
         showToast(data.error || "Failed to refresh", "error");
@@ -90,8 +93,11 @@ export default function HomePage() {
         showToast(`Refreshed ${data.count} recommendations`, "success");
         await fetchData();
       }
-    } catch {
-      showToast("Failed to refresh recommendations", "error");
+    } catch (e) {
+      const msg = e instanceof Error && e.name === "TimeoutError"
+        ? "Request timed out — try again"
+        : "Failed to refresh recommendations";
+      showToast(msg, "error");
     } finally {
       setRefreshing(false);
     }

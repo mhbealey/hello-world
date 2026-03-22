@@ -160,19 +160,29 @@ async function trackUsage(cost: number) {
 export async function generateRecommendations(
   tickers: string[]
 ): Promise<{ recommendations: RecommendationItem[]; error?: string }> {
+  const t0 = Date.now();
+  const log = (msg: string) => console.log(`[generate +${Date.now() - t0}ms] ${msg}`);
+
+  log("Checking rate limits...");
   const rateCheck = await checkRateLimits();
   if (!rateCheck.allowed) {
+    log(`Rate limited: ${rateCheck.reason}`);
     return { recommendations: [], error: rateCheck.reason };
   }
 
+  log("Fetching user profile...");
   const profile = await prisma.userProfile.findFirst();
   if (!profile) {
+    log("No user profile found");
     return { recommendations: [], error: "no_profile" };
   }
 
+  log("Fetching open trades...");
   const openTrades = await prisma.trade.findMany({ where: { status: "open" } });
 
+  log(`Fetching market data for ${tickers.length} tickers...`);
   const marketData = await fetchMarketData(tickers);
+  log(`Got market data for ${marketData.length}/${tickers.length} tickers`);
   if (marketData.length === 0) {
     return { recommendations: [], error: "no_market_data" };
   }
@@ -207,11 +217,13 @@ export async function generateRecommendations(
     marketData
   );
 
+  log("Calling Claude API...");
   let rawResponse = await callClaude(system, user);
+  log(`Claude responded (${rawResponse.length} chars), parsing...`);
   let recs = parseClaudeResponse(rawResponse);
 
   if (!recs) {
-    console.warn("First Claude response invalid, retrying...");
+    log("First Claude response invalid, retrying with stricter prompt...");
     rawResponse = await callClaude(
       system,
       user + "\n\nIMPORTANT: Your previous response was not valid JSON. Return ONLY valid JSON matching the exact schema. No markdown."
@@ -220,8 +232,10 @@ export async function generateRecommendations(
   }
 
   if (!recs) {
+    log("Validation failed after retry");
     return { recommendations: [], error: "validation_failed" };
   }
+  log(`Parsed ${recs.length} recommendations, saving to DB...`);
 
   // Save recommendations to DB with benchmark scores
   const now = new Date();
@@ -299,6 +313,7 @@ export async function generateRecommendations(
     create: { key: "last_refresh", value: now.toISOString() },
   });
 
+  log(`Done! ${recs.length} recommendations saved in ${Date.now() - t0}ms total`);
   return { recommendations: recs };
 }
 
