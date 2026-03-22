@@ -40,8 +40,8 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
       if (ratingFilter !== "all") params.set("rating", ratingFilter);
 
       const [recsRes, alertsRes] = await Promise.all([
-        fetch(`/api/recommendations?${params}`),
-        fetch("/api/alerts"),
+        fetch(`/api/recommendations?${params}`, { cache: "no-store" }),
+        fetch("/api/alerts", { cache: "no-store" }),
       ]);
 
       if (recsRes.ok) {
@@ -70,9 +70,22 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
       const res = await fetch("/api/recommendations/refresh", {
         method: "POST",
         signal: controller.signal,
+        // Bypass service worker cache
+        cache: "no-store",
       });
       clearTimeout(timeout);
-      const data = await res.json();
+
+      // Guard against non-JSON responses (e.g. from stale service worker)
+      const text = await res.text();
+      let data: { error?: string; count?: number };
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error("Refresh returned non-JSON:", text.slice(0, 200));
+        showToast("Refresh failed — try clearing site data and reloading", "error");
+        return;
+      }
+
       if (!res.ok) {
         showToast(data.error ?? "Failed to refresh", "error");
       } else {
@@ -82,7 +95,7 @@ function useHomePageData(sortBy: string, ratingFilter: string) {
     } catch (e) {
       const msg = e instanceof DOMException && e.name === "AbortError"
         ? "Refresh timed out — try again or check your API keys"
-        : "Failed to refresh recommendations";
+        : `Refresh failed: ${e instanceof Error ? e.message : "network error"}`;
       showToast(msg, "error");
     } finally {
       setRefreshing(false);
