@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Crosshair, BarChart3, Settings } from "lucide-react";
+import { Home, Compass, Crosshair, BarChart3, Settings } from "lucide-react";
 import { NAV } from "@/constants/content";
 
 const tabs = [
   { href: "/home", label: NAV.home, icon: Home },
+  { href: "/ddq", label: NAV.discover, icon: Compass },
   { href: "/trade", label: NAV.trade, icon: Crosshair },
   { href: "/portfolio", label: NAV.portfolio, icon: BarChart3 },
   { href: "/settings", label: NAV.settings, icon: Settings },

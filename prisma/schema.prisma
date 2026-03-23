@@ -159,3 +159,129 @@ model BundlePortfolio {
 
   @@index([status, size])
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// DDQ MATCHING ENGINE — Maps investor profiles to 87+ vehicle types
+// ═══════════════════════════════════════════════════════════════════
+
+model VehicleType {
+  id                        Int      @id @default(autoincrement())
+  name                      String   // "Leveraged Buyout Fund"
+  slug                      String   @unique // "leveraged-buyout-fund"
+  category                  String   // "private_equity"
+  subcategory               String   // "buyout"
+  description               String   // Full description
+  min_investment_typical    Float    // 250000
+  min_investment_low        Float?   // Range low
+  min_investment_high       Float?   // Range high
+  accreditation_requirement String   // "qualified_purchaser" | "accredited" | "none"
+  regulatory_framework      String   // "Reg D 506(c), 3(c)(7)"
+  typical_lockup_years      Float    // 7
+  liquidity_profile         String   // "illiquid" | "semi_liquid" | "liquid"
+  redemption_terms          String?  // Description of redemption terms
+  target_return_irr_low     Float?   // 15 (percent)
+  target_return_irr_high    Float?   // 25 (percent)
+  target_yield              Float?   // Annual yield percent
+  risk_level                String   // "high" | "medium" | "low" | "very_high"
+  volatility_low            Float?   // Annualized vol range
+  volatility_high           Float?
+  correlation_to_sp500      Float?   // -1 to 1
+  fee_management            Float?   // 0.02 = 2%
+  fee_performance           Float?   // 0.20 = 20%
+  fee_other                 String?  // Description of other fees
+  tax_form                  String   // "K-1" | "1099" | "none"
+  ubti_risk                 Boolean  @default(false)
+  tax_advantages            String   @default("[]") // JSON array: ["capital_gains", "depreciation", "oz_deferral"]
+  vintage_year_relevant     Boolean  @default(false)
+  j_curve_expected          Boolean  @default(false)
+  inflation_hedge           Boolean  @default(false)
+  esg_alignment_possible    Boolean  @default(false)
+  typical_fund_size_low     Float?   // AUM range
+  typical_fund_size_high    Float?
+  investor_count_typical    Int?     // Typical number of LPs
+  key_risks                 String   @default("[]") // JSON array of risk factors
+  key_benefits              String   @default("[]") // JSON array of benefits
+  suitable_for              String   @default("[]") // JSON array: ["high_net_worth", "institutional", "retail_accredited"]
+  data_sources              String   @default("[]") // JSON array: ["form_d", "form_adv", "13f"]
+  created_at                DateTime @default(now())
+  updated_at                DateTime @updatedAt
+
+  matches VehicleMatch[]
+
+  @@index([category])
+  @@index([accreditation_requirement])
+  @@index([risk_level])
+  @@index([liquidity_profile])
+}
+
+model DDQCategory {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique // "investment_strategy"
+  name        String   // "Investment Strategy"
+  description String   // Category description
+  sort_order  Int      // Display order
+  icon        String?  // Lucide icon name
+  phase       String   @default("onboarding") // "onboarding" | "deepening" | "advanced"
+
+  questions DDQQuestion[]
+
+  @@index([phase, sort_order])
+}
+
+model DDQQuestion {
+  id            Int      @id @default(autoincrement())
+  category_id   Int
+  category      DDQCategory @relation(fields: [category_id], references: [id])
+  slug          String   @unique // "risk_scenario_market_drop"
+  question_text String   // "If your portfolio dropped 15% in a week, what would you do?"
+  question_type String   // "single_select" | "multi_select" | "slider" | "number" | "text" | "ranking"
+  options       String?  // JSON array of options for select types
+  min_value     Float?   // For slider/number types
+  max_value     Float?
+  step_value    Float?
+  default_value String?  // Default answer
+  helper_text   String?  // Explanatory text below question
+  weight        Float    @default(1.0) // Importance weight for matching
+  sort_order    Int      // Display order within category
+  required      Boolean  @default(true)
+  phase         String   @default("onboarding") // "onboarding" | "deepening" | "advanced"
+
+  responses DDQResponse[]
+
+  @@index([category_id, sort_order])
+  @@index([phase])
+}
+
+model DDQResponse {
+  id          Int      @id @default(autoincrement())
+  profile_id  Int      // Links to UserProfile
+  question_id Int
+  question    DDQQuestion @relation(fields: [question_id], references: [id])
+  answer      String   // JSON-encoded answer (string, array, number, etc.)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@unique([profile_id, question_id])
+  @@index([profile_id])
+}
+
+model VehicleMatch {
+  id              Int      @id @default(autoincrement())
+  profile_id      Int      // Links to UserProfile
+  vehicle_type_id Int
+  vehicle_type    VehicleType @relation(fields: [vehicle_type_id], references: [id])
+  match_score     Float    // 0-100 overall match
+  match_reasons   String   // JSON array of match/mismatch reasons
+  risk_alignment  Float    // 0-100 how well risk matches
+  return_alignment Float   // 0-100 how well return expectations match
+  liquidity_alignment Float // 0-100 how well liquidity needs match
+  tax_alignment   Float    // 0-100 how well tax situation aligns
+  suitability     String   // "excellent" | "good" | "moderate" | "poor"
+  ai_commentary   String?  // Claude's personalized analysis
+  status          String   @default("active") // "active" | "dismissed" | "interested"
+  generated_at    DateTime @default(now())
+
+  @@unique([profile_id, vehicle_type_id])
+  @@index([profile_id, match_score])
+  @@index([vehicle_type_id])
+}
