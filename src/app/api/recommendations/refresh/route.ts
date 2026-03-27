@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db/client";
-import { generateRecommendations } from "@/lib/ai/generate";
-
-const DEFAULT_TICKERS = ["AAPL", "NVDA", "MSFT", "GOOGL", "AMZN", "META", "TSLA"];
+import { generateMarketScan } from "@/lib/ai/generate";
 
 export async function POST() {
   try {
-    // Get watchlist tickers
-    const watchlist = await prisma.watchlistItem.findMany();
-    const watchlistTickers = watchlist.map((w) => w.ticker).filter((t) => !t.includes("SPY") && !t.includes("QQQ"));
-
-    // Combine with defaults, deduplicate, limit to 10
-    const tickers = [...new Set([...watchlistTickers, ...DEFAULT_TICKERS])].slice(0, 10);
-
-    const result = await generateRecommendations(tickers);
+    const result = await generateMarketScan();
 
     if (result.error) {
       const errorMessages: Record<string, string> = {
@@ -29,25 +19,31 @@ export async function POST() {
       return NextResponse.json({ error: msg, cached: true }, { status: 429 });
     }
 
-    return NextResponse.json({ success: true, count: result.recommendations.length });
+    return NextResponse.json({
+      success: true,
+      count: result.recommendations.length,
+      scanned: result.scannedCount,
+    });
   } catch (e) {
     const message = e instanceof Error ? e.message : String(e);
     console.error("POST /api/recommendations/refresh error:", message);
 
-    if (message.includes("ANTHROPIC_API_KEY")) {
+    if (message.includes("TURSO_DATABASE_URL") || message.includes("ANTHROPIC_API_KEY")) {
       return NextResponse.json(
-        { error: "AI service not configured. Set ANTHROPIC_API_KEY in Vercel environment variables." },
+        { error: `Server misconfigured: ${message.slice(0, 150)}` },
         { status: 503 }
       );
     }
 
-    // Surface the actual error for debugging
-    const debugInfo = process.env.NODE_ENV === "production"
-      ? message.slice(0, 200)
-      : message;
+    if (message.includes("timed out")) {
+      return NextResponse.json(
+        { error: "Refresh timed out. Try again — data providers may be slow." },
+        { status: 504 }
+      );
+    }
 
     return NextResponse.json(
-      { error: `Refresh failed: ${debugInfo}` },
+      { error: `Refresh failed: ${message.slice(0, 200)}` },
       { status: 500 }
     );
   }

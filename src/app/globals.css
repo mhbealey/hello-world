@@ -1,82 +1,88 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* Colors - Dark Mode */
-  --color-bg-base: #0D0D0F;
-  --color-bg-surface: #1A1B23;
-  --color-bg-surface-hover: #22232E;
-  --color-bg-input: #13141A;
-  --color-border-default: rgba(255, 255, 255, 0.05);
-  --color-border-focus: #3B82F6;
-  --color-text-primary: #E8E8ED;
-  --color-text-secondary: #8B8B9E;
-  --color-text-tertiary: #5C5C6F;
-  --color-accent-blue: #3B82F6;
-  --color-accent-blue-hover: #2563EB;
-  --color-gain-green: #22C55E;
-  --color-loss-red: #EF4444;
+  /* ─── Backgrounds ─── */
+  --color-bg-base: #0A0A0C;
+  --color-bg-surface: #141419;
+  --color-bg-surface-hover: #1C1C24;
+  --color-bg-elevated: #1E1E28;
+  --color-bg-input: #111115;
+
+  /* ─── Borders ─── */
+  --color-border-default: rgba(255, 255, 255, 0.06);
+  --color-border-subtle: rgba(255, 255, 255, 0.03);
+  --color-border-focus: #6366F1;
+
+  /* ─── Text ─── */
+  --color-text-primary: #EDEDF0;
+  --color-text-secondary: #8C8CA1;
+  --color-text-tertiary: #55556A;
+
+  /* ─── Accent ─── */
+  --color-accent-blue: #6366F1;
+  --color-accent-blue-hover: #818CF8;
+
+  /* ─── Semantic ─── */
+  --color-gain-green: #34D399;
+  --color-loss-red: #F87171;
   --color-gain-alt-blue: #0066CC;
   --color-loss-alt-orange: #FF6B00;
-  --color-warning-amber: #F59E0B;
-  --color-score-high: #22C55E;
-  --color-score-mid: #F59E0B;
-  --color-score-low: #EF4444;
+  --color-warning-amber: #FBBF24;
+  --color-score-high: #34D399;
+  --color-score-mid: #FBBF24;
+  --color-score-low: #F87171;
 
-  /* Typography */
-  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-mono: "SF Mono", "Fira Code", monospace;
-
-  /* Spacing */
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 24px;
-  --spacing-xl: 32px;
-  --spacing-2xl: 48px;
+  /* ─── Typography ─── */
+  --font-sans: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", "Fira Code", monospace;
 }
 
+/* ─── Base ─── */
 html {
-  background-color: #0D0D0F;
-  color: #E8E8ED;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
+  font-family: "Space Grotesk", system-ui, -apple-system, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
 body {
-  background-color: #0D0D0F;
-  color: #E8E8ED;
+  background-color: var(--color-bg-base);
+  color: var(--color-text-primary);
 }
 
+/* ─── Utilities ─── */
 .tabular-nums {
   font-variant-numeric: tabular-nums;
 }
 
-/* Shimmer animation for skeletons */
+::selection {
+  background: rgba(99, 102, 241, 0.3);
+  color: #EDEDF0;
+}
+
+/* ─── Animations ─── */
 @keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 .animate-shimmer {
   background: linear-gradient(
     90deg,
-    #1A1B23 25%,
-    #22232E 50%,
-    #1A1B23 75%
+    var(--color-bg-surface) 25%,
+    var(--color-bg-surface-hover) 50%,
+    var(--color-bg-surface) 75%
   );
   background-size: 200% 100%;
-  animation: shimmer 1500ms linear infinite;
+  animation: shimmer 1.5s linear infinite;
 }
 
 @keyframes slideDown {
-  from { transform: translateY(-100%); opacity: 0; }
+  from { transform: translateY(-8px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
 
@@ -86,16 +92,38 @@ body {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.97); }
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Hide scrollbar */
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ─── Scrollbar ─── */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-/* Smooth page transitions */
-main { animation: fadeIn 200ms ease-out; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 4px; }
 
-/* Touch targets */
+/* ─── Page transitions ─── */
+main { animation: fadeIn 300ms cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* ─── Touch ─── */
 button, a, [role="button"] { -webkit-tap-highlight-color: transparent; }
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,5 +1,6 @@
 export const NAV = {
   home: "Home",
+  discover: "Discover",
   trade: "Trade",
   portfolio: "Portfolio",
   settings: "Settings",

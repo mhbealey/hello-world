@@ -9,6 +9,8 @@ import type {
   SearchResult,
 } from "@/lib/types";
 
+const YAHOO_TIMEOUT_MS = 8_000;
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let yahooFinance: any = null;
 
@@ -20,11 +22,21 @@ async function getYF() {
   return yahooFinance;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function withTimeout(promise: Promise<any>, label: string): Promise<any> {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error(`${label} timed out after ${YAHOO_TIMEOUT_MS}ms`)), YAHOO_TIMEOUT_MS)
+    ),
+  ]);
+}
+
 export class YahooFinanceProvider implements DataProvider {
   async getQuote(ticker: string): Promise<Quote | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quote(ticker);
+      const q = await withTimeout(yf.quote(ticker), `quote(${ticker})`);
       return {
         ticker,
         price: q.regularMarketPrice ?? 0,
@@ -50,7 +62,7 @@ export class YahooFinanceProvider implements DataProvider {
         "6M": "6mo", "YTD": "ytd", "1Y": "1y", "ALL": "max",
       };
       const period = periodMap[range] || "1mo";
-      const result = await yf.chart(ticker, { period1: period });
+      const result = await withTimeout(yf.chart(ticker, { period1: period }), `chart(${ticker})`);
       return (result.quotes || []).map((bar: Record<string, unknown>) => ({
         date: new Date(bar.date as string).toISOString().split("T")[0],
         open: (bar.open as number) ?? 0,
@@ -68,9 +80,9 @@ export class YahooFinanceProvider implements DataProvider {
   async getFundamentals(ticker: string): Promise<Fundamentals | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      const q = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["defaultKeyStatistics", "financialData", "summaryProfile"],
-      });
+      }), `fundamentals(${ticker})`);
       const stats = q.defaultKeyStatistics;
       const fin = q.financialData;
       return {
@@ -97,9 +109,9 @@ export class YahooFinanceProvider implements DataProvider {
   async getAnalystRatings(ticker: string): Promise<AnalystData | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      const q = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["recommendationTrend", "financialData"],
-      });
+      }), `analystRatings(${ticker})`);
       const trend = q.recommendationTrend?.trend?.[0];
       const fin = q.financialData;
       return {
@@ -119,7 +131,7 @@ export class YahooFinanceProvider implements DataProvider {
   async getEarningsCalendar(ticker: string): Promise<EarningsDate[]> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, { modules: ["calendarEvents"] });
+      const q = await withTimeout(yf.quoteSummary(ticker, { modules: ["calendarEvents"] }), `earnings(${ticker})`);
       const earnings = q.calendarEvents?.earnings;
       if (!earnings?.earningsDate) return [];
       return earnings.earningsDate.map((d: Date) => ({
@@ -136,9 +148,9 @@ export class YahooFinanceProvider implements DataProvider {
   async getCompanyInfo(ticker: string): Promise<CompanyInfo | null> {
     try {
       const yf = await getYF();
-      const q = await yf.quoteSummary(ticker, {
+      const q = await withTimeout(yf.quoteSummary(ticker, {
         modules: ["summaryProfile", "price"],
-      });
+      }), `companyInfo(${ticker})`);
       const profile = q.summaryProfile;
       const price = q.price;
       return {
@@ -158,7 +170,7 @@ export class YahooFinanceProvider implements DataProvider {
   async searchTicker(query: string): Promise<SearchResult[]> {
     try {
       const yf = await getYF();
-      const results = await yf.search(query);
+      const results = await withTimeout(yf.search(query), `search(${query})`);
       return (results.quotes || [])
         .filter((q: Record<string, unknown>) => q.quoteType === "EQUITY")
         .slice(0, 8)
