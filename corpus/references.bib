@@ -52,3 +52,24 @@ note = {The canonical reference},
 
 % [Add: NASA OIG Artemis cost reports, ISS lifetime cost analyses,
 %  TRANSCOST methodology, NAFCOM references]
+
+% — Mars rover autonomy and navigation (appended by robotics-sensing-autonomy, 2026-05-03) —
+
+@inproceedings{ono2018msl,
+  author       = {Ono, Masahiro and Fuchs, Thomas J. and Steffy, Amanda and Maimone, Mark and Yen, Jeng},
+  title        = {Risk-Aware Planetary Rover Operation: Autonomous Terrain Classification and Path Planning},
+  booktitle    = {2015 IEEE Aerospace Conference},
+  year         = {2015},
+  doi          = {10.1109/AERO.2015.7119078},
+  note         = {Describes AutoNav on Curiosity/MSL; stereo camera-based terrain classification and path planning for autonomous traverse. Used in this study as the primary flight heritage for deliberative path planning in an unstructured, communication-latency-constrained environment. AutoNav has been operational on Curiosity since 2012 and Perseverance since 2021 at traverse speeds up to 0.045 m/s. Directly analogous to the deliberative locomotion layer for the space humanoid.}
+}
+
+% — Onboard compute / space radiation (appended by robotics-sensing-autonomy, 2026-05-03) —
+
+@misc{nvidia2023jetson,
+  author       = {{NVIDIA Corporation}},
+  title        = {Jetson {AGX} Orin Series — Product Brief},
+  year         = {2023},
+  howpublished = {Manufacturer product brief. \url{https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/}},
+  note         = {Primary source for Jetson AGX Orin performance (275 TOPS INT8) and power modes (15 W / 30 W / 60 W configurable). 64 GB unified memory option confirmed. Used in this study as the Tier 2 commercial AI accelerator reference for onboard inference architecture. Not radiation-hardened; susceptible to single-event latchup under lunar radiation environment.}
+}
