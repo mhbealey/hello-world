@@ -63,3 +63,51 @@ The soviet-russian-heritage and humanoid-systems-architect agents were dispatche
 The humanoid-systems-architect was dispatched to "populate the corpus" for Question (a). It produced the heritage table (the entry-point deliverable) and stopped. This is correct behavior for an open-ended prompt but incorrect behavior for a staged study: the agent should continue to the next deliverable unless told to stop.
 
 **Corrective action:** Agent dispatch prompts for stage 5+ specify the *complete deliverable* (target file path, minimum word count, required sections) rather than an open topic area. "Produce `02-form-factor-tradespace.md`, 1,500-2,500 words, including a tradespace matrix and a stated position" is a bounded deliverable. "Research the form factor tradespace" is not.
+
+---
+
+## Lesson 6: Citation keys without BibTeX entries are non-functional and invisible
+
+**From stage 6 review (HC-009, P2-8).**
+
+Approximately 22 of 25 `\cite{key}` references across all six Question (a) sections had no corresponding BibTeX entry in `corpus/references.bib`. The agents added inline citation keys correctly, but assumed the BibTeX entries already existed or would be added later. The result is a document that looks citable but is not — a reviewer cannot look up any of the cited sources.
+
+**Why it happened:** Agent prompts specified "cite your sources using `\cite{key}` format" but did not require BibTeX entry creation as part of the same action. Adding an inline key takes one second; adding a BibTeX entry takes thirty seconds. Under any time pressure, the BibTeX step gets deferred.
+
+**Corrective action (applied in stage 7):** Agent prompts must now state explicitly: "For every `\cite{key}` you add to the text, you must also add a BibTeX entry to `corpus/references.bib` in the same session. Do not add a citation key without its bib entry. If you cannot find a primary source, use a `@misc` entry with a `note = {To be confirmed against primary source before PDR}` field." This is a blocking requirement, not a guideline.
+
+---
+
+## Lesson 7: Arithmetic errors in tables are invisible without forced derivation display
+
+**From stage 6 review (AE-001, AE-002, AE-003).**
+
+Three arithmetic errors survived to the review pass: the tradespace matrix weighted totals in §02 were wrong (inflating the A-vs-B gap 2.5×); the DOF count in §03 did not state its counting convention (leaving the 38 vs. 51–55 ambiguity); the Stefan-Boltzmann limit in §06 was applied incorrectly (claiming 0.3 m² at ε=0.70 rejects 300 W, when the actual limit at realistic lunar sink temperature is ~100 W).
+
+**Why it happened:** Tables contain final values with no visible derivation. An agent that calculates wrong and writes a wrong number produces output indistinguishable from output where the calculation was done correctly. The error is invisible until an independent reviewer checks the arithmetic.
+
+**Corrective action (applied in stage 7):** Any value in a table that results from a calculation must show the calculation steps, either in the table Notes column or in a derivation subsection immediately preceding the table. A final number without visible steps is not acceptable for any value that a downstream agent or reviewer will use as an input. The review pass is not a substitute for in-band arithmetic verification — reviewers are expected to find arithmetic errors, but requiring them to do so increases review cost. The first line of defense is forcing derivation display.
+
+---
+
+## Lesson 8: Cross-coupling mismatches between adjacent sections propagate until reviewed
+
+**From stage 6 review (CC-001, P1-B).**
+
+§05 stated electronics/battery survival heaters at 50–150 W. §06 used 85–175 W — a 70% lower-bound inflation that fundamentally changed the survival power closure narrative. Neither section agent detected the discrepancy; no cross-coupling entry was written when §06 chose its different range.
+
+**Why it happened:** Agents read the section they are writing but do not proactively cross-check the same parameter in adjacent section files. The cross-coupling log is supposed to capture these decisions, but it requires an agent to (a) know that another section has already set a value, and (b) choose to log the discrepancy rather than silently using their own value.
+
+**Corrective action (applied in stage 7):** Agent prompts for integrating sections (§06 budget) must now include: "Before writing any value that was also set in §01–§05, search those files for that value and verify consistency. If you use a different value, log the change in `cross-coupling-log.md` with a justification." The cross-coupling log check is a mandatory pre-commit action for any agent whose section is an integrator.
+
+---
+
+## Lesson 9: Assumption register numbering must be centrally coordinated
+
+**From stage 6 fix pass.**
+
+The robotics-actuation-structures agent (Batch 1) added §A14 (actuator mass sensitivity) and §A15 (boot cover replacement) to the assumptions register. The orchestrator then separately instructed the humanoid-systems-architect agent (Batch 2) to add §A14 (gait factor). The gait factor ended up as §A16 — non-sequentially numbered relative to the section order that would be expected.
+
+**Why it happened:** The orchestrator issued assumption number assignments by counting the highest existing entry (§A13 at the time of Batch 2 briefing) without accounting for the fact that Batch 1 agents were simultaneously writing §A14 and §A15.
+
+**Corrective action (applied in stage 7):** The orchestrator must query the assumption register for its highest numbered entry immediately before issuing any instruction that includes a specific §A_N number. The query happens in the same message turn as the dispatch prompt, not at prompt-writing time. Alternatively, agent prompts should say "add this assumption as the next sequential entry after the current highest §A_N — do not use a specific number assigned in this prompt."

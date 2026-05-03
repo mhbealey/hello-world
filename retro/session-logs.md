@@ -175,3 +175,21 @@ Addressed four findings from the stage 6 review pass in `study/01-optimal-space-
 Addressed all four required blockers and majors in `study/01-optimal-space-humanoid/03-actuation-structures.md`. Fix 1 (AE-001): reconciled the DOF table using bilateral totals — table now shows 51–55 kinematic DOF as the correctly summed bilateral total and 38–39 as the independently actuated axes count that drives the actuator mass budget; text explains the convention distinction explicitly. Fix 2 (HC-001): removed Atlas Electric as primary heritage for harmonic drive efficiency; the 85–90% figure is correctly attributed to Atlas Electric's direct-drive architecture as a general electric actuation benchmark; SSRMS/Canadarm2 ISS joints are now the primary space heritage for HD actuation, supported by Harmonic Drive AG ESMATS 2019 space qualification paper and ASME J. Mech. Des. 2021 mechanical efficiency paper; harmonic drive efficiency correctly stated at 75–85% (ratio-dependent). Fix 3 (AE-004/RM-003): added three-class actuator mass derivation anchored to Harmonic Drive AG CSF-14/CSF-20 catalog masses and Unitree M107 motor specifications; weighted total yields 385 g/joint (14.6 kg) vs. 342 g/joint budget (13.0 kg); 1.6 kg gap documented as a budget stress requiring Class A joint gravity-optimization in lunar 1/6 g. Fix 4 (RM-004): added three-class joints/sealing mass derivation anchored to IKO CRBH series cross-roller bearing catalog masses, labyrinth housing parametric estimate, and FFKM lip seal catalog mass; total yields 3.53 kg vs. 4.0 kg budget (conservative margin). Also corrected FFKM baseline from infeasible −180°C operation to heater-maintained ≥−60°C operation, downgrading TRL risk from high to medium. Added §A14 (actuator mass sensitivity) and §A15 (boot cover replacement interval) to margins register. Updated §A4, §A5, §A6 in margins register to reflect corrected heritage and baseline.
 
 ---
+
+## 2026-05-03 — orchestrator: stage 6 task 5–6 (re-review, retro, meta-supervisor)
+
+**Task 5 — Re-review pass:**
+Dispatched six focused re-review agents in parallel, each covering one reviewer's original findings across their relevant sections. Results: 19/20 findings PASS on first re-review. One residual failure: HC-005 (Lunokhod 2 39.2 km still citing Huntress 2011 — §02 had added a parenthetical note about LRO origin but no dedicated BibTeX key). Fixed directly: added `lroc_lunokhod2_traverse` BibTeX entry (Karachevtseva et al. 2013, Planetary and Space Science) and updated §02 inline citation. Final score: 20/20 PASS.
+
+**Task 6 — Retro and meta-supervisor:**
+Wrote stage 6 entries for all four retro files:
+- `retro/agent-performance.md`: collective stage 5 agent assessment + individual entries for all 6 reviewers and 5 fix agents
+- `retro/orchestrator-performance.md`: stage 6 self-assessment (what worked: parallel dispatch, stop hook, triage structure; what didn't: assumption numbering collision, background agent commit interleaving, GitHub sync failure)
+- `retro/process-lessons.md`: Lessons 6–9 (citation keys without bib entries; arithmetic derivation display; cross-coupling adjacent-section check; assumption numbering coordination)
+- `retro/system-observations.md`: 3 new observations (citation corpus non-functional; stop hook effectiveness; resolved: review agents never invoked)
+
+**Got stuck:** Nothing — all tasks completed in sequence.
+
+**Next session:** Task 7 (update agent prompts based on retro findings) and Task 8 (generate handback-stage6.md).
+
+---

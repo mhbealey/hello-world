@@ -66,3 +66,37 @@ Entries are append-only. Do not edit past entries.
 **Recommendation:** First review pass should be the immediate next action after Question (a) sections are confirmed draft-complete. The six reviewers should run in parallel on the six Question (a) sections. Review output should be required before any Question (b) agent is dispatched, because the teaming model and ConOps sections both consume Question (a) numbers as inputs. A review finding that changes the mass budget after ConOps has consumed it creates the cross-coupling cascade the system is designed to prevent.
 
 **Severity:** critical
+
+**2026-05-03 update:** Stage 6 executed the first real review pass (6 reviewers × 6 sections). Finding count: 10 Blockers, 41 Majors, 30 Minors, 19 Nits — 51 combined Blockers+Majors, exceeding the scaffolding's predicted 50-finding threshold. This confirms the observation was correct: the "zero findings" signal in stage 4 was a false negative from absent reviews, not a clean bill of health. All 10 Blockers and 12 selected Majors were addressed in Batch 1/Batch 2 fix passes. 20/20 re-review findings PASS. This observation is resolved.
+
+---
+
+## 2026-05-03 — Citation corpus is non-functional: ~22 of 25 citation keys have no BibTeX entries
+
+**Pattern:** The six Question (a) section agents produced documents with approximately 25 inline citation keys in `\cite{key}` format. Spot-checking by the heritage-citations reviewer found that approximately 22 of 25 keys had no corresponding BibTeX entry in `corpus/references.bib`. The three keys with bib entries are `zhang2020lnd` (added by space-environments during stage 6 fix pass), `ono2018msl` (added by robotics-sensing-autonomy), and `nvidia2023jetson` (added by robotics-sensing-autonomy). All other citation keys — including load-bearing ones like `\cite{radford2015valkyrie}`, `\cite{bostondynamics2024atlas}`, `\cite{nasa2023valkyrieFactsheet}`, `\cite{paine2015valkyrieActuator}`, `\cite{harmonicdrive_ag_catalog}`, `\cite{ssrms2020ntrs}` — are dangling.
+
+**Evidence:** `review/heritage-citations-findings.md` (HC-009, Major treated as near-Blocker): "Only 3 of ~25 citation keys have BibTeX entries. All six section agents generated citation keys in their text but almost none have corresponding entries in `corpus/references.bib`." `review/triage.md` (P2-8): "This makes the document non-functional as a citable study — a reviewer cannot look up any of the cited sources."
+
+**Implication:** The document is not yet a citable study. It is a concept paper with citation-shaped markers. A reader who wants to verify the Valkyrie 1,800 W figure, the Atlas Electric 89 kg mass, or the SSRMS joint efficiency range cannot do so from the current bib file. The citation keys create an expectation of verifiability that the bib file does not fulfill. This is a publishability blocker that must be resolved before the study can be shared externally.
+
+The priority fix list (from P2-8): Valkyrie R5 fact sheet, Harmonic Drive AG catalog, Chang'e-4 LND paper (done), Mars AutoNav paper (done), ISS battery NTRS document. The robotics-actuation-structures stage 6 fix pass added `harmonicdrive_csf_catalog`, `iko_crb_catalog`, `ssrms2020ntrs`, `harmonicdrive_esmats2019`, `mechanical_efficiency_hd_asme2021` — these need to be verified as real entries rather than agent-generated placeholder keys.
+
+**Recommendation:** Stage 7 should include a dedicated "citation hygiene" task that verifies each existing `\cite{key}` against `corpus/references.bib` and adds bib entries for all load-bearing numerical claims. This is a separate task from new content generation — an agent that is both generating content and hunting BibTeX sources will deprioritize the BibTeX work. Dedicate a heritage-citations-reviewer pass specifically to bib completion.
+
+**Severity:** major
+
+---
+
+## 2026-05-03 — Stop hook is the most effective breadcrumb enforcement mechanism deployed
+
+**Pattern:** The git stop hook (`~/.claude/stop-hook-git-check.sh`) blocks session exit when uncommitted changes exist. In stage 6, the hook fired multiple times during the fix pass as background agents wrote to files after manual commits. Each firing required an immediate commit-and-push cycle, producing real-time commit discipline. This is the first stage in which breadcrumb discipline was maintained consistently without retroactive reconstruction.
+
+**Evidence:** All stage 6 work is captured in contemporaneous commits with specific finding IDs in commit messages. The `retro/session-logs.md` entries are real-time, not retroactive. `cross-coupling-log.md` has entries added during the stage (not all on one date at the start). `margins-and-assumptions.md` has entries added by individual agents, not bulk-inserted at handback time.
+
+**Implication:** Structural enforcement (a hook that blocks exit) is categorically more effective than instructional enforcement (a convention that can be skipped). The stop hook does not require agent discipline — it forces the action by making the cost of skipping visible and immediate (the session is blocked). This confirms Lesson 1's principle: "A gate that blocks progress is better than a warning."
+
+**New pattern to capture:** The stop hook creates a pressure to commit partial work to clear the block. In stage 6, this twice resulted in committing files that background agents were still modifying (the margins-and-assumptions.md was committed with robotics-actuation-structures additions before the Batch 2 agent had completed its additions to the same file). The correct response is to commit section files immediately and hold cross-cutting files (session logs, margins register, cross-coupling log) for a final batch commit after all parallel agents complete.
+
+**Recommendation:** Add to the orchestrator's workflow: "Cross-cutting files (session-logs.md, margins-and-assumptions.md, cross-coupling-log.md) are committed once, after all parallel agents on a batch have completed. Section files (§01–§06, §A files) may be committed eagerly per agent. This prevents partial-state commits on files that multiple agents are writing concurrently."
+
+**Severity:** informational (positive observation with one corrective note)
