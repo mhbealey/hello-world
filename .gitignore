@@ -47,3 +47,6 @@ prisma/dev.db
 
 # generated study site (rebuild with: python tools/build_site.py)
 /site/
+
+# generated handback documents (regenerate with: python tools/generate_handback.py)
+handback-stage*.md

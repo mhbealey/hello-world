@@ -88,3 +88,17 @@ corpus/                           (repo root, not under study/)
 ## When to invoke which agent
 
 The orchestrator invokes sub-agents via the Task tool. Each agent's `description` field in `.claude/agents/` tells the orchestrator when to use it. The cross-cutting agents (`soviet-russian-heritage`, `far-side-base-architect`) should be invoked frequently as consultants to other agents, not just for their own sections.
+
+## The handback loop
+
+This project runs as a loop between Claude Code (which executes stages) and a planning conversation (which designs new stages). At the end of each stage, generate a handback document:
+
+```
+python tools/generate_handback.py --stage N
+```
+
+The handback (`handback-stageN.md`) is a self-contained markdown document. The user pastes it into a new planning conversation, which produces the scaffolding for stages N+1, N+2, N+3. The user brings that scaffolding back to Claude Code. The loop repeats.
+
+The handback is the contract between executor and planner. Maintain the breadcrumbs (frontmatter, cross-coupling log, session logs, retro artifacts) so the handback has real content to summarize.
+
+When any stage completes, the orchestrator's last action before declaring the stage done is to generate the handback and confirm the user has it.
