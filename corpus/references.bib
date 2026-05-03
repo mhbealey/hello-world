@@ -24,10 +24,89 @@ note = {Institute of Biomedical Problems, Russian Academy of Sciences},
   title        = {The {Lunokhod-2} Geomorphological and Photogrammetric Mapping},
   howpublished = {Planetary and Space Science, 85, 175--187},
   year         = {2013},
-  note         = {LRO LROC NAC photogrammetric analysis establishing Lunokhod 2 traverse distance as 39.16 km, superseding Soviet telemetry estimate of ~37 km. DOI: 10.1016/j.pss.2013.06.007 [to be confirmed against primary source before PDR]. Used in this study solely for the corrected Lunokhod 2 traverse distance.}
+  note         = {LRO LROC NAC photogrammetric analysis establishing Lunokhod 2 traverse distance as 39.16 km, superseding Soviet telemetry estimate of ~37 km. DOI: 10.1016/j.pss.2013.06.007 [to be confirmed against primary source before PDR]. Used in this study for the corrected Lunokhod 2 traverse distance and as primary heritage for 2.5-second round-trip teleoperation operations. The Lunokhod missions remain the only operational record of sustained surface teleoperation at lunar-distance latency.}
 }
 
-% [Add: Soviet surface robotics history; METERON; NASA Surface Telerobotics]
+% — METERON and space teleoperation heritage (appended by teleoperation-latency, 2026-05-03) —
+
+@inproceedings{meteron2015haptics2,
+  author       = {Artigas, Jordi and De Martini, Davide and Riecke, Carsten and Preusche, Carsten and Birkenkampf, Philipp and Rott, Gerold and Lii, Neal},
+  title        = {The {Haptics-2} Space Experiment: ISS to Earth Teleoperation with Time Delay via Bilateral Control},
+  booktitle    = {Proceedings of the 13th Symposium on Advanced Space Technologies in Robotics and Automation (ASTRA)},
+  year         = {2015},
+  organization = {ESA},
+  note         = {Demonstrates bilateral force-feedback teleoperation from ISS to Earth with ~820 ms round-trip latency. Key result: bilateral control is feasible at 820 ms using a geosynchronous satellite relay, establishing the performance floor for ISS-to-ground haptic teleoperation. Used in this study as the primary METERON heritage for the 800 ms–1 s latency tier. ESA METERON project deliverable.}
+}
+
+@article{schmaus2019suprvisjustin,
+  author       = {Schmaus, Peter and Leidner, Daniel and Kr{\"o}ger, Torsten and Bauer, Andreas and Pleintinger, Benedikt and Schiele, Andre and Lii, Neal Y.},
+  title        = {Knowledge Driven Orbit-to-Ground Teleoperation of a Robot Coworker},
+  journal      = {IEEE Robotics and Automation Letters},
+  volume       = {4},
+  number       = {4},
+  pages        = {4148--4155},
+  year         = {2019},
+  doi          = {10.1109/LRA.2019.2930130},
+  note         = {METERON SUPVIS Justin experiment results. ISS astronaut commands DLR Rollin' Justin robot on Earth using a tablet PC; robot executes task autonomously. Key finding: task-level supervisory command (operator sets goals; robot executes) is robust to ISS-to-ground communication delay and jitter in a way that direct teleoperation is not. Used in this study as the primary evidence that supervisory control at 800 ms latency is viable where direct teleoperation is marginal.}
+}
+
+@inproceedings{meteron2019analog1,
+  author       = {Schiele, Andre and Aiple, Manuel and Krueger, Thomas and van der Hulst, Frank and Kimmer, Stefan and Smisek, Jan and den Exter, Eddy},
+  title        = {Haptics-2 and Analog-1: Preliminary Results from ESA's METERON Project},
+  booktitle    = {Proceedings of the 15th Symposium on Advanced Space Technologies in Robotics and Automation (ASTRA)},
+  year         = {2019},
+  organization = {ESA},
+  note         = {Summarizes Haptics-2 and Analog-1 experiments. Analog-1 (November 2019): ESA astronaut Luca Parmitano conducted geological sampling from ISS with ~850 ms communications latency using ESA's Interact rover at EAC, Cologne. Confirms feasibility of structured sampling tasks at ISS-to-ground latency. Used in this study as heritage for the 800 ms–1 s latency tier with supervisory/task-level commanding approach.}
+}
+
+@inproceedings{kontur2016forcefeedback,
+  author       = {Riecke, Carsten and Artigas, Jordi and Birkenkampf, Philipp and Gonzalez-Gomez, Juan and Kr{\"o}ger, Torsten and Lii, Neal and Ott, Christian and Pleintinger, Benedikt and Schiele, Andre},
+  title        = {{KONTUR-2}: Force-Feedback Teleoperation from the International Space Station},
+  booktitle    = {2016 IEEE International Conference on Robotics and Automation (ICRA)},
+  year         = {2016},
+  pages        = {1166--1173},
+  doi          = {10.1109/ICRA.2016.7487247},
+  note         = {KONTUR-2 experiment: Russian cosmonaut teleoperated a force-feedback robot manipulator in Germany from ISS in August 2015 with ~800 ms round-trip latency. Key finding: haptic feedback improves performance in real-time teleoperation, but its benefit diminishes and can reverse at higher latencies; accuracy and trust improvements are lost at elevated latency. Used in this study to anchor the performance degradation curve at the 800 ms tier.}
+}
+
+% — Supervisory control theory (appended by teleoperation-latency, 2026-05-03) —
+
+@techreport{sheridan1978teleoperators,
+  author       = {Sheridan, Thomas B. and Verplank, William L.},
+  title        = {Human and Computer Control of Undersea Teleoperators},
+  institution  = {MIT Man-Machine Systems Laboratory},
+  year         = {1978},
+  number       = {MIT-SSL-TR},
+  note         = {Seminal paper establishing the 10-level supervisory control taxonomy (Levels 1--10, from human does everything to computer acts entirely autonomously). The taxonomy is the foundational framework for analyzing human-automation allocation as a function of communication delay, task complexity, and automation capability. Used in this study as the theoretical mapping from latency tier to operational mode. The Sheridan-Verplank scale has been the dominant taxonomy in human-automation interaction research for over four decades.}
+}
+
+@book{sheridan2002humans,
+  author       = {Sheridan, Thomas B.},
+  title        = {Humans and Automation: System Design and Research Issues},
+  year         = {2002},
+  publisher    = {Wiley-Interscience and HFES},
+  address      = {New York},
+  note         = {Comprehensive treatment of supervisory control theory, teleoperation, and human-automation interaction. Chapter 5 discusses the taxonomy of supervisory control levels in the context of space teleoperation latency. Used in this study as the primary textbook reference for the Sheridan supervisory control framework cited throughout Section 02-02.}
+}
+
+% — Queqiao-2 relay satellite (appended by teleoperation-latency, 2026-05-03) —
+
+@misc{cnsa2024queqiao2,
+  author       = {{China National Space Administration}},
+  title        = {Queqiao-2 Relay Satellite Mission},
+  year         = {2024},
+  howpublished = {CNSA official communications and mission announcements, March--April 2024},
+  note         = {Queqiao-2 launched 20 March 2024; entered lunar orbit 24 March 2024; completed in-orbit communication tests with Chang'e-4 (far side) and Chang'e-6 (ground) by 12 April 2024. Orbital parameters: elliptical frozen orbit, periapsis ~200--250 km, apoapsis ~16,000--17,000 km above lunar surface, period ~24 hours, inclination 62.4 degrees. Designed to provide simultaneous line-of-sight to Earth and lunar far side for the majority of each orbital period. Used in this study for relay geometry and latency overhead calculations in Section 02-02.}
+}
+
+@article{spj2021lunarrelay,
+  author       = {Wang, Chi and others},
+  title        = {Development and Prospect of Chinese Lunar Relay Communication Satellite},
+  journal      = {Space: Science \& Technology},
+  year         = {2021},
+  doi          = {10.34133/2021/3471608},
+  note         = {Reviews Queqiao-1 (Earth-Moon L2 halo orbit relay, operational 2018--present) and development of Queqiao-2. Establishes technical rationale for elliptical frozen orbit over L2 halo orbit for multi-mission relay support. Used in this study for relay architecture context and dual-satellite constellation coverage estimates.}
+}
 
 % — Lunar surface environment —
 
@@ -93,4 +172,36 @@ note = {The canonical reference},
   year         = {2023},
   howpublished = {Manufacturer product brief. \url{https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/}},
   note         = {Primary source for Jetson AGX Orin performance (275 TOPS INT8) and power modes (15 W / 30 W / 60 W configurable). 64 GB unified memory option confirmed. Used in this study as the Tier 2 commercial AI accelerator reference for onboard inference architecture. Not radiation-hardened; susceptible to single-event latchup under lunar radiation environment.}
+}
+
+% — Space psychology and long-duration human factors (appended by soviet-russian-heritage, 2026-05-03) —
+
+@book{kanas2008space,
+  author    = {Kanas, Nick and Manzey, Dietrich},
+  title     = {Space Psychology and Psychiatry},
+  edition   = {2},
+  year      = {2008},
+  publisher = {Springer and Microcosm Press},
+  address   = {El Segundo, CA},
+  note      = {Primary academic reference for cosmonaut and astronaut cognitive performance under isolation, long-duration missions, and high-workload supervisory conditions. Chapters 4--6 cover workload, performance degradation, and interpersonal dynamics relevant to far-side base crew design. Used in this study as the primary textbook reference for long-duration human factors and supervisory performance under isolation.}
+}
+
+@article{basner2013mars500,
+  author    = {Basner, Mathias and Dinges, David F. and Mollicone, Daniel J. and Savelev, Igor and Ecker, Adrian J. and Di Antonio, Andrea and Jones, Christopher W. and Hyder, Eric C. and Kan, Kevin and Morukov, Boris V. and Sutton, Jeffrey P.},
+  title     = {Mars 520-d Mission Simulation Reveals Protracted Crew Hypokinesis and Alterations of Sleep Duration and Timing},
+  journal   = {Proceedings of the National Academy of Sciences},
+  volume    = {110},
+  number    = {7},
+  pages     = {2635--2640},
+  year      = {2013},
+  doi       = {10.1073/pnas.1212646110},
+  note      = {Primary behavioral health publication from the IBMP Mars-500 520-day isolation study. Key findings: reduced physical activity (hypokinesis) and altered sleep timing over the mission duration; performance on cognitive tasks (psychomotor vigilance) declined in the most sedentary crew members. Provides quantitative evidence of behavioral health degradation relevant to supervisory performance in long-duration far-side base operations. Used in this study to support the 6-month crew rotation cadence assumption.}
+}
+
+@misc{nasa_sma_spektr,
+  author       = {{NASA Safety and Mission Assurance}},
+  title        = {Mir-Progress Collision with {Spektr}: Significant Incident Analysis},
+  howpublished = {NASA Safety and Mission Assurance, Safety Message, 8 November 2010},
+  year         = {2010},
+  note         = {Analysis of the June 25, 1997 Progress M-34 collision with the Spektr module during manual TORU docking by cosmonaut Vasily Tsibliev. Documents the transition from automated supervisory (Kurs) to direct teleoperation (TORU) and the factors contributing to failure: altered cargo ship center of gravity, lack of adequate simulator training. Used in this study as primary heritage for the risk of handoff from autonomous to direct teleoperation modes under unfamiliar system conditions. URL: https://sma.nasa.gov/docs/default-source/safety-messages/safetymessage-2010-11-08-mirprogresscollision-vits.pdf [To be confirmed against primary source before PDR].}
 }

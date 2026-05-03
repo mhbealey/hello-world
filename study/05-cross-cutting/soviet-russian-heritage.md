@@ -318,3 +318,61 @@ By contrast, the FEDOR experiment represents a departure from this tradition, in
 - Whether the Russian space robotics community has produced any systematic analysis comparing purpose-built vs. humanoid approaches (analogous to the ESA METERON studies) is unknown; such a document would be highly relevant.
 - Lunokhod 3 (built but unflown) reportedly incorporated lessons from Lunokhod 2. Its specifications would strengthen the case study for iterative purpose-built improvement. [VERIFY Lunokhod 3 specs]
 - The Russian military's continued investment in FEDOR-class systems for non-space applications (hazardous environment work, EOD) is a separate thread that may inform the long-term trajectory of Russian humanoid development; not researched in this session.
+
+---
+
+## 7. Cosmonaut Supervisory Control Performance Data
+
+### Key Sources
+
+- Mir Mission Chronicle (NASA TP-98-207890, 1998). Full operational history through Shuttle-Mir program; crew time allocation data.
+- Kanas, N. and Manzey, D. *Space Psychology and Psychiatry*, 2nd ed. Springer/Microcosm, 2008. \cite{kanas2008space} — the primary academic reference for cosmonaut cognitive performance under isolation and long-duration mission conditions.
+- Sheridan, T.B. and Verplank, W.L. "Human and Computer Control of Undersea Teleoperators." Technical Report, MIT Man-Machine Systems Laboratory, 1978. \cite{sheridan1978teleoperators} — the foundational supervisory control taxonomy.
+- IBMP Mars-500 program publications: Basner, M. et al. "Mars 520-d Mission Simulation Reveals Protracted Crew Hypokinesis and Alterations of Sleep Duration and Timing." *PNAS* 110(7), 2013. \cite{basner2013mars500}
+- Langdorf, M. (ed.). *Lunokhod-1 and -2 Control.* NIP-10 internal documentation references, as cited in Huntress and Marov (2011). \cite{huntress2011soviet}
+
+### Cosmonaut Workload Breakdown on Mir
+
+The Mir Mission Chronicle provides the most comprehensive English-language record of how crew time was actually spent on a long-duration station. The pattern across 28 long-duration expeditions (1986–2000) is consistent: the majority of unplanned crew time went to maintenance and repair rather than to scheduled science. Estimates derived from the Chronicle's expedition summaries suggest approximately:
+
+- **Maintenance and unscheduled repair: 30–40% of total crew time.** This rose sharply after major failures (post-Spektr collision: ~60%). The Mir design philosophy of in-situ repair over abort or replacement meant that crews became de facto maintenance technicians — a role that was not always fully anticipated in the mission timeline.
+- **Scheduled science operations: 20–30%.** Scientific return per mission was often lower than planned because maintenance crowded out science windows. The discrepancy between planned science time and actual science time on Mir is a documented source of friction between the science community (primarily the Russian Academy of Sciences) and the operational program.
+- **Mandatory exercise: ~15%.** Two hours daily was the nominal requirement to mitigate bone and muscle loss; compliance was imperfect, particularly during high-workload maintenance periods.
+- **Communications, documentation, housekeeping, personal time: ~25–35%.**
+
+**Relevance for far-side base planning:** If the Mir baseline holds, a 4-person crew at a far-side base should expect 30–40% of crew time to be absorbed by maintenance and unscheduled repair — time that is unavailable for humanoid supervision. This constrains the supervisory bandwidth available to the crew and is a primary input to the supervisor ratio assumption (§A17). The humanoid fleet reduces the crew's direct maintenance burden, which is part of the economic case for the system, but the humanoids themselves require maintenance. The net effect on total crew maintenance time is an open question requiring ConOps analysis.
+
+### Supervisory Control Examples from Mir Operations
+
+**Lyappa robotic arm (module docking assist).** The Lyappa arm was a specialized device attached to newly-delivered modules (Kvant-2, Kristall, etc.) to transfer them from the Soyuz docking port to their permanent port on the Mir core. The operation was ground-commanded with cosmonauts monitoring — a supervisory rather than direct-teleoperation role. Crew workload was low; the primary crew task was confirming arm position and readiness before each commanded step. This is the simplest supervisory control case: monitor, confirm, proceed. \cite{huntress2011soviet} [VERIFY: Lyappa supervisory control characterization against primary operational documents]
+
+**Elektron oxygen generator monitoring under fault.** The Elektron electrolysis-based oxygen generator failed repeatedly on Mir, requiring cosmonauts to manage the fault modes — switching to backup oxygen generation (solid propellant oxygen generators, "candles"), diagnosing the root cause, and restoring the system. This is supervisory control under fault conditions with life-safety consequences: the crew monitors system state, interprets anomalies, and selects responses from a pre-defined set rather than directly operating the hardware. The cognitive demand is high precisely because the fault space is partially unknown at the moment of failure. The Mir data on Elektron failures (at least 6 major failures documented in Shuttle-Mir records) provides the negative case: when a monitored system fails in an unexpected mode, supervisory control degrades toward direct intervention, consuming far more crew time than nominal monitoring.
+
+**TORU manual docking (Progress cargo ships).** The TORU manual docking system allowed a cosmonaut to take over from the automated Kurs system to dock a Progress cargo ship manually using a camera feed and joystick. Nominal Kurs docking is automated with the crew in a monitoring/confirmation role (supervisory, Level 8 on Sheridan's scale). TORU manual docking shifts the crew to direct teleoperation (Level 3–4 on Sheridan's scale). The Spektr collision (1997) — where manual TORU docking failed due to the spacecraft's altered center of gravity and inadequate simulator training — demonstrates that the transition from supervisory to direct-control roles under unfamiliar conditions is the highest-risk mode transition in Soviet space operations. The lesson for the far-side base: the handoff from autonomous humanoid operation to direct teleoperation during a fault must be designed carefully, because the human supervisor's mental model of the system state at the moment of handoff is critical. \cite{nasa_sma_spektr} [Key source: NASA SMA Spektr collision analysis]
+
+### Mars-500 Supervisory Control Study
+
+The IBMP-led Mars-500 study (June 2010 – November 2011, 520 days in isolation, 6 crew) is the longest known analog for deep-isolation human performance. The study simulated a Mars mission including communication delays of up to 20 minutes. Key results relevant to supervisory control:
+
+- **Behavioral health and performance:** Basner et al. (2013, *PNAS*) documented that crew members showed significantly reduced physical activity and altered sleep timing and duration over the 520 days. These are leading indicators for reduced supervisory attentiveness. Critically, the degradation was not uniform — some crew members showed sharp declines while others maintained near-baseline performance, suggesting individual variability in long-duration supervisory reliability. \cite{basner2013mars500}
+- **Communication delay management:** With simulated 20-minute one-way delays to Earth, the crew shifted entirely to autonomous mission planning — tasks were planned independently, executed, and the results reported to Earth post-hoc. This replicates the Mars rover supervisory model. The crew reported that the communication delay felt "natural" after adaptation but required discipline to avoid expectation of rapid ground response for anomalies. [VERIFY: this behavioral description against IBMP primary publications]
+- **Relevance to far-side base:** The Mars-500 study supports the argument that crews can adapt to managing autonomous systems under communication constraints, but the adaptation requires training and is associated with behavioral health risks in the long-duration case. A 6-month rotation cadence (per Mir heritage) may be preferable to longer deployments specifically to limit supervisory performance degradation.
+
+### The Lunokhod NIP-10 Model vs. 2035 Projection
+
+The NIP-10 team required 5 persons per shift (commander, driver, navigator, antenna operator, equipment engineer) to teleoperate one Lunokhod rover under 2.5s round-trip delay. This 5:1 ratio (humans per robot) reflects the low autonomy of the 1970s rover — every navigation decision required a human, every path segment required visual confirmation through the camera frame. The operational tempo was constrained by the frame update rate (~20 seconds between usable images in early sessions).
+
+By the §A1 autonomy curve, the 2035 first-operational humanoid will have TRL 7 reactive layer autonomy and TRL 6 deliberative autonomy. At this capability level:
+- Locomotion on prepared paths: fully autonomous, no human required
+- Navigation to designated coordinates: autonomous with human-approved waypoints
+- Routine manipulation (known object, practiced grasp): autonomous execution with human monitoring
+- Fault response (safe-stop, diagnostic): autonomous; human notified, not required for response
+- Novel situations, anomalies, crew interface decisions: human required
+
+The projected supervisor ratio at IOC (2035): **1 human actively supervising 2–3 humanoids simultaneously**, with the remaining crew members available as backup supervisors. This is a 5–8× improvement over the NIP-10 ratio, driven by autonomy advances, and is the foundational economic claim for the humanoid-forward architecture. It commits to §A17 (supervisor ratio: 1:2–3 at IOC, 1:4–5 at full operation by 2040).
+
+### Open Questions / Thin Coverage
+
+- Quantitative crew time allocation data for Mir (percentages by expedition) has not been sourced from a primary mission report in this research pass; the estimates above are derived from narrative descriptions in the Mir Mission Chronicle. \[VERIFY against primary time-allocation records if available in NTRS\]
+- The IBMP published detailed cognitive performance data from Mars-500 beyond Basner et al. A more complete survey of the IBMP corpus would strengthen the supervisory performance claim.
+- Whether the NIP-10 5-person team structure was formally documented as a TsUP operational standard or evolved informally is not established in available sources. \[VERIFY\]

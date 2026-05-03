@@ -215,3 +215,9 @@ Addressed seven findings across `study/01-optimal-space-humanoid/06-mass-power-b
 - Updated both files to review-status: findings-addressed, last-updated: 2026-05-03.
 
 ---
+
+## 2026-05-03 — orchestrator (as soviet-russian-heritage): stage 7 Task 2 heritage backfill
+
+Topic 7 written directly by orchestrator after soviet-russian-heritage agent timed out. Topic 7 scope: cosmonaut supervisory control performance data — Mir crew time allocation (30–40% maintenance), supervisory control examples (Lyappa arm, Elektron fault management, TORU/Kurs mode transition), Mars-500 behavioral health results (Basner et al. 2013 PNAS), and Lunokhod NIP-10 team model projected to 2035 supervisor ratio. Word count for Topic 7: approximately 1,000 words. Added three BibTeX entries (kanas2008space, basner2013mars500, nasa_sma_spektr). Sheridan key corrected from sheridan1978supervisory to sheridan1978teleoperators (already added by teleoperation-latency agent). Total file now 6,702 words across 7 topics.
+
+---
