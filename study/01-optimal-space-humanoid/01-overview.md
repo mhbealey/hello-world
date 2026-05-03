@@ -1,7 +1,7 @@
 ---
 title: "Optimal Space Humanoid: Overview and Heritage Table"
 status: draft
-review-status: unreviewed
+review-status: findings-addressed
 owner: humanoid-systems-architect
 last-updated: 2026-05-03
 ---
@@ -16,7 +16,7 @@ Specifications are drawn from manufacturer data sheets, peer-reviewed publicatio
 
 | Robot | Org | Year (latest config) | Mass (kg) | Height (m) | DOF (total) | Actuation type | Rated power (W) | Autonomy maturity | Space-qual status | Key lessons |
 |---|---|---|---|---|---|---|---|---|---|---|
-| Atlas Electric | Boston Dynamics | 2024 | 89 | 1.50 | 56 | Electric (planetary roller-screw linear actuators, high-density NdFeB motors) | unverified | Mixed teleoperation + autonomy; fleet-level task transfer demonstrated | None | Fully rotational joints and 56 DOF enable superhuman workspace access, but 89 kg mass and battery-swap dependency create significant lander manifest pressure. Efficiency figure of 85–90% electrical-to-mechanical is best-in-class but total rated draw is unpublished. |
+| Atlas Electric | Boston Dynamics | 2024 | 89 | 1.50 | 28 (Boston Dynamics, 2024) | Electric (custom fully-rotational direct-drive motors, high-density NdFeB motors; no harmonic drives, no roller screws) | unverified | Mixed teleoperation + autonomy; fleet-level task transfer demonstrated | None | 28 DOF and fully rotational direct-drive motors achieve the locomotion performance baseline for this study; the 56-DOF figure referenced in earlier drafts was incorrect. 89 kg mass and battery-swap dependency create significant lander manifest pressure. Efficiency figure of 85–90% electrical-to-mechanical is best-in-class but total rated draw is unpublished. |
 | Apollo | Apptronik | 2023 | 72.5 | 1.73 | 71 | Electric (proprietary linear and rotary actuators) | unverified | Structured env. only; pilot deployments at Mercedes-Benz and GXO (2024–2025) | None | Highest published DOF count in this survey (71); hot-swap 4-hr battery pack is a relevant operational model for base logistics. Developed directly from Apptronik's Valkyrie heritage, making it a credible bridge between research and commercial. |
 | Figure 02 | Figure AI | 2024 | 70 | 1.68 | 35 (16 in hands alone) | Electric (unverified motor type) | unverified | Mixed teleoperation + autonomy; VLA-based task learning from voice/visual cues; deployed at BMW Spartanburg | None | Relatively low whole-body DOF (35) but hand dexterity is high (16 DOF/hand). On-board VLA trained with OpenAI demonstrates the fastest path to natural-language task assignment; relevant for crew interface design. 2.25 kWh battery with 20+ hr runtime is an outlier requiring verification. |
 | Optimus Gen 2 | Tesla | 2023 | 57 | 1.73 | 28 (11 DOF/hand; Gen 3 hands: 22 DOF/hand) | Electric (tendon-driven hands, rotary joints in body) | ~300 (2.3 kWh battery, ~8 hr runtime, **unverified** avg draw) | Structured env. only; ~1,000 units deployed internally at Tesla Fremont (2025) | None | Lowest mass in the commercial survey (57 kg) — favorable for launch mass budget. Large internal deployment fleet provides reliability data unavailable for competitors. Hand upgrade path (Gen 3: 22 DOF, 50 actuators, tactile fingertip sensing) is the most evolved manipulation heritage in the survey. |
@@ -32,6 +32,7 @@ Specifications are drawn from manufacturer data sheets, peer-reviewed publicatio
 - Rated power figures for commercial robots are generally not published by manufacturers; estimates derived from battery capacity and runtime are marked as unverified.
 - Robonaut 2 DOF count of 42 is for the torso+arm+hand configuration as deployed to ISS; the later leg upgrade added 14 DOF (7 per leg) for a total of 56 DOF in the full configuration. The legs were never functional on orbit.
 - FEDOR's "48" figure from primary sources refers to motor count, not independently verified articulated DOF; treat as approximate.
+- Atlas Electric DOF is 28 per Boston Dynamics' own 2024 specification. Earlier study drafts carried 56 DOF, which was incorrect and has been corrected throughout.
 
 ---
 

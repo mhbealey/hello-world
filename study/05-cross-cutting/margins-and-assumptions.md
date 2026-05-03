@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A13).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A16).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -35,9 +35,9 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Far side relay infrastructure expandable   |Queqiao-2 operational, future relays in planning|far-side-base-architect  |Medium — drives comms architecture    |
 |Space humanoid design-to mass: 75 kg       |See §A2 below                                   |humanoid-systems-architect|High — drives lander manifest and form factor|
 |Space humanoid peak power: ≤800 W          |See §A3 below                                   |humanoid-systems-architect|Medium — drives power architecture and thermal|
-|Actuation type: HD-Electric primary        |See §A4 below                                   |robotics-actuation-structures|Medium — harmonic flexspline cryogenic TRL is open|
-|Structure + actuation mass ≤30 kg design-to|See §A5 below                                   |robotics-actuation-structures|Medium — CFRP construction required; risk if space-qual drives material change|
-|Joint dust seal: FFKM lip seal to −180°C   |See §A6 below                                   |robotics-actuation-structures / space-environments|High — material at TRL 3–4 for cryogenic range; must reach TRL 5 by 2029|
+|Actuation type: HD-Electric primary (SSRMS heritage; Atlas Electric is direct-drive benchmark, not HD heritage)|See §A4 below|robotics-actuation-structures|Medium — harmonic flexspline cryogenic TRL is open|
+|Structure + actuation mass ≤30 kg design-to; stressed to ~31.6 kg if Class A joints not gravity-optimized|See §A5 below|robotics-actuation-structures|Medium — Class A joint mass sensitivity documented in §A14|
+|Joint dust seal: FFKM lip seal at ≥−60°C (heater-maintained); TRL 4 for dynamic joint application in vacuum|See §A6 below|robotics-actuation-structures / space-environments|Medium — dynamic joint sealing in vacuum at −60°C requires validation by 2029; heater network is hard design requirement|
 |Sensor suite mass ~2.1 kg, power 37–75 W peak|See §A7 below                               |robotics-sensing-autonomy|Low-medium — sensors are not mass/power driver; TRL gaps are in qualification, not sizing|
 |Compute architecture: two-tier RH supervisor + commercial AI accelerator|See §A8 below|robotics-sensing-autonomy|High — no rad-hard AI equivalent exists at TRL > 4; watchdog architecture is the 2035 solution|
 |Foundation models used at supervisory layer only (not primary task executor)|See §A9 below|robotics-sensing-autonomy|Medium — if VLA generalization to OOD environments advances faster than expected, this assumption is conservative; if it does not advance, it is the correct constraint|
@@ -45,6 +45,9 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Radiation hardening: hybrid RHBD + spot shielding + ORU replacement|See §A11 below|space-environments|Medium — Tier 2 ORU replacement strategy requires 3-year cadence and base workshop capability|
 |Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface|See §A12 below|space-environments|Medium — LND measurement anchors dose equivalent; silicon TID conversion is spectrum-dependent and requires validation|
 |Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)|See §A13 below|humanoid-systems-architect|Medium-high — drives power system mass (largest single mass line item at 16.9 kg); technology gate at 2032 hardware definition review|
+|Actuator mass weighted mean 342 g/joint (budget) vs. 385 g/joint (derived); 1.6 kg overrun risk if Class A not gravity-optimized|See §A14 below|robotics-actuation-structures|Medium — 5% structure+actuation overrun in stressed case; must confirm in Phase A|
+|Boot cover replacement interval: 500 surface-hours (parametric, no heritage)|See §A15 below|robotics-actuation-structures / far-side-base-architect|Low-medium — ~7 pairs/year/humanoid consumables; accelerated abrasion test required before ConOps interval treated as credible|
+|Locomotion power gait factor: 0.55 (normal gait vs. vigorous locomotion); no direct heritage validation|See §A16 below|humanoid-systems-architect / robotics-actuation-structures|Medium — 800 W cap holds unless gait factor ≥0.84; current margin erodes if factor is 0.75|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -72,27 +75,45 @@ Owner: humanoid-systems-architect. Risk if wrong: medium — power directly driv
 
 ### A4. Primary actuation type: HD-Electric for load-bearing joints
 
-The actuation section (`study/01-optimal-space-humanoid/03-actuation-structures.md`) selects **high-ratio harmonic drive electric actuation** for the primary load-bearing joints (hips, knees, ankles, shoulders, elbows), with a hybrid QDD-class approach for low-torque fine-control joints (wrists, fingers). This choice is driven by mass efficiency: HD-Electric achieves 85–90% electrical-to-mechanical efficiency and the highest torque density of the three electric options considered. SEA was rejected as the primary architecture on mass grounds — Valkyrie's 129 kg for 44 DOF with SEA throughout is 72% above the 75 kg design-to target.
+**Updated 2026-05-03 to address HC-001 (Atlas Electric misidentification as harmonic drive heritage).**
+
+The actuation section (`study/01-optimal-space-humanoid/03-actuation-structures.md`) selects **high-ratio harmonic drive electric actuation** for the primary load-bearing joints (hips, knees, ankles, shoulders, elbows), with a hybrid QDD-class approach for low-torque fine-control joints (wrists, fingers). This choice is driven by mass efficiency: HD-Electric achieves the highest torque density of the electric options considered for the joint torque requirements of a 75 kg bipedal humanoid, and the harmonic drive transmission architecture is space-qualified through SSRMS/Canadarm2 heritage on ISS.
+
+**Heritage basis (corrected).** The primary space-heritage citation for harmonic drive actuation is the SSRMS (Canadarm2) joints — seven joints using harmonic drive transmissions with brushless DC motors, space-qualified through continuous ISS service. Harmonic Drive AG CSD/CSF series transmission efficiency is 75–85% at rated load (ratio-dependent), per published technical literature (Schulke et al., ESMATS 2019; ASME J. Mech. Des. 2021). The 2024 Boston Dynamics Atlas Electric achieves 85–90% system-level electrical-to-mechanical efficiency — this is correctly cited as a benchmark for advanced electric actuation generally, but Atlas Electric uses custom fully-rotational direct-drive motors, not harmonic drives. Atlas Electric is not heritage for the HD transmission architecture selected here.
+
+SEA was rejected as the primary architecture on mass grounds — Valkyrie's 129 kg for 44 DOF with SEA throughout is 72% above the 75 kg design-to target.
 
 **Fallback gate:** If the harmonic drive flexspline cryogenic fatigue validation program does not reach TRL 5 by the 2029 program gate, the architecture reverts to selective SEA at major limb joints. This fallback adds an estimated 10–20 kg and requires a mass budget renegotiation with the destinations-trajectories agent.
 
-Owner: robotics-actuation-structures. Risk if wrong: medium — if cryogenic flexspline fatigue life is unacceptable, the fallback is SEA and the mass budget breaks; if the peak power model fails to close, joint heater power (required to maintain joints above −80°C during cold soak) may push the power budget past the §A3 ceiling.
+Owner: robotics-actuation-structures. Risk if wrong: medium — if cryogenic flexspline fatigue life is unacceptable, the fallback is SEA and the mass budget breaks; if the peak power model fails to close, joint heater power (required to maintain joints above −60°C during cold soak) may push the power budget past the §A3 ceiling.
 
 ### A5. Structure + actuation mass ≤30 kg design-to (≤39 kg NTE)
 
-The actuation section sets a parametric mass allocation of **30.0 kg design-to / 39.0 kg NTE** for the combined structure and actuation subsystem (primary structure, actuation, joints/sealing, end-effectors). This is 40% of the 75 kg total system design-to mass. The allocation is broken down as: primary structure 8.5 kg (CFRP limb links + Al 7075 nodes), actuation 13.0 kg (38 joints × ~340 g mean actuator mass), joints/seals 4.0 kg, end-effectors 4.5 kg.
+**Updated 2026-05-03 to address AE-001 (DOF count reconciliation) and integrate §A14 actuator mass sensitivity.**
 
-The 8.5 kg structural mass assumes CFRP limb construction. If space-qualification or impact-resistance requirements force a return to aluminum-only limb construction, structural mass increases by approximately 2.5–3.5 kg, breaking the 30 kg budget. This would force a renegotiation at the total system level.
+The actuation section sets a parametric mass allocation of **30.0 kg design-to / 39.0 kg NTE** for the combined structure and actuation subsystem (primary structure, actuation, joints/sealing, end-effectors). This is 40% of the 75 kg total system design-to mass. The allocation is broken down as: primary structure 8.5 kg (CFRP limb links + Al 7075 nodes), actuation 13.0 kg (38 independently actuated joints at weighted mean ~342 g/joint), joints/seals 4.0 kg, end-effectors 4.5 kg.
 
-Owner: robotics-actuation-structures. Risk if wrong: medium — structural material change or actuator mass overrun would require either total system mass increase (impacts §A2 and lander manifest) or reduction in another subsystem allocation.
+**DOF count convention (reconciled 2026-05-03).** The humanoid has 51–55 total kinematic DOF when bilateral joint entries are correctly summed. The 38-joint actuator budget counts independently actuated axes only: hands have 10–12 kinematic DOF each but only 4 independent actuators each (one per finger ray; remaining DOF tendon-coupled). Both counts are correct and measure different things. The 38 number drives the actuator mass budget. See §A14 for the actuator mass derivation and Class A joint sensitivity.
 
-### A6. Joint dust seal: FFKM lip seal at −180°C (TRL 3–4; must reach TRL 5 by 2029)
+**NTE clarification.** Subsystem NTE values (e.g., 39.0 kg for structure+actuation) are computed as design-to × 1.30 for internal subsystem tracking only — not additive inputs to the system NTE. The system NTE of 97.5 kg is computed once from the 75.0 kg system design-to per NASA-STD-5001. Downstream agents must use system-level figures.
 
-The actuation section specifies **perfluoroelastomer (FFKM/Kalrez-class) lip seals** as the elastomeric element in the dual-stage labyrinth + lip seal dust mitigation architecture. Standard FFKM compounds are space-qualified for −60°C to +200°C service (ISS heritage in fluid line connectors). The lunar far side surface reaches −180°C. Adaptation of FFKM compounds for the −180°C lower bound under cyclic joint loads in vacuum is a development item at **TRL 3–4**.
+The 8.5 kg structural mass assumes CFRP limb construction. If space-qualification or impact-resistance requirements force a return to aluminum-only limb construction, structural mass increases by approximately 2.5–3.5 kg, breaking the 30 kg budget.
 
-If this adaptation fails to reach TRL 5 (component validation in relevant environment) by the 2029 program gate, the fallback is an all-labyrinth seal architecture (no elastomeric element), which reduces particle rejection effectiveness and increases bearing surface contamination rates. The all-labyrinth fallback is viable for a shorter mission duration but has not been assessed for multi-year permanent base service life.
+Owner: robotics-actuation-structures. Risk if wrong: medium — Class A joint mass overrun (see §A14) or structural material change would push structure+actuation above 30 kg design-to; either case requires system-level budget renegotiation.
 
-Owner: robotics-actuation-structures (definition), space-environments (execution and validation). Risk if wrong: high for permanent base dust tolerance; a failed seal at a primary joint could require ORU replacement on a compressed schedule and degrades the robot's operational availability.
+### A6. Joint dust seal: FFKM lip seal at ≥−60°C (heater-maintained); TRL 4 for dynamic joint application
+
+**Updated 2026-05-03 to address AE-010 (FFKM at −180°C is infeasible due to polymer glass transition) and correct the baseline design.**
+
+The actuation section specifies **perfluoroelastomer (FFKM/Kalrez-class) lip seals** as the elastomeric element in the dual-stage labyrinth + lip seal dust mitigation architecture. Standard FFKM compounds are space-qualified for −60°C to +200°C service (ISS heritage in fluid line connectors).
+
+**Baseline design (corrected from prior description).** FFKM compounds glass-transition at approximately −50°C to −70°C and cannot provide dynamic sealing below those temperatures. The prior description of "FFKM seals at −180°C" was physically infeasible. The corrected baseline is: the joint heater network maintains seal zones above −60°C throughout all operational modes including lunar night hibernation. The FFKM seal is always operated within its qualified temperature range. The heater network is a hard design requirement — joints must not reach −60°C regardless of seal architecture. This requirement is carried in the thermal architecture and power budget.
+
+The remaining development item is **dynamic cyclic joint sealing performance of FFKM at −60°C in vacuum with PFPE-lubricated bearing surfaces**. FFKM is qualified at −60°C for static service (ISS fluid line connectors); dynamic joint sealing at this temperature in vacuum has not been demonstrated in a space robot joint context. TRL: 4 (material qualified at this temperature; dynamic joint application in vacuum is a development item). Target: TRL 5 by 2029 program gate.
+
+If dynamic sealing validation fails, the fallback is an all-labyrinth seal architecture (no elastomeric element), which reduces particle rejection effectiveness. The all-labyrinth fallback is viable for multi-year service if the labyrinth geometry exclusion rate is validated by test in a representative lunar regolith environment.
+
+Owner: robotics-actuation-structures (definition), space-environments (execution and validation). Risk if wrong: medium — all-labyrinth fallback is available; risk is lower than the prior description implied because the −60°C dynamic sealing challenge is a development item within an existing qualified material range, not a new materials science problem.
 
 ### A7. Sensor suite mass ~2.1 kg design-to, 37–75 W peak power
 
@@ -106,7 +127,7 @@ Owner: robotics-sensing-autonomy. Risk if wrong: low-medium — sensors are not 
 
 The sensing/autonomy section establishes a **two-tier compute architecture**: Tier 1 is a radiation-hardened supervisor processor (RAD750-class, 5–10 W, always-on) running safety-critical deterministic control loops; Tier 2 is a commercial AI inference accelerator (Jetson AGX Orin-class, 15–60 W) running perception pipelines and VLA model inference under Tier 1 watchdog supervision. Total compute mass ~1.8 kg including spot shielding.
 
-This architecture is required because no radiation-hardened AI inference processor equivalent to commercial AI accelerators (Jetson AGX Orin: 275 TOPS, 15–60 W) exists at TRL > 4 as of 2026. The Tier 2 watchdog approach accepts commercial component SEU/latchup susceptibility as a managed risk: Tier 1 monitors Tier 2 output validity and issues power-cycle resets on detected anomalies. Spot shielding (5–10 mm Al/Ta laminate, ~0.8 kg) reduces latchup rate by 2–3 orders of magnitude.
+This architecture is required because no radiation-hardened AI inference processor equivalent to commercial AI accelerators (Jetson AGX Orin: 275 TOPS INT8 / ~137 TOPS FP16, 15–60 W) exists at TRL > 4 as of 2026. The Tier 2 watchdog approach accepts commercial component SEU/latchup susceptibility as a managed risk: Tier 1 monitors Tier 2 output validity and issues power-cycle resets on detected anomalies. Spot shielding (5–10 mm Al/Ta laminate, ~0.8 kg) reduces latchup rate by 2–3 orders of magnitude for SPE proton events; GCR HZE ion shielding effectiveness is more limited at the relevant energies.
 
 **Technology gate:** If a radiation-hardened AI accelerator at TRL 6 becomes available by the 2029 gate (through DARPA HPSC or similar programs), the Tier 2 watchdog architecture may be simplified or replaced. If not — assessed as the more likely outcome — the two-tier watchdog architecture remains through the 2035 first deployment.
 
@@ -126,9 +147,7 @@ Owner: robotics-sensing-autonomy. Risk if wrong: medium — if the assumption is
 
 The environments section establishes a **parametric estimate of 70–200 W continuous FSP draw per humanoid during lunar night hibernation**: 50–150 W for electronics compartment and battery survival heaters, plus 20–50 W for joint heaters maintaining HD-Electric lubrication above −60°C at the 12 primary load-bearing joints. This range is derived by analogy to Mars rover WEB thermal heritage (Curiosity/Perseverance: ~100 W survival heating in cold case) scaled for the 14-day lunar night and the humanoid's larger electronics volume and distinct geometry.
 
-**Confirmed §05 source value (2026-05-03):** The electronics/battery survival heater range of 50–150 W is confirmed as the §05 authoritative value. The lower bound (50 W) assumes effective MLI on the torso electronics compartment; the upper bound (150 W) reflects uncertainty in thermal cross-coupling between torso and limb linkages. The bipedal limb surface area does not drive this budget because the thermally critical electronics are torso-concentrated. The §06 range of 85–175 W is inconsistent with this confirmed value and must be corrected by humanoid-systems-architect.
-
-**This estimate is TRL 2 (parametric only). A detailed thermal model is required.** The wide range reflects uncertainty in the bipedal form factor's MLI effectiveness and the number of joints requiring active heating. If the upper bound (200 W) is the actual figure and three humanoids are deployed simultaneously, the FSP must reserve 600 W for humanoid thermal maintenance through every lunar night — approximately 6% of a 10 kWe FSP plant. This is material to the FSP sizing conversation and must be reconciled before the base power architecture is finalized.
+**This estimate is TRL 2 (parametric only). A detailed thermal model is required.** The wide range reflects uncertainty in the bipedal form factor's MLI effectiveness (large surface-area-to-volume ratio relative to a compact rover box) and the number of joints requiring active heating. If the upper bound (200 W) is the actual figure and three humanoids are deployed simultaneously, the FSP must reserve 600 W for humanoid thermal maintenance through every lunar night — approximately 6% of a 10 kWe FSP plant. This is material to the FSP sizing conversation and must be reconciled before the base power architecture is finalized.
 
 Owner: space-environments. Risk if wrong: medium — if FSP reservation is underallocated and actual heater demand is higher, either the humanoid thermal budget is underpowered (risks hardware damage below −60°C at joints) or the base power budget must be revised. Must be tightened by detailed thermal model validated by test before PDR.
 
@@ -142,20 +161,65 @@ Owner: space-environments. Risk if wrong: medium — if Tier 2 SEU/latchup rate 
 
 ### A12. Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface
 
-The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate at the unshielded lunar far side surface**. The anchor is the Chang'e-4 LND measurement of ~60 µSv/hr dose equivalent (Zhang et al., Science Advances 2020, DOI: 10.1126/sciadv.aaz1334), which translates to approximately 0.53 Gy/yr dose equivalent. The conversion from biologically-weighted dose equivalent to silicon TID depends on the GCR energy spectrum and particle composition; the 20–30 krad(Si)/yr estimate uses an approximate conversion factor for the GCR spectrum at 1 AU without magnetospheric shielding. This conversion has not been independently validated against a silicon TID measurement on the lunar surface.
+The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate at the unshielded lunar far side surface**. The anchor is the Chang'e-4 LND measurement of ~60 µSv/hr dose equivalent (Zhang et al., Science Advances 2020), which translates to approximately 0.53 Gy/yr dose equivalent. The conversion from biologically-weighted dose equivalent to silicon TID depends on the GCR energy spectrum and particle composition; the 20–30 krad(Si)/yr estimate uses an approximate conversion factor for the GCR spectrum at 1 AU without magnetospheric shielding. This conversion has not been independently validated against a silicon TID measurement on the lunar surface.
 
-**Validation required.** If the actual silicon TID rate is significantly higher (e.g., >30 krad/yr), the Tier 2 ORU replacement interval must shorten below 3 years, and the cost estimate for Tier 2 replacement boards increases proportionally. The 7-year TID budget calculation must be repeated against validated silicon TID measurements before PDR.
+**Validation required.** If the actual silicon TID rate is significantly higher (e.g., >30 krad/yr), the Tier 2 ORU replacement interval must shorten below 3 years, and the cost estimate for Tier 2 replacement boards increases proportionally. If the conversion factor is 2× the nominal estimate, the 7-year unshielded budget becomes 280–420 krad and Tier 2 shielded lifetime may shorten to 18 months or less. The 7-year TID budget calculation must be repeated against validated silicon TID measurements before PDR.
 
 Owner: space-environments. Risk if wrong: medium — if TID rate is 2× the estimate, Tier 2 boards require replacement every 18 months instead of 3 years; this doubles the spares cost and doubles the crew time for Tier 2 board replacement maintenance. Technology-roadmap-trl must track when a silicon TID measurement at the lunar surface becomes available (from a future lander instrument or from Artemis surface operations data).
 
 ### A13. Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)
 
-The mass-power budget section sizes the power system on **space-qualified lithium-ion cells at 160 Wh/kg design-to**, with 150 Wh/kg as the conservative NTE floor. This represents approximately a 35% penalty relative to state-of-the-art commercial cells (250+ Wh/kg), reflecting radiation screening, vibration qualification, temperature derating, and lot acceptance testing required for space qualification. The heritage anchor is the ISS battery replacement project (2017–2019, lithium-ion at ~160 Wh/kg at cell level).
+The mass-power budget section sizes the power system on **space-qualified lithium-ion cells at 160 Wh/kg design-to**, with 150 Wh/kg as the conservative NTE floor. This represents approximately a 35% penalty relative to state-of-the-art commercial cells (250+ Wh/kg), reflecting radiation screening, vibration qualification, temperature derating, and lot acceptance testing required for space qualification. The heritage anchor is the ISS battery replacement project (2017–2019, lithium-ion at ~155–160 Wh/kg at cell level per NTRS documentation).
 
 At 160 Wh/kg, a 2.0 kWh (4-hour EVA sortie at 500 W steady-state) battery requires **12.5 kg of cells**. Total power system (cells + BMS/housing + harness) = **16.9 kg**, which is the largest single allocated mass line item in the budget (22% of design-to).
 
-**Technology gate:** If space-qualified cells achieve 200 Wh/kg by the 2032 hardware definition review, battery cell mass reduces to 10.0 kg, recovering 2.5 kg in the mass budget. Conversely, if operational practice requires a 25% depth-of-discharge reserve (due to cold-temperature capacity derating before warm-up completion at start of sortie), the required cell capacity grows to 2.5 kWh and cell mass grows to 15.6 kg at 160 Wh/kg, consuming ~19% of the 16.8 kg growth allowance. The battery energy density assumption is the single most tractable lever for improving the mass budget without design changes elsewhere.
+**Technology gate:** If space-qualified cells achieve 200 Wh/kg by the 2032 hardware definition review, battery cell mass reduces to 10.0 kg, recovering 2.5 kg in the mass budget. Conversely, if operational practice requires a 25% depth-of-discharge reserve (due to cold-temperature capacity derating before warm-up completion at start of sortie), the required cell capacity grows to 2.5 kWh and cell mass grows to 15.6 kg at 160 Wh/kg, consuming ~19% of the 17.3 kg growth allowance. The battery energy density assumption is the single most tractable lever for improving the mass budget without design changes elsewhere.
 
 Owner: humanoid-systems-architect. Risk if wrong: medium-high — battery mass drives §A2 (design-to mass target); if cells remain at commercial space-qualified levels and operational reserves must be increased, power system mass grows and may consume the growth allowance, forcing a budget renegotiation.
+
+### A14. Actuator mass sensitivity: 342 g/joint budget vs. 385 g/joint derived; Class A joint gravity-optimization required
+
+**Added 2026-05-03 to address AE-004 / RM-003 findings.**
+
+The 38-joint actuator mass budget (13.0 kg design-to) uses a three-class weighted parametric derivation. No single published space-qualified actuator assembly at the combined torque class and mass target of this program exists; the derivation uses commercial catalog masses as bounds.
+
+**Three-class breakdown:**
+- Class A (12 locomotion joints, hips/knees/ankles): 780 g/joint design-to. Anchor: Harmonic Drive AG CSF-20 component set (rated ~230 N·m peak, catalog mass ~460–500 g for transmission alone per Harmonic Drive AG CSF/CSG catalog) plus brushless motor for this torque class (~220 g, comparable to Unitree M107 published motor specifications) plus encoder and housing (~60–100 g). Assembled range: 740–820 g.
+- Class B (8 upper-body load joints, shoulders/elbows): 400 g/joint design-to. Anchor: Harmonic Drive AG CSF-14 component set (rated ~50 N·m peak, catalog mass ~200–230 g) plus motor (~120 g) plus encoder and housing. Assembled range: 370–430 g.
+- Class C (18 fine-control joints, neck/torso/wrists/hands): 115 g/joint design-to. Small QDD-class motors with minimal gearing; range 80–150 g.
+
+**Weighted derived total:** (12 × 780) + (8 × 400) + (18 × 115) = 9,360 + 3,200 + 2,070 = **14,630 g / 38 joints = 385 g/joint mean, 14.6 kg total.**
+
+The 13.0 kg budget line (342 g/joint) is achievable only if Class A joints are optimized to approximately 680 g. This is physically defensible: the humanoid operates in lunar 1/6 g, and peak locomotion joint torques scale approximately with the gravity ratio. Class A joints designed for lunar-only service need roughly 25% of terrestrial peak torque for normal walking, permitting a lighter motor selection. This gravity-optimization lever must be quantified in Phase A actuation sizing.
+
+**If Class A joints remain at 780 g:** actuation budget grows to 14.6 kg, pushing structure+actuation total to ~31.6 kg design-to — a 5% overrun against the 30.0 kg constraint. This is within concept-phase uncertainty; it does not invalidate the system-level 75 kg budget, but it consumes mass margin.
+
+Space-qualification mass growth (10–20% above terrestrial catalog masses) for radiation screening, vacuum grease, outgassing compliance, and thermal seal validation is included implicitly in the Class A uncertainty range.
+
+Owner: robotics-actuation-structures. Risk if wrong: medium — 5% structure+actuation overrun in the stressed case; must be confirmed or closed in Phase A before mass budget is treated as locked.
+
+### A15. Boot cover replacement interval: 500 surface-hours (parametric, no heritage)
+
+**Added 2026-05-03 to address RM-017 finding.**
+
+The actuation section assumes disposable Vectran/Zylon foot covers are replaced at **500 surface-hours** per pair. This interval is parametric with no heritage in a representative lunar dust environment.
+
+**Consumables manifest consequence.** At 500-hour replacement intervals and a humanoid operating approximately 300 surface-hours per lunar month, annual resupply is approximately 7 pairs of boot covers (~1.4 kg/year/humanoid at ~0.2 kg/pair). For a three-humanoid deployment, annual boot cover resupply is ~4.2 kg. This must appear in the far-side-base-architect's logistics model and the cost-program spares manifest. If the actual wear rate is 2× faster (250-hour interval), annual resupply doubles to ~2.8 kg/humanoid.
+
+**Validation path.** Accelerated abrasion testing in JSC-1A or NU-LHT-2M lunar regolith simulant, combined with vacuum and representative thermal cycling, is required before the replacement interval can be treated as credible for ConOps planning. No identified test facility currently combines all three conditions at representative contact pressures. Test facility definition is a pre-PDR deliverable. Assign to space-environments agent and far-side-base-architect.
+
+Owner: robotics-actuation-structures (interval definition), far-side-base-architect (consumables manifest), space-environments (test program definition). Risk if wrong: low-medium — if wear rate is materially higher, resupply mass and crew servicing time increase; neither is program-threatening at these quantities, but both affect operational availability estimates.
+
+### A16. Locomotion power gait factor: 0.55 (normal gait vs. vigorous locomotion)
+
+**Added 2026-05-03 to address P2-5 / RM-002 findings. Assigned §A16 because §A14 and §A15 were populated by Batch 1 of the Stage 6 remediation pass.**
+
+The locomotion actuation power budget (260 W design-to) is derived from the Valkyrie heritage figure scaled to the space humanoid mass and actuator efficiency, then multiplied by a 0.55 factor for normal gait vs. vigorous locomotion. This factor is a parametric assumption with no direct heritage validation for this platform.
+
+**Basis:** At vigorous gait (sprint/terrain-clearing), the derivation yields ~470 W locomotion actuation. The 0.55 factor reduces this to ~260 W for normal walking pace (≤1.0 m/s on prepared paths), consistent with general expectations from bipedal dynamics but not validated by a task-level simulation of this specific platform in 1/6-g lunar gravity.
+
+**Technology gate:** The task-level gait power simulation referenced in §03 Section 5, item 3, must validate or revise this factor before the 2032 hardware definition review. If the factor is 0.75 rather than 0.55, locomotion power grows to ~350 W; the full locomotion+manipulation mode total grows from 474 W to ~564 W (pre-margin), yielding ~733 W with 30% margin — still within the 800 W cap but with reduced margin (67 W vs. 184 W currently). The 800 W cap is not broken until the gait factor reaches ~0.84, so there is headroom, but the budget's 184 W current margin would erode substantially at a factor of 0.75.
+
+Owner: humanoid-systems-architect (locomotion power), with input from robotics-actuation-structures (gait simulation). Risk if wrong: medium — the 800 W cap is not broken until the gait factor reaches ~0.84, so there is headroom, but the budget's 184 W current margin would erode substantially.
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]
