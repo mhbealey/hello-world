@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A9).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A12).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -41,6 +41,9 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Sensor suite mass ~2.1 kg, power 37–75 W peak|See §A7 below                               |robotics-sensing-autonomy|Low-medium — sensors are not mass/power driver; TRL gaps are in qualification, not sizing|
 |Compute architecture: two-tier RH supervisor + commercial AI accelerator|See §A8 below|robotics-sensing-autonomy|High — no rad-hard AI equivalent exists at TRL > 4; watchdog architecture is the 2035 solution|
 |Foundation models used at supervisory layer only (not primary task executor)|See §A9 below|robotics-sensing-autonomy|Medium — if VLA generalization to OOD environments advances faster than expected, this assumption is conservative; if it does not advance, it is the correct constraint|
+|Lunar night FSP power reservation: 70–200 W per humanoid unit|See §A10 below|space-environments|Medium — wide parametric range; detailed thermal model required by 2031|
+|Radiation hardening: hybrid RHBD + spot shielding + ORU replacement|See §A11 below|space-environments|Medium — Tier 2 ORU replacement strategy requires 3-year cadence and base workshop capability|
+|Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface|See §A12 below|space-environments|Medium — LND measurement anchors dose equivalent; silicon TID conversion is spectrum-dependent and requires validation|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -117,5 +120,29 @@ This position is calibrated to the current state of VLA model generalization: ou
 This assumption is conservative by design and should be revisited at the 2029 and 2035 program gates as: (1) lunar-analog training datasets are constructed, (2) model uncertainty quantification matures, and (3) radiation-effect characterization data is available.
 
 Owner: robotics-sensing-autonomy. Risk if wrong: medium — if the assumption is too conservative, the architecture under-exploits available foundation model capability; if it is too permissive, autonomous task failures in safety-critical contexts are possible. The conservative direction (supervisory layer only) is the safer failure mode for this program.
+
+### A10. Lunar night FSP power reservation: 70–200 W per humanoid unit
+
+The environments section establishes a **parametric estimate of 70–200 W continuous FSP draw per humanoid during lunar night hibernation**: 50–150 W for electronics compartment and battery survival heaters, plus 20–50 W for joint heaters maintaining HD-Electric lubrication above −60°C at the 12 primary load-bearing joints. This range is derived by analogy to Mars rover WEB thermal heritage (Curiosity/Perseverance: ~100 W survival heating in cold case) scaled for the 14-day lunar night and the humanoid's larger electronics volume and distinct geometry.
+
+**This estimate is TRL 2 (parametric only). A detailed thermal model is required.** The wide range reflects uncertainty in the bipedal form factor's MLI effectiveness (large surface-area-to-volume ratio relative to a compact rover box) and the number of joints requiring active heating. If the upper bound (200 W) is the actual figure and three humanoids are deployed simultaneously, the FSP must reserve 600 W for humanoid thermal maintenance through every lunar night — approximately 6% of a 10 kWe FSP plant. This is material to the FSP sizing conversation and must be reconciled before the base power architecture is finalized.
+
+Owner: space-environments. Risk if wrong: medium — if FSP reservation is underallocated and actual heater demand is higher, either the humanoid thermal budget is underpowered (risks hardware damage below −60°C at joints) or the base power budget must be revised. Must be tightened by detailed thermal model validated by test before PDR.
+
+### A11. Radiation hardening: hybrid RHBD + spot shielding + ORU replacement strategy
+
+The environments section establishes a **hybrid radiation hardening strategy**: RHBD parts for Tier 1 safety-critical processor (TID-qualified >1 Mrad); RHBD where available for critical motor controller and safety-monitor ICs; COTS + 5–10 mm aluminum spot shielding (0.5–1.5 kg per board) for Tier 2 AI accelerator; 3-year ORU replacement cadence for Tier 2 boards; torso structural walls at 2–4 mm Al equivalent for passive bulk shielding. SPE survival is achieved by habitat retreat, not by hardening body-mounted electronics to Carrington-class fluences.
+
+The 7-year design life TID budget at the unshielded surface (140–210 krad, silicon) is reduced by shielding to manageable levels for Tier 1 RHBD parts. For Tier 2 COTS compute, shielding reduces dose rate sufficiently for a 3-year effective lifetime before replacement. The ORU replacement strategy requires the base workshop to have the capability to replace electronics boards, which is a conops and logistics requirement, not merely a design requirement.
+
+Owner: space-environments. Risk if wrong: medium — if Tier 2 SEU/latchup rate under actual lunar radiation exceeds the spot-shielding model prediction, Tier 2 availability degrades faster than planned; the fallback is increased power-cycling frequency (tolerable) or shorter ORU replacement intervals (requires more spares).
+
+### A12. Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface
+
+The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate at the unshielded lunar far side surface**. The anchor is the Chang'e-4 LND measurement of ~60 µSv/hr dose equivalent (Wimmer-Schweingruber et al., Science Advances 2020), which translates to approximately 0.53 Gy/yr dose equivalent. The conversion from biologically-weighted dose equivalent to silicon TID depends on the GCR energy spectrum and particle composition; the 20–30 krad(Si)/yr estimate uses an approximate conversion factor for the GCR spectrum at 1 AU without magnetospheric shielding. This conversion has not been independently validated against a silicon TID measurement on the lunar surface.
+
+**Validation required.** If the actual silicon TID rate is significantly higher (e.g., >30 krad/yr), the Tier 2 ORU replacement interval must shorten below 3 years, and the cost estimate for Tier 2 replacement boards increases proportionally. The 7-year TID budget calculation must be repeated against validated silicon TID measurements before PDR.
+
+Owner: space-environments. Risk if wrong: medium — if TID rate is 2× the estimate, Tier 2 boards require replacement every 18 months instead of 3 years; this doubles the spares cost and doubles the crew time for Tier 2 board replacement maintenance. Technology-roadmap-trl must track when a silicon TID measurement at the lunar surface becomes available (from a future lander instrument or from Artemis surface operations data).
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]
