@@ -1,3 +1,10 @@
+---
+title: Margins and Assumptions Register
+status: in-progress
+owner: orchestrator
+last-updated: 2026-05-03
+---
+
 # Margins and Assumptions Register
 
 This file tracks all margins applied and assumptions made across the study, in one place, for review.

@@ -1,3 +1,10 @@
+---
+title: Abstract
+status: draft
+owner: orchestrator
+last-updated: 2026-05-03
+---
+
 # Abstract
 
 **(Draft. Update as study matures.)**

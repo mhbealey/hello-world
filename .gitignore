@@ -44,3 +44,6 @@ next-env.d.ts
 
 # local database
 prisma/dev.db
+
+# generated study site (rebuild with: python tools/build_site.py)
+/site/

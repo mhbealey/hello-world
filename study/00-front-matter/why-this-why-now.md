@@ -1,3 +1,10 @@
+---
+title: Why This Study, Why Now
+status: draft
+owner: orchestrator
+last-updated: 2026-05-03
+---
+
 # Why This Study, Why Now
 
 **(Draft. Roughly two pages when complete.)**

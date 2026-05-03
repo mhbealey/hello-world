@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Humanoid-Forward Space Study{% endblock %}</title>
+  <link rel="stylesheet" href="{{ static_prefix|default('static/') }}style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Humanoid-Forward Study</a>
+      <div class="build-time">Built {{ build_time }}</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-dashboard">Dashboard</a>
+      {% for section, items in nav %}
+      <div class="nav-section">
+        <div class="nav-section-title">{{ section }}</div>
+        {% for f in items %}
+        <a href="{{ f.out_file }}" class="nav-item" title="{{ f.status }}">
+          <span class="status-dot" style="background: {{ status_colors[f.status] if f.status in status_colors else '#9ca3af' }}"></span>
+          {{ f.title }}
+        </a>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </nav>
+  </aside>
+  <main class="content">
+    {% block content %}{% endblock %}
+  </main>
+</div>
+</body>
+</html>

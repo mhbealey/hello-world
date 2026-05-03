@@ -1,0 +1,325 @@
+% Humanoid robotics specifications — humanoid-systems-architect agent — 2026-05-03
+% Primary source types: manufacturer spec sheets (noted), peer-reviewed publications,
+% NASA technical reports, and IEEE conference/journal papers.
+% All entries verified against sources as of research date 2026-05-03.
+
+% ============================================================
+% BOSTON DYNAMICS ATLAS (ELECTRIC)
+% ============================================================
+
+@misc{bostondynamics2024atlas,
+  author       = {{Boston Dynamics}},
+  title        = {Atlas Humanoid Robot — Product Page},
+  year         = {2024},
+  howpublished = {Manufacturer spec sheet / product page. \url{https://bostondynamics.com/products/atlas/}},
+  note         = {Primary source for mass (89 kg), height (1.5 m), DOF (56), payload (50 kg instant / 30 kg sustained), reach (2.3 m), electrical-to-mechanical efficiency (85–90\%). Rated power consumption not published.}
+}
+
+@misc{bostondynamics2024electricera,
+  author       = {{Boston Dynamics}},
+  title        = {An Electric New Era for Atlas},
+  year         = {2024},
+  howpublished = {Corporate blog post. \url{https://bostondynamics.com/blog/electric-new-era-for-atlas/}},
+  note         = {Describes transition from hydraulic to electric actuation; planetary roller-screw linear actuators; high-density neodymium magnets. Qualitative autonomy description: fleet-level task replication.}
+}
+
+@article{spectrum2024atlas,
+  author       = {{IEEE Spectrum Staff}},
+  title        = {Hello, Electric Atlas},
+  journal      = {IEEE Spectrum},
+  year         = {2024},
+  howpublished = {\url{https://spectrum.ieee.org/atlas-humanoid-robot}},
+  note         = {Corroborates electric actuation transition; discusses autonomy capabilities and industrial deployment intent.}
+}
+
+% ============================================================
+% APPTRONIK APOLLO
+% ============================================================
+
+@misc{apptronik2023apollo,
+  author       = {{Apptronik}},
+  title        = {Apollo Humanoid Robot — Product Page},
+  year         = {2023},
+  howpublished = {Manufacturer spec sheet / product page. \url{https://apptronik.com/apollo}},
+  note         = {Primary source for mass (72.5 kg / 160 lbs), height (1.73 m / 5'8"), DOF (71), payload (25 kg), battery runtime (4 hr hot-swap). Rated power not published. Actuation: proprietary linear and rotary electric actuators.}
+}
+
+@article{spectrum2023apollo,
+  author       = {{IEEE Spectrum Staff}},
+  title        = {Apptronik Introduces Apollo Humanoid Robot},
+  journal      = {IEEE Spectrum},
+  year         = {2023},
+  howpublished = {\url{https://spectrum.ieee.org/humanoid-robot}},
+  note         = {Notes Apollo's lineage from Apptronik's NASA Valkyrie development work. Corroborates commercial deployment roadmap.}
+}
+
+@article{therobotreport2023apollo,
+  author       = {{The Robot Report Staff}},
+  title        = {Apptronik Unveils Apollo Humanoid Robot},
+  journal      = {The Robot Report},
+  year         = {2023},
+  howpublished = {\url{https://www.therobotreport.com/apptronik-unveils-apollo-humanoid-robot/}},
+  note         = {Technical overview of Apollo's commercial positioning. Notes Apptronik's 10+ prior robot builds including Valkyrie contribution.}
+}
+
+% ============================================================
+% FIGURE 02
+% ============================================================
+
+@misc{figureai2024figure02,
+  author       = {{Figure AI}},
+  title        = {Figure 02 Humanoid Robot},
+  year         = {2024},
+  howpublished = {Manufacturer announcement / spec sheet. \url{https://www.therobotreport.com/figure-02-humanoid-robot-is-ready-to-get-to-work/}},
+  note         = {Primary source for mass (70 kg), height (1.68 m), DOF (35 total; 16/hand), battery (2.25 kWh), runtime claim (5 hr; 20+ hr figure from some sources — treat as unverified), charging (1.5 hr rapid). Walking speed 1.2 m/s. Dual NVIDIA RTX on-board compute. VLA model trained with OpenAI.}
+}
+
+@misc{bmw2024figuredeployment,
+  author       = {{BMW Group}},
+  title        = {Humanoid Robots for BMW Group Plant Spartanburg},
+  year         = {2024},
+  howpublished = {Corporate press release. \url{https://www.bmwgroup.com/en/news/general/2024/humanoid-robots.html}},
+  note         = {Confirms production deployment of Figure 02 at BMW Spartanburg manufacturing plant. Relevant heritage for structured-environment autonomous task execution.}
+}
+
+@article{spectrum2024figure,
+  author       = {{IEEE Spectrum Staff}},
+  title        = {Figure 02: The New Humanoid Robot},
+  journal      = {IEEE Spectrum},
+  year         = {2024},
+  howpublished = {\url{https://spectrum.ieee.org/figure-new-humanoid-robot}},
+  note         = {Technical overview; corroborates DOF count and AI/VLA autonomy approach.}
+}
+
+% ============================================================
+% TESLA OPTIMUS GEN 2
+% ============================================================
+
+@misc{tesla2023optimus2,
+  author       = {{Tesla, Inc.}},
+  title        = {Tesla Optimus Gen 2 Reveal},
+  year         = {2023},
+  howpublished = {Manufacturer announcement / product video. \url{https://www.robotics247.com/article/tesla_reveals_gen_2_of_the_optimus_humanoid_robot}},
+  note         = {Primary source for mass (57 kg / 125 lbs), height (1.73 m / 5'8"), DOF (28 body; 11 DOF/hand Gen 2; 22 DOF/hand Gen 3 upgrade), battery (2.3 kWh), runtime (~8 hr), walking speed (8 km/h), payload (9 kg per hand). Approximately 1,000 units deployed at Tesla Fremont factory as of 2025.}
+}
+
+@article{robotics247_2023optimus,
+  author       = {{Robotics 24/7 Staff}},
+  title        = {Tesla Reveals Gen 2 of the Optimus Humanoid Robot},
+  journal      = {Robotics 24/7},
+  year         = {2023},
+  howpublished = {\url{https://www.robotics247.com/article/tesla_reveals_gen_2_of_the_optimus_humanoid_robot}},
+  note         = {Corroborates mass, DOF, and walking speed. Notes 30\% speed increase over Gen 1.}
+}
+
+% ============================================================
+% AGILITY ROBOTICS DIGIT
+% ============================================================
+
+@misc{agility2024digit,
+  author       = {{Agility Robotics}},
+  title        = {Digit Humanoid Robot},
+  year         = {2024},
+  howpublished = {Manufacturer product page / spec sheet. \url{https://www.agilityrobotics.com/}},
+  note         = {Primary source for mass (65 kg / 143 lbs), height (1.75 m), DOF (30 in v4), runtime (5 hr), walking speed (1.2 m/s). Actuation: brushless DC with custom transmissions (electric). Sensors: lidar, 4x Intel RealSense depth cameras, MEMS IMU.}
+}
+
+@misc{agility2024digit_v4,
+  author       = {{Humanoid Intel}},
+  title        = {Digit v4 by Agility Robotics — Specification Summary},
+  year         = {2024},
+  howpublished = {\url{https://humanoidintel.ai/robots/digit-v4/}},
+  note         = {Corroborates v4 DOF count (30) and electric brushless DC actuation. Notes Amazon fulfillment center deployment.}
+}
+
+@article{roboticstoday2024digit,
+  author       = {{Agility Robotics}},
+  title        = {Meet Digit: The Newest Robot From Agility Robotics},
+  year         = {2024},
+  howpublished = {Company blog. \url{https://www.agilityrobotics.com/content/meet-digit-the-newest-robot-from-agility-robotics}},
+  note         = {Production deployment context. Payload capacity up to 16 kg (target 22.6 kg). Confirms reverse-knee leg geometry design intent.}
+}
+
+% ============================================================
+% UNITREE H1
+% ============================================================
+
+@misc{unitree2023h1,
+  author       = {{Unitree Robotics}},
+  title        = {Unitree H1 — Universal Humanoid Robot},
+  year         = {2023},
+  howpublished = {Manufacturer product page / spec sheet. \url{https://www.unitree.com/h1/}},
+  note         = {Primary source for mass (47 kg), height (1.80 m), DOF (19), walking speed (3.3 m/s), battery (864 Wh). Actuation: quasi-direct-drive electric, M107 motors with peak torque density ~189 N·m/kg. Price ~\$90,000 USD.}
+}
+
+@misc{qviro2024h1specs,
+  author       = {{QVIRO}},
+  title        = {Unitree H1 Specifications},
+  year         = {2024},
+  howpublished = {Third-party aggregated spec sheet. \url{https://qviro.com/product/unitree/h1/specifications}},
+  note         = {Corroborates DOF breakdown: 6 DOF/leg, 4 DOF/arm. Industrial-grade crossed roller bearings noted.}
+}
+
+% ============================================================
+% UNITREE G1
+% ============================================================
+
+@misc{unitree2024g1,
+  author       = {{Unitree Robotics}},
+  title        = {Unitree G1 — Humanoid Robot},
+  year         = {2024},
+  howpublished = {Manufacturer product page / spec sheet. \url{https://www.unitree.com/g1/}},
+  note         = {Primary source for mass (35 kg), height (1.32 m), DOF (23 base / up to 43 EDU), walking speed (2.0 m/s), battery (421 Wh / 46.8V / 9000 mAh). Actuation: PMSM electric motors, knee peak torque 90–120 N·m (EDU). Price ~\$13,500 USD.}
+}
+
+@misc{robostore2024g1specs,
+  author       = {{RoboStore}},
+  title        = {Unitree G1 EDU Ultimate Technical Specifications},
+  year         = {2024},
+  howpublished = {\url{https://robostore.com/blogs/news/unitree-g1-edu-ultimate-technical-specifications}},
+  note         = {Corroborates EDU-config DOF (43) and actuator torque data. Notes PMSM fast response and efficient heat dissipation.}
+}
+
+% ============================================================
+% NASA VALKYRIE / R5
+% ============================================================
+
+@techreport{nasa2023valkyrieFactsheet,
+  author       = {{NASA Johnson Space Center}},
+  title        = {Valkyrie (R5) Fact Sheet},
+  institution  = {National Aeronautics and Space Administration},
+  year         = {2023},
+  howpublished = {\url{https://www.nasa.gov/wp-content/uploads/2023/06/r5-fact-sheet.pdf}},
+  note         = {Primary NASA source for mass (129 kg), height (1.87 m), DOF (44), battery (1.8 kWh dual-voltage swappable), runtime (~1 hr). Actuation: series elastic actuators (SEA) throughout. Sensors: MultiSense SL stereo head, anterior hazard cameras, force/torque sensors. JSC Engineering Directorate origin (DARPA Robotics Challenge 2013).}
+}
+
+@article{radford2015valkyrie,
+  author       = {Radford, N. A. and Strawser, P. and Hambuchen, K. and Mehling, J. S. and Westbrook, N. K. and Cramer, J. and others},
+  title        = {Valkyrie: {NASA}'s First Bipedal Humanoid Robot},
+  journal      = {Journal of Field Robotics},
+  volume       = {32},
+  number       = {3},
+  pages        = {397--419},
+  year         = {2015},
+  doi          = {10.1002/rob.21560},
+  note         = {Peer-reviewed design paper. Authoritative source for DOF breakdown (neck 3, arm 4×2, wrist 3×2, hand 4×2, torso 3, leg 6×2, ankle 2×2 = 44 total) and SEA architecture rationale.}
+}
+
+@article{paine2015valkyrieActuator,
+  author       = {Paine, N. and Mehling, J. S. and Holley, J. and Radford, N. A. and Johnson, G. and Fok, C.-L. and Sentis, L.},
+  title        = {Actuator Control for the {NASA-JSC} Valkyrie Humanoid Robot: A Decoupled Dynamics Approach for Torque Control of Series Elastic Robots},
+  journal      = {Journal of Field Robotics},
+  volume       = {32},
+  number       = {3},
+  pages        = {378--396},
+  year         = {2015},
+  doi          = {10.1002/rob.21556},
+  note         = {Peer-reviewed. Provides actuator torque tracking performance, bandwidth, and power consumption characterization for individual Valkyrie SEA joints. Used as basis for per-joint power estimation.}
+}
+
+@misc{nasa2023valkyrieR5page,
+  author       = {{NASA}},
+  title        = {R5 — NASA Technology},
+  year         = {2023},
+  howpublished = {\url{https://www.nasa.gov/technology/r5/}},
+  note         = {Official NASA overview page. Confirms R5 distribution to MIT, UT Austin, and University of Edinburgh for research. Notes roughly 1-hour battery-powered autonomous operation.}
+}
+
+% ============================================================
+% ROBONAUT 2 (R2)
+% ============================================================
+
+@techreport{nasa2016r2factsheet,
+  author       = {{NASA Johnson Space Center}},
+  title        = {Robonaut 2 Fact Sheet},
+  institution  = {National Aeronautics and Space Administration},
+  year         = {2016},
+  howpublished = {\url{https://www.nasa.gov/wp-content/uploads/2016/09/robonaut2_508.pdf}},
+  note         = {Primary NASA source. Torso+arm+hand configuration: 42 DOF (two 7-DOF arms, two 12-DOF hands, 3-DOF neck, 1-DOF waist). Each arm ~80 cm; each arm holds 9 kg in Earth gravity. Over 350 sensors; 38 PowerPC processors. Full configuration mass ~150 kg (includes legs; ISS torso-only mass unverified from this document). Electric actuation, brushless DC.}
+}
+
+@inproceedings{diftler2011r2,
+  author       = {Diftler, M. A. and Mehling, J. S. and Abdallah, M. E. and Radford, N. A. and Bridgwater, L. B. and Sanders, A. M. and others},
+  title        = {Robonaut 2 --- The First Humanoid Robot in Space},
+  booktitle    = {Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)},
+  year         = {2011},
+  doi          = {10.1109/ICRA.2011.5979830},
+  note         = {Peer-reviewed. Foundational design paper for R2. Confirms ISS deployment (STS-133, February 2011), torso-only initial configuration, and design intent for EVA tool compatibility.}
+}
+
+@techreport{ntrs2010r2overview,
+  author       = {{NASA Johnson Space Center}},
+  title        = {Robonaut 2 ({R2}) Overview},
+  institution  = {NASA Technical Reports Server},
+  year         = {2010},
+  number       = {20100039862},
+  howpublished = {\url{https://ntrs.nasa.gov/citations/20100039862}},
+  note         = {Pre-flight technical overview. Confirms design philosophy of compatibility with crew tools and EVA glove grasp geometry.}
+}
+
+@techreport{ntrs2010r2firsthumanoid,
+  author       = {{NASA Johnson Space Center}},
+  title        = {Robonaut 2 --- The First Humanoid Robot in Space},
+  institution  = {NASA Technical Reports Server},
+  year         = {2010},
+  number       = {20100040493},
+  howpublished = {\url{https://ntrs.nasa.gov/api/citations/20100040493/downloads/20100040493.pdf}},
+  note         = {NASA report corroborating ISS deployment details, EVA tool design rationale, and dexterous manipulation architecture.}
+}
+
+@article{spectrum2018r2broken,
+  author       = {{IEEE Spectrum Staff}},
+  title        = {Robonaut Has Been Broken for Years, and Now {NASA} Is Bringing It Home},
+  journal      = {IEEE Spectrum},
+  year         = {2018},
+  howpublished = {\url{https://spectrum.ieee.org/robonaut-has-been-broken-for-years-and-now-nasa-is-bringing-it-home}},
+  note         = {Documents the 2014 leg-upgrade failure: missing ground path in computer chassis caused cascading electrical shorts. R2 disabled ~2013; returned to Earth May 2018 (SpaceX Dragon). Key quote: R2 "was not designed at all to be serviceable by astronauts." Critical negative lessons for space humanoid serviceability requirement.}
+}
+
+@article{space2018r2return,
+  author       = {{Space.com Staff}},
+  title        = {Robonaut Returns to Earth for Repairs After Seven Years on Space Station},
+  journal      = {Space.com},
+  year         = {2018},
+  howpublished = {\url{https://www.space.com/40524-robonaut-returns-earth-after-seven-years.html}},
+  note         = {Corroborates return timeline and repair rationale. Notes 40-hour (vs. 20-hour planned) leg installation timeline as secondary lesson for on-orbit upgrade complexity.}
+}
+
+% ============================================================
+% FEDOR / SKYBOT F-850
+% ============================================================
+
+@misc{wikipedia2024fedor,
+  author       = {{Wikipedia Contributors}},
+  title        = {{FEDOR} --- {Wikipedia}},
+  year         = {2024},
+  howpublished = {\url{https://en.wikipedia.org/wiki/FEDOR}},
+  note         = {Overview of FEDOR (Final Experimental Demonstration Object Research) program. Height 1.82 m, mass 106 kg, 48 brushless synchronous motors (permanent magnet). Launched Soyuz MS-14, 22 August 2019; docked ISS Zvezda 27 August 2019. Cosmonaut designation Skybot F-850. Walking speed 4.0 km/h. Avatar teleoperation mode via full-body control suit.}
+}
+
+@article{spectrum2019fedor,
+  author       = {{IEEE Spectrum Staff}},
+  title        = {Russian Humanoid Robot to Pilot {Soyuz} Capsule to {ISS} This Week},
+  journal      = {IEEE Spectrum},
+  year         = {2019},
+  howpublished = {\url{https://spectrum.ieee.org/russian-humanoid-robot-to-pilot-soyuz-capsule-to-iss-this-week}},
+  note         = {Pre-mission technical overview. Notes avatar-mode teleop, mission profile, and planned extravehicular activity demonstration objectives.}
+}
+
+@article{therobotreport2019skybot,
+  author       = {{The Robot Report Staff}},
+  title        = {Skybot Humanoid Robot Grounded After Russian Space Flight},
+  journal      = {The Robot Report},
+  year         = {2019},
+  howpublished = {\url{https://www.therobotreport.com/skybot-humanoid-robot-grounded-after-russian-space-flight/}},
+  note         = {Post-mission lessons learned. Confirms cosmonauts disabled Skybot's legs due to unwieldy behavior in microgravity. Robot had not been programmed for handrail-based zero-g locomotion. Primary source for the negative microgravity mobility lesson. Mission duration: approximately 2 weeks on ISS.}
+}
+
+@article{space2019skybot,
+  author       = {{Space.com Staff}},
+  title        = {Meet Skybot {F-850}, the Humanoid Robot {Russia} Is Launching into Space},
+  journal      = {Space.com},
+  year         = {2019},
+  howpublished = {\url{https://www.space.com/russia-launching-humanoid-robot-into-space.html}},
+  note         = {Pre-mission overview. Confirms mass (106 kg), height (182 cm), avatar teleop architecture, and mission objectives including simulated cable repair demonstration (successfully performed in microgravity, 30 August 2019).}
+}

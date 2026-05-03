@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — Humanoid-Forward Space Study{% endblock %}
+{% block content %}
+
+<header class="page-header">
+  <h1>Study Dashboard</h1>
+  <p class="lede">Humanoid-forward architecture for space exploration. Lunar far side base as testbed.</p>
+</header>
+
+<section class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-value">{{ dashboard.total_files }}</div>
+    <div class="stat-label">Total sections</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ "{:,}".format(dashboard.total_words) }}</div>
+    <div class="stat-label">Words written</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ dashboard.completion_pct }}%</div>
+    <div class="stat-label">Maturity</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ open_questions|length }}</div>
+    <div class="stat-label">Open questions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ assumptions|length }}</div>
+    <div class="stat-label">Assumptions</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value">{{ margins|length }}</div>
+    <div class="stat-label">Margins</div>
+  </div>
+</section>
+
+<section class="status-bar-section">
+  <h2>Status across all sections</h2>
+  <div class="status-bar">
+    {% for status in dashboard.status_order %}
+      {% set count = dashboard.by_status[status] %}
+      {% if count > 0 %}
+      <div class="status-segment"
+           style="flex: {{ count }}; background: {{ status_colors[status] }};"
+           title="{{ status }}: {{ count }}">
+        {{ status }} ({{ count }})
+      </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<section>
+  <h2>Sections</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>Files</th>
+        <th>Words</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for section_name, info in dashboard.by_section.items() %}
+      <tr>
+        <td><strong>{{ section_name }}</strong></td>
+        <td>{{ info.total }}</td>
+        <td>{{ "{:,}".format(info.words) }}</td>
+        <td>
+          <div class="mini-status-bar">
+            {% for status in dashboard.status_order %}
+              {% set c = info.by_status[status] %}
+              {% if c > 0 %}
+              <div style="flex: {{ c }}; background: {{ status_colors[status] }};" title="{{ status }}: {{ c }}"></div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h2>Open Questions</h2>
+  {% if open_questions %}
+  <table class="data-table">
+    <thead>
+      <tr><th>Domain</th><th>Question</th><th>Context</th><th>Owner</th><th>By when</th></tr>
+    </thead>
+    <tbody>
+      {% for q in open_questions %}
+      <tr>
+        <td><span class="tag">{{ q.domain }}</span></td>
+        <td>{{ q.question }}</td>
+        <td class="muted">{{ q.context }}</td>
+        <td>{{ q.owner }}</td>
+        <td>{{ q.by_when }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No open questions parsed yet. Add entries to <code>study/05-cross-cutting/open-questions.md</code>.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Assumptions</h2>
+  {% if assumptions %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        {% for h in assumptions[0].keys() %}<th>{{ h }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in assumptions %}
+      <tr>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No assumptions parsed yet.</p>
+  {% endif %}
+</section>
+
+<section>
+  <h2>Margins</h2>
+  {% if margins %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        {% for h in margins[0].keys() %}<th>{{ h }}</th>{% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in margins %}
+      <tr>{% for v in row.values() %}<td>{{ v }}</td>{% endfor %}</tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="muted">No margins parsed yet.</p>
+  {% endif %}
+</section>
+
+{% endblock %}

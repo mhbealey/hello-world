@@ -1,3 +1,10 @@
+---
+title: Open Questions
+status: in-progress
+owner: orchestrator
+last-updated: 2026-05-03
+---
+
 # Open Questions
 
 This file tracks open questions across the study. Each agent appends questions in their domain that need resolution. The orchestrator reviews and prioritizes.

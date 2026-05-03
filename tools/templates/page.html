@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}{{ file.title }} — Humanoid-Forward Study{% endblock %}
+{% block content %}
+
+<header class="page-header">
+  <div class="breadcrumb">{{ file.section_label }}</div>
+  <h1>{{ file.title }}</h1>
+  <div class="meta-row">
+    <span class="status-badge" style="background: {{ status_colors[file.status] if file.status in status_colors else '#9ca3af' }}">{{ file.status }}</span>
+    <span class="meta-item">Owner: <strong>{{ file.owner }}</strong></span>
+    <span class="meta-item">Updated: {{ file.last_updated }}</span>
+    <span class="meta-item">{{ file.words }} words</span>
+    <span class="meta-item muted">{{ file.path }}</span>
+  </div>
+</header>
+
+<article class="prose">
+  {{ file.html_body|safe }}
+</article>
+
+{% if cross_ref_links %}
+<aside class="cross-refs">
+  <h3>Referenced sections</h3>
+  <ul>
+    {% for ref in cross_ref_links %}
+    <li><a href="{{ ref.out_file }}">{{ ref.title }}</a> <span class="muted">({{ ref.path }})</span></li>
+    {% endfor %}
+  </ul>
+</aside>
+{% endif %}
+
+{% endblock %}
