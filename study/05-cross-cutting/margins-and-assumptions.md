@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A17).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A19).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -49,6 +49,8 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Boot cover replacement interval: 500 surface-hours (parametric, no heritage)|See §A15 below|robotics-actuation-structures / far-side-base-architect|Low-medium — ~7 pairs/year/humanoid consumables; accelerated abrasion test required before ConOps interval treated as credible|
 |Locomotion power gait factor: 0.55 (normal gait vs. vigorous locomotion); no direct heritage validation|See §A16 below|humanoid-systems-architect / robotics-actuation-structures|Medium — 800 W cap holds unless gait factor ≥0.84; current margin erodes if factor is 0.75|
 |Relay constellation availability ≥95% by IOC; two-satellite minimum architecture assumed|See §A17 below|far-side-base-architect / teleoperation-latency|Medium — single Queqiao-2 provides only 75–85% availability; second satellite is required for supervisory ops|
+|Supervisor ratio: 1:2–3 humanoids per active supervisor at IOC (2035); 1:4–5 at full operation (2040); hard ceiling ~1:8–10|See §A18 below|human-factors-teaming|High — drives crew size, ConOps structure, and cost model; if autonomy TRL curve misses 2035 gate, ratio reverts toward 1:1 until TRL advances|
+|Crew composition at IOC: 4 crew, 3 humanoids, periodic supervision as default mode; headroom factor ~2×|See §A19 below|human-factors-teaming|High — primary ConOps and cost input; if maintenance demand exceeds Mir baseline or autonomy TRL misses 2035 gate, crew size must increase|
 
 ### A1. Humanoid autonomy maturity curve
 
