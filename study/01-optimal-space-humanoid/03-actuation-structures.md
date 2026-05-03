@@ -1,6 +1,7 @@
 ---
 title: "Optimal Space Humanoid: Actuation and Structures"
 status: draft
+review-status: unreviewed
 owner: robotics-actuation-structures
 last-updated: 2026-05-03
 ---

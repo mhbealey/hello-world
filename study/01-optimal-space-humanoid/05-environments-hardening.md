@@ -1,6 +1,7 @@
 ---
 title: "Optimal Space Humanoid: Environments and Hardening"
 status: draft
+review-status: unreviewed
 owner: space-environments
 last-updated: 2026-05-03
 ---

@@ -1,6 +1,7 @@
 ---
 title: "Optimal Space Humanoid: Sensing and Autonomy"
 status: draft
+review-status: unreviewed
 owner: robotics-sensing-autonomy
 last-updated: 2026-05-03
 ---

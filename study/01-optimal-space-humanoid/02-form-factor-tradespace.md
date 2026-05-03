@@ -1,6 +1,7 @@
 ---
 title: "Optimal Space Humanoid: Form Factor Tradespace"
 status: draft
+review-status: unreviewed
 owner: humanoid-systems-architect
 last-updated: 2026-05-03
 ---
