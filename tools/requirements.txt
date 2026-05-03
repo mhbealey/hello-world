@@ -2,3 +2,4 @@ markdown>=3.5
 pyyaml>=6.0
 jinja2>=3.1
 pygments>=2.17
+matplotlib>=3.8

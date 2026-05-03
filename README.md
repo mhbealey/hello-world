@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Humanoid-Forward Space Exploration Study
 
-## Getting Started
+A concept study examining humanoid-forward architecture for space exploration, with the lunar far side permanent base as the testbed. Output: a publishable concept paper of 80–150 pages. Developed by a multi-agent AI engineering team.
 
-First, run the development server:
+## The Thesis
+
+A humanoid-forward architecture is the unlock for three things current architectures cannot deliver:
+
+1. **Economically sustainable presence** across the inner and middle solar system
+2. **The in-space industrial base** that enables future deep space and eventual interstellar capability
+3. **Persistent scientific operations** at destinations beyond credible crewed reach
+
+The lunar far side base proves the human-humanoid teaming model before it extends outward.
+
+## The Four Questions
+
+The study is structured around four questions, ordered by dependency:
+
+| # | Question | Status |
+|---|----------|--------|
+| (a) | **Optimal Space Humanoid** — What does the machine actually look like? | Draft complete |
+| (b) | **Human-in-the-Loop Value** — Where does human supervision add value, where is it overhead? | Not started |
+| (c) | **Workflow / ConOps** — How does a mission actually run, end to end? | Not started |
+| (d) | **Build and Deploy** — Technology roadmap, destinations, program structure | Not started |
+
+## Current State
+
+- **12 sections written**, 37,000+ words
+- **Question (a) draft-complete**: 6-section analysis of the space humanoid covering heritage, form factor, actuation, sensing/autonomy, environments, and mass/power budget
+- **Mass budget closes**: 75 kg design-to / 97.5 kg not-to-exceed; 487 W steady-state / 782 W peak
+- **Form factor position**: Full bipedal humanoid, defended on program economics grounds
+- **23 open questions** logged with owners and milestone gates
+
+## Agent System
+
+This study is developed by 17 specialized AI agents, each owning specific artifacts:
+
+- **Subsystem agents**: humanoid-systems-architect, robotics-actuation-structures, robotics-sensing-autonomy, space-environments, teleoperation-latency, autonomy-trl-tasking, human-factors-teaming, conops-integrator, fault-management-sustainment, destinations-trajectories, far-side-base-architect, technology-roadmap-trl, cost-program
+- **Cross-cutting agents**: soviet-russian-heritage, far-side-base-architect
+- **System agents**: visualization-agent, executive-summary-agent, meta-supervisor
+
+The orchestrator dispatches agents in parallel by default, reconciles cross-coupling decisions, enforces breadcrumb discipline, and generates handback documents for planning continuity.
+
+## Dashboard
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pip install -r tools/requirements.txt
+python tools/build_site.py
+open site/index.html
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Handback Loop
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project runs as a loop between Claude Code (executor) and a planning conversation (designer). At the end of each stage:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+python tools/generate_handback.py --stage N
+```
 
-## Learn More
+The handback is a self-contained document pasted into a new planning conversation, which returns the scaffolding for the next stage.
 
-To learn more about Next.js, take a look at the following resources:
+## Key Assumptions
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Autonomy TRL curve**: TRL 6 (space-relevant) by ~2029 → TRL 7+ by ~2035 → TRL 8 by ~2038-2040
+- **Fission surface power** available by 2030s
+- **Starship HLS or equivalent** operational for lunar manifest
+- **Bipedal form factor**: 75 kg design-to, 500 W steady-state / 800 W peak power
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Repository Structure
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+study/           — concept paper sections (markdown)
+corpus/          — BibTeX references
+tools/           — build scripts and generators
+retro/           — session logs, agent performance, system observations
+.claude/agents/  — agent definitions
+```

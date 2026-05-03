@@ -7,6 +7,41 @@
   <p class="lede">Humanoid-forward architecture for space exploration. Lunar far side base as testbed.</p>
 </header>
 
+<!-- System Health Panel -->
+<section class="health-panel">
+  <h2>System Health</h2>
+  <div class="health-grid">
+    <div class="health-card">
+      <div class="health-dot" style="background: {{ health.breadcrumb.color }};"></div>
+      <div class="health-info">
+        <div class="health-title">Breadcrumb Freshness</div>
+        <div class="health-label">{{ health.breadcrumb.label }}</div>
+      </div>
+    </div>
+    <div class="health-card">
+      <div class="health-dot" style="background: {{ health.registry.color }};"></div>
+      <div class="health-info">
+        <div class="health-title">Registry Integrity</div>
+        <div class="health-label">{{ health.registry.label }}</div>
+      </div>
+    </div>
+    <div class="health-card">
+      <div class="health-dot" style="background: {{ health.review.color }};"></div>
+      <div class="health-info">
+        <div class="health-title">Review Coverage</div>
+        <div class="health-label">{{ health.review.label }}</div>
+      </div>
+    </div>
+    <div class="health-card">
+      <div class="health-dot" style="background: {{ health.coupling.color }};"></div>
+      <div class="health-info">
+        <div class="health-title">Cross-Coupling Log</div>
+        <div class="health-label">{{ health.coupling.label }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section class="stats-grid">
   <div class="stat-card">
     <div class="stat-value">{{ dashboard.total_files }}</div>
@@ -29,8 +64,8 @@
     <div class="stat-label">Assumptions</div>
   </div>
   <div class="stat-card">
-    <div class="stat-value">{{ margins|length }}</div>
-    <div class="stat-label">Margins</div>
+    <div class="stat-value"><a href="agents.html" style="color:inherit;">{{ agent_count }}</a></div>
+    <div class="stat-label">Active agents</div>
   </div>
 </section>
 
@@ -49,6 +84,20 @@
     {% endfor %}
   </div>
 </section>
+
+{% if charts %}
+<section>
+  <h2>Visualizations</h2>
+  <div class="charts-grid">
+    {% for chart in charts %}
+    <div class="chart-card">
+      <img src="charts/{{ chart }}" alt="{{ chart.replace('.png','').replace('-',' ').title() }}" loading="lazy" />
+      <div class="chart-label">{{ chart.replace('.png','').replace('-',' ').title() }}</div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
 
 <section>
   <h2>Sections</h2>
@@ -83,19 +132,35 @@
   </table>
 </section>
 
+{% if activity_feed %}
+<section>
+  <h2>Activity Feed</h2>
+  <div class="activity-timeline">
+    {% for entry in activity_feed %}
+    <div class="activity-card">
+      <div class="activity-agent-tag">{{ entry.agent }}</div>
+      <div class="activity-title">{{ entry.title }}</div>
+      {% if entry.body %}
+      <div class="activity-body muted">{{ entry.body[:280] }}{% if entry.body|length > 280 %}…{% endif %}</div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
 <section>
   <h2>Open Questions</h2>
   {% if open_questions %}
   <table class="data-table">
     <thead>
-      <tr><th>Domain</th><th>Question</th><th>Context</th><th>Owner</th><th>By when</th></tr>
+      <tr><th>Domain</th><th>Question</th><th>Owner</th><th>By when</th></tr>
     </thead>
     <tbody>
       {% for q in open_questions %}
       <tr>
         <td><span class="tag">{{ q.domain }}</span></td>
         <td>{{ q.question }}</td>
-        <td class="muted">{{ q.context }}</td>
         <td>{{ q.owner }}</td>
         <td>{{ q.by_when }}</td>
       </tr>
@@ -103,7 +168,7 @@
     </tbody>
   </table>
   {% else %}
-  <p class="muted">No open questions parsed yet. Add entries to <code>study/05-cross-cutting/open-questions.md</code>.</p>
+  <p class="muted">No open questions parsed yet.</p>
   {% endif %}
 </section>
 

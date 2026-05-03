@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Agent Roster — Humanoid-Forward Space Study{% endblock %}
+{% block content %}
+
+<header class="page-header">
+  <h1>Agent Roster</h1>
+  <p class="lede">{{ agents|length }} agents defined in <code>.claude/agents/</code>. Each owns specific study artifacts and has a defined scope.</p>
+</header>
+
+<div class="agent-grid">
+  {% for agent in agents %}
+  <div class="agent-card">
+    <div class="agent-header">
+      <div class="agent-status-dot" style="background: {{ agent.status_color }};" title="{{ agent.status }}"></div>
+      <div class="agent-name">{{ agent.name }}</div>
+      <div class="agent-mention-count">{{ agent.mentions }} session mentions</div>
+    </div>
+    <div class="agent-description">{{ agent.description }}</div>
+    <div class="agent-footer">
+      <span class="agent-status-label" style="color: {{ agent.status_color }};">{{ agent.status }}</span>
+      <code class="agent-path">{{ agent.path }}</code>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

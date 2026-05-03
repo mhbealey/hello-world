@@ -110,8 +110,43 @@ h3 { font-size: 15px; font-weight: 600; margin: 24px 0 12px; }
 .cross-refs a { color: var(--accent); text-decoration: none; }
 .cross-refs a:hover { text-decoration: underline; }
 
+/* Health panel */
+.health-panel { margin-bottom: 32px; }
+.health-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.health-card { display: flex; align-items: center; gap: 14px; background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.health-dot { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 8px currentColor; }
+.health-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+.health-label { color: var(--muted); font-size: 12px; }
+
+/* Activity feed */
+.activity-timeline { display: flex; flex-direction: column; gap: 10px; }
+.activity-card { background: var(--panel); border: 1px solid var(--border); border-left: 3px solid var(--accent-dim); border-radius: 6px; padding: 12px 16px; }
+.activity-agent-tag { display: inline-block; font-size: 11px; font-weight: 600; color: var(--accent); background: rgba(110,168,255,.12); border-radius: 4px; padding: 2px 8px; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .04em; }
+.activity-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+.activity-body { font-size: 12px; line-height: 1.5; }
+
+/* Charts grid */
+.charts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.chart-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.chart-card img { width: 100%; display: block; }
+.chart-label { padding: 8px 12px; font-size: 12px; color: var(--muted); text-align: center; }
+
+/* Agent roster */
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 8px; }
+.agent-card { background: var(--panel); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+.agent-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.agent-status-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.agent-name { font-weight: 700; font-size: 14px; flex: 1; }
+.agent-mention-count { font-size: 11px; color: var(--muted); }
+.agent-description { font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 10px; }
+.agent-footer { display: flex; justify-content: space-between; align-items: center; font-size: 11px; }
+.agent-status-label { font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
+.agent-path { color: var(--muted); font-size: 10px; }
+
 @media (max-width: 900px) {
   .layout { flex-direction: column; }
   .sidebar { width: 100%; height: auto; position: static; }
   .content { padding: 24px; }
+  .health-grid { grid-template-columns: repeat(2, 1fr); }
+  .agent-grid { grid-template-columns: 1fr; }
 }

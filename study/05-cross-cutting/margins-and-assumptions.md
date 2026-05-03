@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A12).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A13).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -44,6 +44,7 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Lunar night FSP power reservation: 70–200 W per humanoid unit|See §A10 below|space-environments|Medium — wide parametric range; detailed thermal model required by 2031|
 |Radiation hardening: hybrid RHBD + spot shielding + ORU replacement|See §A11 below|space-environments|Medium — Tier 2 ORU replacement strategy requires 3-year cadence and base workshop capability|
 |Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface|See §A12 below|space-environments|Medium — LND measurement anchors dose equivalent; silicon TID conversion is spectrum-dependent and requires validation|
+|Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)|See §A13 below|humanoid-systems-architect|Medium-high — drives power system mass (largest single mass line item at 16.9 kg); technology gate at 2032 hardware definition review|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -144,5 +145,15 @@ The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total i
 **Validation required.** If the actual silicon TID rate is significantly higher (e.g., >30 krad/yr), the Tier 2 ORU replacement interval must shorten below 3 years, and the cost estimate for Tier 2 replacement boards increases proportionally. The 7-year TID budget calculation must be repeated against validated silicon TID measurements before PDR.
 
 Owner: space-environments. Risk if wrong: medium — if TID rate is 2× the estimate, Tier 2 boards require replacement every 18 months instead of 3 years; this doubles the spares cost and doubles the crew time for Tier 2 board replacement maintenance. Technology-roadmap-trl must track when a silicon TID measurement at the lunar surface becomes available (from a future lander instrument or from Artemis surface operations data).
+
+### A13. Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)
+
+The mass-power budget section sizes the power system on **space-qualified lithium-ion cells at 160 Wh/kg design-to**, with 150 Wh/kg as the conservative NTE floor. This represents approximately a 35% penalty relative to state-of-the-art commercial cells (250+ Wh/kg), reflecting radiation screening, vibration qualification, temperature derating, and lot acceptance testing required for space qualification. The heritage anchor is the ISS battery replacement project (2017–2019, lithium-ion at ~160 Wh/kg at cell level).
+
+At 160 Wh/kg, a 2.0 kWh (4-hour EVA sortie at 500 W steady-state) battery requires **12.5 kg of cells**. Total power system (cells + BMS/housing + harness) = **16.9 kg**, which is the largest single allocated mass line item in the budget (22% of design-to).
+
+**Technology gate:** If space-qualified cells achieve 200 Wh/kg by the 2032 hardware definition review, battery cell mass reduces to 10.0 kg, recovering 2.5 kg in the mass budget. Conversely, if operational practice requires a 25% depth-of-discharge reserve (due to cold-temperature capacity derating before warm-up completion at start of sortie), the required cell capacity grows to 2.5 kWh and cell mass grows to 15.6 kg at 160 Wh/kg, consuming ~19% of the 16.8 kg growth allowance. The battery energy density assumption is the single most tractable lever for improving the mass budget without design changes elsewhere.
+
+Owner: humanoid-systems-architect. Risk if wrong: medium-high — battery mass drives §A2 (design-to mass target); if cells remain at commercial space-qualified levels and operational reserves must be increased, power system mass grows and may consume the growth allowance, forcing a budget renegotiation.
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]

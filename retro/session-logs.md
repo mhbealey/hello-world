@@ -41,11 +41,24 @@ Append one entry per work session. Format: `## YYYY-MM-DD — description`. Each
 
 **Attempted:** Resolve autonomy TRL contradiction, fix open-questions parsing, reconstruct breadcrumbs, enforce discipline going forward, populate all six Question (a) files.
 
-**Got done:** (update as stage 5 proceeds)
+**Got done:**
+- Autonomy TRL contradiction resolved in margins-and-assumptions.md (single canonical §A1 entry).
+- Open-questions parsing fix verified.
+- Breadcrumb discipline established with cross-coupling log entries for all stage 5 agent decisions.
+- All six Question (a) files completed as draft-status sections:
+  - `study/01-optimal-space-humanoid/01-overview.md` — heritage table, 9 robots, gaps, open questions (stage 4, carried forward)
+  - `study/01-optimal-space-humanoid/02-form-factor-tradespace.md` — five candidates, weighted evaluation, bipedal position, Lunokhod counterargument engaged
+  - `study/01-optimal-space-humanoid/03-actuation-structures.md` — HD-Electric position, structural concept, dust mitigation, mass allocation table closing at 30.0 kg
+  - `study/01-optimal-space-humanoid/04-sensing-autonomy.md` — sensor suite 2.1 kg / 37–75 W, two-tier compute architecture, three-layer autonomy stack, autonomy/teleoperation boundary
+  - `study/01-optimal-space-humanoid/05-environments-hardening.md` — four-threat environment table, thermal survival design, hybrid radiation strategy, system-level dust mitigation
+  - `study/01-optimal-space-humanoid/06-mass-power-budget.md` — integration deliverable: mass budget closes at 75.0 kg design-to / 97.5 kg NTE; power closes for locomotion (616 W) and stationary manipulation (432 W); lunar night hibernation closes at lower bound (148 W) but not upper bound (304 W) — thermal model required
+- Margins register updated through §A13 (battery energy density).
+- Cross-coupling log updated through budget closure entry.
+- Session logs complete.
 
-**Got stuck:** (update as stage 5 proceeds)
+**Got stuck:** Lunar night thermal power goal (150 W) cannot be met at the upper bound of the parametric thermal estimate until a detailed thermal model closes the range. This is documented as the primary open budget risk and flagged to far-side-base-architect.
 
-**Notes:** (update as stage 5 proceeds)
+**Notes:** Question (a) is complete as a draft concept-paper section set. The six files are self-consistent and cross-referenced. All downstream dependencies (destinations-trajectories, cost-program, conops-integrator, far-side-base-architect) have been explicitly notified via cross-coupling log entries. The budget's primary stress points are documented and traceable to specific TRL gaps with owners and gate dates.
 
 ---
 
@@ -70,3 +83,33 @@ Produced `study/01-optimal-space-humanoid/04-sensing-autonomy.md` as a draft-com
 ## 2026-05-03 — space-environments: environments hardening
 
 Produced `study/01-optimal-space-humanoid/05-environments-hardening.md` as a draft-complete concept-paper section (~1,500 words). The section establishes a four-threat environment requirements table (vacuum, thermal cycling, radiation TID/SEE, lunar dust) with values drawn from heritage data: Chang'e-4 LND measurement (~60 µSv/hr) as the radiation anchor, Heiken Lunar Sourcebook for regolith particle properties, Lunokhod thermal heritage for the night-survival reference, and Mars rover WEB thermal architecture for the survival heater parametric estimate. The thermal position is partial hibernation with FSP-powered survival heating during lunar night; the driving requirement is 70–200 W per humanoid from FSP (parametric, TRL 2, requires detailed thermal model by 2031). The radiation strategy is a hybrid approach: RHBD for Tier 1 safety-critical compute, COTS + spot shielding + 3-year ORU replacement for Tier 2 AI accelerator, torso structural shielding walls for passive bulk protection; SPE survival is by habitat retreat not by hardening body electronics. System-level dust mitigation covers optics (passive covers + scheduled cleaning; EDD as growth option at TRL 4), thermal radiators (smooth high-emissivity coatings sized to ε=0.70 EOL vs. ε=0.85 BOL), and connectors (dust caps + N₂ purge, ~0.2–0.5 kg canister). A TRL summary table flags seven open technology gaps by gate year. Cross-coupling log updated with three new entries (thermal survival power, radiation strategy, system-level dust). Margins/assumptions register updated with three new long-form assumptions (§A10 lunar night power, §A11 radiation hybrid strategy, §A12 surface TID estimate). Six new open questions added covering thermal model, silicon TID validation, NdFeB cryogenic performance, N₂ canister resupply, radiator dust adhesion measurement, and SPE shelter ConOps procedure.
+
+---
+
+## 2026-05-03 — visualization-agent: first three charts
+
+Produced autonomy-trl-curve.png, comms-latency-by-destination.png, and section-word-count.png in site/charts/. Charts show the §A1 TRL curve with go/no-go gates, round-trip comms latency across destinations colored by teleoperation regime, and current section word counts by status. Charts-index.md updated.
+
+---
+
+## 2026-05-03 — meta-supervisor: first observation run
+
+Read all retro artifacts (session-logs, cross-coupling log, margins-and-assumptions, agent-performance, orchestrator-performance, process-lessons) and spot-checked `study/01-optimal-space-humanoid/01-overview.md` and `study/05-cross-cutting/soviet-russian-heritage.md`. Produced four observations appended to `retro/system-observations.md`. Observation 1 covers the autonomy TRL contradiction as a symptom of a registry architecture that has no "supersedes" field and no automated duplicate-detection, making the text-only contradiction-check instruction unenforceable. Observation 2 covers breadcrumb atrophy as a structural consequence of scaffolding without gates, noting that retroactive reconstruction capability removes urgency and that the cross-coupling log has zero entries predating stage 5. Observation 3 documents that `[VERIFY]` flag discipline is concentrated in the two heritage-mode agents (33 uses in soviet-russian-heritage, 8 in environments-hardening) and absent from four engineering-analysis agents despite those sections containing specific numeric claims and TRL assertions that need primary-source verification before PDR. Observation 4 identifies the review agent non-invocation as a critical-severity finding: six Question (a) sections are designated draft-complete with no adversarial review pass, and the "zero findings" signal in prior handbacks was false.
+
+---
+
+## 2026-05-03 — executive-summary-agent: first executive summary
+
+Produced `study/00-front-matter/executive-summary.md` at 577 body words (within the 400–600 target). The summary covers all six required areas: the three-part thesis (sustainable presence, industrial base, persistent science); the lunar far side testbed architecture with tiered human presence; honest current state (12 sections, 36,000+ words, Question (a) draft-complete with the 75 kg / 97.5 kg NTE mass budget closed, Questions (b)–(d) not started); the economic case grounded in dual-use tool standards and shared infrastructure economics rather than robot performance claims; the top three invalidating risks (autonomy TRL curve failure, space-qualification mass overrun, FSP thermal sizing); and next-stage priorities centered on the 2029 program gate technology cluster. Style is tight and direct; no hedging language, no filler sections.
+
+---
+
+## 2026-05-03 — humanoid-systems-architect: mass/power budget integration
+
+Produced `study/01-optimal-space-humanoid/06-mass-power-budget.md` as the integration and closure deliverable for Question (a). The file rolls up all subsystem inputs from §03–§05 into a single consistent mass budget and a three-mode power budget.
+
+Mass budget: allocated subsystems sum to 58.2 kg (structure+actuation 30.0, sensors 2.1, compute 1.8, electronics shielding 1.0, thermal management 3.0, power system 16.9, cabling 2.5, consumables 0.9). System growth allowance 16.8 kg brings design-to total to 75.0 kg. NTE = 97.5 kg (30% margin). Budget closes. The power system (16.9 kg, 22% of allocated mass) is the largest single line item; its mass is dominated by the battery (12.5 kg cells at 160 Wh/kg for 2.0 kWh). A new assumption §A13 (battery energy density: 160 Wh/kg space-qualified Li-ion) was added to the margins register.
+
+Power budget: full locomotion + manipulation closes at 616 W with margin (vs. 800 W cap). Stationary manipulation closes at 432 W with margin (vs. 500 W goal). Lunar night hibernation closes at the lower bound (148 W with margin vs. 150 W goal) but NOT at the upper bound (304 W with margin) — the wide 70–200 W thermal range from §A10 (TRL 2, parametric) is the unresolved risk. This is the only place the budget does not close against its stated goal, and the root cause is documented: no validated thermal model for the bipedal form exists, required by 2031. The far-side-base-architect must provision FSP for the worst case (300 W per humanoid with margin) until the thermal model closes.
+
+Cross-coupling log updated with budget closure entry. Margins register updated with §A13. Session logs updated. All downstream agent inputs (destinations-trajectories, cost-program, conops-integrator, far-side-base-architect) are explicit in the file's Section 6.

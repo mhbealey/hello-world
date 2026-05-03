@@ -89,6 +89,19 @@ corpus/                           (repo root, not under study/)
 
 The orchestrator invokes sub-agents via the Task tool. Each agent's `description` field in `.claude/agents/` tells the orchestrator when to use it. The cross-cutting agents (`soviet-russian-heritage`, `far-side-base-architect`) should be invoked frequently as consultants to other agents, not just for their own sections.
 
+## Dispatch parallelism (default: parallel)
+
+The orchestrator dispatches sub-agents in parallel by default. Sequential dispatch is the exception, used only when one agent's output is a stated input to another's.
+
+Before any work session, the orchestrator builds a dispatch plan: which agents are needed, what each depends on, what can run in parallel. The plan goes in the session log. See `study/05-cross-cutting/dispatch-graph.md` for the full dependency graph.
+
+**Stated dependencies that force sequential dispatch:**
+- **Mass budget integration** — humanoid-systems-architect's mass/power budget depends on outputs from robotics-actuation-structures, robotics-sensing-autonomy, and space-environments. The budget runs after those three.
+- **Reviews on a section** — all six reviewers can run in parallel on the same section once it's draft-complete.
+- **Cost estimate** — cost-program depends on substantially all subsystem agents' outputs. Runs last.
+
+Everything else: parallel. When in doubt, dispatch in parallel and reconcile after.
+
 ## Breadcrumb enforcement (mandatory)
 
 Breadcrumbs are not optional. The orchestrator does not consider any work session complete until the following are verified:
@@ -113,3 +126,5 @@ The handback (`handback-stageN.md`) is a self-contained markdown document. The u
 The handback is the contract between executor and planner. Maintain the breadcrumbs (frontmatter, cross-coupling log, session logs, retro artifacts) so the handback has real content to summarize.
 
 When any stage completes, the orchestrator's last action before declaring the stage done is to generate the handback and confirm the user has it.
+
+At the end of each substantive work session, invoke the meta-supervisor agent to update `retro/system-observations.md`. This is mandatory, like other breadcrumbs.
