@@ -113,3 +113,11 @@ Mass budget: allocated subsystems sum to 58.2 kg (structure+actuation 30.0, sens
 Power budget: full locomotion + manipulation closes at 616 W with margin (vs. 800 W cap). Stationary manipulation closes at 432 W with margin (vs. 500 W goal). Lunar night hibernation closes at the lower bound (148 W with margin vs. 150 W goal) but NOT at the upper bound (304 W with margin) — the wide 70–200 W thermal range from §A10 (TRL 2, parametric) is the unresolved risk. This is the only place the budget does not close against its stated goal, and the root cause is documented: no validated thermal model for the bipedal form exists, required by 2031. The far-side-base-architect must provision FSP for the worst case (300 W per humanoid with margin) until the thermal model closes.
 
 Cross-coupling log updated with budget closure entry. Margins register updated with §A13. Session logs updated. All downstream agent inputs (destinations-trajectories, cost-program, conops-integrator, far-side-base-architect) are explicit in the file's Section 6.
+
+---
+
+## 2026-05-03 — scope-discipline-reviewer: stage 6 review pass
+
+Read all six Question (a) sections in full (total ~22,858 words across 01-overview through 06-mass-power-budget). Found no blockers — no section is a design document in disguise. Found 6 majors, 5 minors, and 4 nits totaling an estimated 2,650–3,000 words of removable content. The dominant pattern is two-fold: (1) `04-sensing-autonomy.md` at 5,182 words is the primary problem, with a ~700-word foundation models field survey (SD-001) and ~400 words of general context framing in the autonomy stack narrative (SD-002) that serve robotics education rather than program analysis; (2) `05-environments-hardening.md` at 4,422 words and `06-mass-power-budget.md` at 4,048 words both run long because they reproduce analytical derivation paths (thermal scaling arithmetic, actuation power derivation chain) that belong in the margins register or supporting calculations, not in concept-paper body text. Addressing all six majors is estimated to bring total section word count down by ~2,000 words; sections `02-form-factor-tradespace.md` and `03-actuation-structures.md` will still exceed their targets after the majors pass and will require a second tightening pass.
+
+---
