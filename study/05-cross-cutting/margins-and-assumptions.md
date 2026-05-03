@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A14).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A13).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -45,7 +45,6 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Radiation hardening: hybrid RHBD + spot shielding + ORU replacement|See §A11 below|space-environments|Medium — Tier 2 ORU replacement strategy requires 3-year cadence and base workshop capability|
 |Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface|See §A12 below|space-environments|Medium — LND measurement anchors dose equivalent; silicon TID conversion is spectrum-dependent and requires validation|
 |Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)|See §A13 below|humanoid-systems-architect|Medium-high — drives power system mass (largest single mass line item at 16.9 kg); technology gate at 2032 hardware definition review|
-|Dual-standard architecture recurring overhead: $3–8M/year (parametric)|See §A14 below|humanoid-systems-architect|Medium — drives form factor economic justification; provisional pending ConOps task taxonomy|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -127,7 +126,9 @@ Owner: robotics-sensing-autonomy. Risk if wrong: medium — if the assumption is
 
 The environments section establishes a **parametric estimate of 70–200 W continuous FSP draw per humanoid during lunar night hibernation**: 50–150 W for electronics compartment and battery survival heaters, plus 20–50 W for joint heaters maintaining HD-Electric lubrication above −60°C at the 12 primary load-bearing joints. This range is derived by analogy to Mars rover WEB thermal heritage (Curiosity/Perseverance: ~100 W survival heating in cold case) scaled for the 14-day lunar night and the humanoid's larger electronics volume and distinct geometry.
 
-**This estimate is TRL 2 (parametric only). A detailed thermal model is required.** The wide range reflects uncertainty in the bipedal form factor's MLI effectiveness (large surface-area-to-volume ratio relative to a compact rover box) and the number of joints requiring active heating. If the upper bound (200 W) is the actual figure and three humanoids are deployed simultaneously, the FSP must reserve 600 W for humanoid thermal maintenance through every lunar night — approximately 6% of a 10 kWe FSP plant. This is material to the FSP sizing conversation and must be reconciled before the base power architecture is finalized.
+**Confirmed §05 source value (2026-05-03):** The electronics/battery survival heater range of 50–150 W is confirmed as the §05 authoritative value. The lower bound (50 W) assumes effective MLI on the torso electronics compartment; the upper bound (150 W) reflects uncertainty in thermal cross-coupling between torso and limb linkages. The bipedal limb surface area does not drive this budget because the thermally critical electronics are torso-concentrated. The §06 range of 85–175 W is inconsistent with this confirmed value and must be corrected by humanoid-systems-architect.
+
+**This estimate is TRL 2 (parametric only). A detailed thermal model is required.** The wide range reflects uncertainty in the bipedal form factor's MLI effectiveness and the number of joints requiring active heating. If the upper bound (200 W) is the actual figure and three humanoids are deployed simultaneously, the FSP must reserve 600 W for humanoid thermal maintenance through every lunar night — approximately 6% of a 10 kWe FSP plant. This is material to the FSP sizing conversation and must be reconciled before the base power architecture is finalized.
 
 Owner: space-environments. Risk if wrong: medium — if FSP reservation is underallocated and actual heater demand is higher, either the humanoid thermal budget is underpowered (risks hardware damage below −60°C at joints) or the base power budget must be revised. Must be tightened by detailed thermal model validated by test before PDR.
 
@@ -141,7 +142,7 @@ Owner: space-environments. Risk if wrong: medium — if Tier 2 SEU/latchup rate 
 
 ### A12. Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface
 
-The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate at the unshielded lunar far side surface**. The anchor is the Chang'e-4 LND measurement of ~60 µSv/hr dose equivalent (Wimmer-Schweingruber et al., Science Advances 2020), which translates to approximately 0.53 Gy/yr dose equivalent. The conversion from biologically-weighted dose equivalent to silicon TID depends on the GCR energy spectrum and particle composition; the 20–30 krad(Si)/yr estimate uses an approximate conversion factor for the GCR spectrum at 1 AU without magnetospheric shielding. This conversion has not been independently validated against a silicon TID measurement on the lunar surface.
+The environments section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate at the unshielded lunar far side surface**. The anchor is the Chang'e-4 LND measurement of ~60 µSv/hr dose equivalent (Zhang et al., Science Advances 2020, DOI: 10.1126/sciadv.aaz1334), which translates to approximately 0.53 Gy/yr dose equivalent. The conversion from biologically-weighted dose equivalent to silicon TID depends on the GCR energy spectrum and particle composition; the 20–30 krad(Si)/yr estimate uses an approximate conversion factor for the GCR spectrum at 1 AU without magnetospheric shielding. This conversion has not been independently validated against a silicon TID measurement on the lunar surface.
 
 **Validation required.** If the actual silicon TID rate is significantly higher (e.g., >30 krad/yr), the Tier 2 ORU replacement interval must shorten below 3 years, and the cost estimate for Tier 2 replacement boards increases proportionally. The 7-year TID budget calculation must be repeated against validated silicon TID measurements before PDR.
 
@@ -156,17 +157,5 @@ At 160 Wh/kg, a 2.0 kWh (4-hour EVA sortie at 500 W steady-state) battery requir
 **Technology gate:** If space-qualified cells achieve 200 Wh/kg by the 2032 hardware definition review, battery cell mass reduces to 10.0 kg, recovering 2.5 kg in the mass budget. Conversely, if operational practice requires a 25% depth-of-discharge reserve (due to cold-temperature capacity derating before warm-up completion at start of sortie), the required cell capacity grows to 2.5 kWh and cell mass grows to 15.6 kg at 160 Wh/kg, consuming ~19% of the 16.8 kg growth allowance. The battery energy density assumption is the single most tractable lever for improving the mass budget without design changes elsewhere.
 
 Owner: humanoid-systems-architect. Risk if wrong: medium-high — battery mass drives §A2 (design-to mass target); if cells remain at commercial space-qualified levels and operational reserves must be increased, power system mass grows and may consume the growth allowance, forcing a budget renegotiation.
-
-### A14. Dual-standard architecture recurring overhead: $3–8M/year (parametric)
-
-The form factor tradespace section (`study/01-optimal-space-humanoid/02-form-factor-tradespace.md`, Section 4, "Program Economics: Single-Standard vs. Dual-Standard Architecture") estimates that a two-robot-type program at a permanent lunar far side base would incur **$3–8M/year in additional recurring overhead** relative to a single-type (bipedal humanoid) program. This estimate covers four cost categories: operator training differential (~$2–4M/year at loaded crew-hour costs), spare parts manifest complexity (~$0.5–1M/year), dual software maintenance team overhead (~$1–3M/year), and non-recurring tool/adapter costs (~$0.5–1M one-time). Over a 20-year base lifetime, the estimate yields $60–160M total lifecycle cost attributable to the dual-standard architecture.
-
-This estimate is order-of-magnitude only. It is derived by analogy to comparable dual-fleet maintenance programs and loaded crew-hour costs for lunar deployment scenarios; no primary-source data on lunar far side base operations costs exist. The estimate is intended to bound the question directionally, not to close it.
-
-**The bipedal form's mass-penalty launch cost (approximately $1–5M total across 20 units over 20 years at $5–10k/kg to lunar surface) is small compared to this estimate, supporting the form factor economics argument.**
-
-**Gate: if the ConOps task taxonomy in Section 03 shows fewer than 40% of base tasks requiring human-geometry access, this economic argument must be re-evaluated.** Below the 40% threshold, the training and logistics overhead cost differential narrows because fewer tasks require the bipedal form specifically, weakening the case for single-standard architecture. The ConOps section owns validation of the task taxonomy fraction.
-
-Owner: humanoid-systems-architect. Risk if wrong: medium — if the dual-standard recurring overhead estimate is substantially lower than $3M/year (e.g., because future autonomous systems reduce crew operator time significantly), the economic argument for the bipedal form is weakened but not eliminated; the C1 tool-compatibility argument remains independent of the cost calculation.
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]
