@@ -162,7 +162,17 @@ def parse_cross_coupling_log():
         return []
     body = extract_after_frontmatter(path.read_text(encoding="utf-8"))
     entries = re.split(r"^##\s+", body, flags=re.MULTILINE)[1:]
-    return [e.strip() for e in entries if e.strip()]
+    result = []
+    for e in entries:
+        e = e.strip()
+        if not e:
+            continue
+        first_line = e.split("\n", 1)[0]
+        # Skip format/documentation sections — real entries start with a date
+        if not re.match(r"\d{4}-\d{2}-\d{2}", first_line):
+            continue
+        result.append(e)
+    return result
 
 
 def parse_open_questions():
@@ -350,11 +360,15 @@ def build_handback(stage_num):
     out.append("")
     if coupling:
         for entry in coupling:
-            first_line = entry.split("\n", 1)[0] if "\n" in entry else entry[:80]
-            out.append(f"### {first_line}")
+            if "\n" in entry:
+                first_line, rest = entry.split("\n", 1)
+            else:
+                first_line, rest = entry, ""
+            out.append(f"### {first_line.strip()}")
             out.append("")
-            out.append(entry)
-            out.append("")
+            if rest.strip():
+                out.append(rest.strip())
+                out.append("")
     else:
         out.append("*No cross-coupling decisions logged yet.*")
         out.append("")
