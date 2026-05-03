@@ -237,4 +237,46 @@ The latency tradespace analysis establishes that **>95% simultaneous Earth and f
 
 Owner: far-side-base-architect (relay infrastructure), teleoperation-latency (availability requirement definition), autonomy-trl-tasking (outage autonomous behavior TRL). Risk if wrong: medium — if the relay constellation is not at ≥95% by IOC, the autonomous safe-mode behavior must cover a higher fraction of operations, increasing the TRL pressure on the autonomy stack at the 2035 gate.
 
+### A18. Supervisor ratio: 1:2–3 humanoids per active supervisor at IOC (2035); 1:4–5 at full operation (2040)
+
+**Added 2026-05-03 by human-factors-teaming (orchestrator completing missing closing action).**
+
+**Position:** 1 human actively supervising 2–3 humanoids at IOC (2035). 1 human to 4–5 humanoids at full operation (2038–2040). Hard ceiling approximately 1:8–10 regardless of TRL due to human value floor saturation in a 4-person crew.
+
+**Derivation (five-step justification chain from §02-04 Section 3):**
+
+Step 1 — NIP-10 heritage baseline: 5 humans per rover at near-zero autonomy and 2.5 s RTLT (Lunokhod NIP-10 model). This is the empirical floor.
+
+Step 2 — §A1 autonomy curve advancement: At TRL 7 deliberative layer (2035 IOC), 12 of 20 tasks are autonomy-led. Per-task supervision demand drops from the NIP-10 continuous-control posture (~1.0 person-hr/robot-hr) to on-demand monitoring (~0.05 person-hr/robot-hr) for those tasks.
+
+Step 3 — Cognitive load arithmetic: 4 crew supervising 3 humanoids generates approximately 4.25 person-hours of supervisory demand per shift against 8 person-hours of available capacity. During any given hour, 2–3 humanoids are in autonomous execution and 0–1 crew members are actively supervising. Peak demand (2 supervisors for 3 humanoids) yields 1:1.5 effective; nominal operations yield 1:3 effective.
+
+Step 4 — Post-2035 TRL advancement: At TRL 8 (2038–2040), 16–17 of 20 tasks are autonomy-led. On-demand supervisory demand per humanoid drops further; 1 human can credibly oversee 4–5 humanoids without saturating supervisory capacity.
+
+Step 5 — Hard ceiling: The human value floor (7 permanently human-required task categories) defines a minimum active engagement per humanoid per shift that cannot be automated. In a 4-person crew with 8–10 humanoids, value-floor tasks would consume essentially all available supervisory capacity, creating the ~1:8–10 ceiling regardless of TRL.
+
+Owner: human-factors-teaming (ratio definition and derivation), conops-integrator (operational validation in sortie day structure), cost-program (crew size requirement). Risk if wrong: medium — if actual supervision demand per humanoid is higher (e.g., Mir-baseline maintenance absorption exceeds 40%), headroom compresses faster and the IOC ratio may be optimistic. Sensitivity is explored in §02-04 Section 2.
+
+---
+
+### A19. Crew composition at IOC: 4 crew, 3 humanoids; headroom factor ≥2×
+
+**Added 2026-05-03 by human-factors-teaming (orchestrator completing missing closing action).**
+
+**Position:** Baseline crew composition at IOC (2035) is 4 crew members and 3 humanoids. The default operating mode is periodic supervision. Total supervisory demand is approximately 4.25 person-hours per crew shift; available supervisory capacity (Mir heritage baseline of 25–30% of crew time available for supervision at 4-person crew scale) is approximately 8 person-hours per shift. Headroom factor: approximately 2×.
+
+**Demand derivation:**
+- 12 autonomy-led tasks: ~0.05 person-hr/robot-hr × 3 robots × 8 hr operational window = ~1.2 person-hr/shift
+- 6 jointly-executed tasks: ~0.2 person-hr/robot-hr × 3 robots × 5 hr active window = ~3.0 person-hr/shift  
+- Total: ~4.2 person-hr/shift (rounded to 4.25 with scheduling overhead)
+
+**Capacity derivation:**
+- Mir heritage: 30–40% of crew time absorbed by maintenance (life support, systems, habitat). With maintenance absorption at 35%, a 12-hour crew waking period leaves approximately 65% = 7.8 hours for other activities. For supervisory activities specifically, the fraction available without competing with science, EVA prep, and personal time is 25–30%, or approximately 3 hours per crew member per shift. For 4 crew: 4 × 2 hours ≈ 8 person-hr/shift (conservative estimate).
+
+**Sensitivity:** If maintenance absorption rises to 50% (Mir high-demand periods), available supervisory capacity drops to approximately 5–6 person-hr/shift. Headroom compresses to 1.2–1.4×. The ConOps agent must model this scenario.
+
+Owner: human-factors-teaming (crew composition definition), conops-integrator (shift structure validation), cost-program (crew operations cost baseline), far-side-base-architect (habitation and workstation sizing), destinations-trajectories (lander manifest: 3 humanoids × 75 kg = 225 kg humanoid mass at IOC). Risk if wrong: medium — if maintenance absorption is at the high end of Mir heritage, supervisory headroom is tighter than the 2× baseline; if autonomy-led fraction is lower than §A1 predicts, demand rises. Both risks are captured as sensitivity cases in §02-04.
+
+---
+
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]
