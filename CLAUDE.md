@@ -71,9 +71,10 @@ study/
     soviet-russian-heritage.md    [soviet-russian-heritage]
     open-questions.md             [orchestrator]
     margins-and-assumptions.md    [orchestrator]
-  corpus/
-    references.bib                [all agents append]
-    heritage-notes/               [all agents]
+
+corpus/                           (repo root, not under study/)
+  references.bib                  [all agents append]
+  heritage-notes/                 [all agents write stub bibs here]
 ```
 
 ## Working principles
