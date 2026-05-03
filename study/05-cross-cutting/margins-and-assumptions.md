@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A6).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A9).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -38,6 +38,9 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Actuation type: HD-Electric primary        |See §A4 below                                   |robotics-actuation-structures|Medium — harmonic flexspline cryogenic TRL is open|
 |Structure + actuation mass ≤30 kg design-to|See §A5 below                                   |robotics-actuation-structures|Medium — CFRP construction required; risk if space-qual drives material change|
 |Joint dust seal: FFKM lip seal to −180°C   |See §A6 below                                   |robotics-actuation-structures / space-environments|High — material at TRL 3–4 for cryogenic range; must reach TRL 5 by 2029|
+|Sensor suite mass ~2.1 kg, power 37–75 W peak|See §A7 below                               |robotics-sensing-autonomy|Low-medium — sensors are not mass/power driver; TRL gaps are in qualification, not sizing|
+|Compute architecture: two-tier RH supervisor + commercial AI accelerator|See §A8 below|robotics-sensing-autonomy|High — no rad-hard AI equivalent exists at TRL > 4; watchdog architecture is the 2035 solution|
+|Foundation models used at supervisory layer only (not primary task executor)|See §A9 below|robotics-sensing-autonomy|Medium — if VLA generalization to OOD environments advances faster than expected, this assumption is conservative; if it does not advance, it is the correct constraint|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -86,5 +89,33 @@ The actuation section specifies **perfluoroelastomer (FFKM/Kalrez-class) lip sea
 If this adaptation fails to reach TRL 5 (component validation in relevant environment) by the 2029 program gate, the fallback is an all-labyrinth seal architecture (no elastomeric element), which reduces particle rejection effectiveness and increases bearing surface contamination rates. The all-labyrinth fallback is viable for a shorter mission duration but has not been assessed for multi-year permanent base service life.
 
 Owner: robotics-actuation-structures (definition), space-environments (execution and validation). Risk if wrong: high for permanent base dust tolerance; a failed seal at a primary joint could require ORU replacement on a compressed schedule and degrades the robot's operational availability.
+
+### A7. Sensor suite mass ~2.1 kg design-to, 37–75 W peak power
+
+The sensing section (`study/01-optimal-space-humanoid/04-sensing-autonomy.md`) allocates **~2.1 kg design-to mass** and **37–75 W peak power (10–30 W average with LIDAR duty cycling)** for the full sensor suite. This includes: stereo HDR camera pair + ToF depth unit (head-mounted), two wrist cameras, three-unit redundant MEMS IMU set with spot shielding, two wrist F/T sensors, fingertip tactile arrays, and one solid-state LIDAR.
+
+Sensor mass (~2.8% of 75 kg total) and peak power (~9% of 800 W peak) are modest within system margins. The sensor allocation is not the mass or power driver; TRL gaps in space qualification are the primary risk vector in this subsystem. Key gaps: HDR camera outdoor lunar illumination performance at TRL 4–5; MEMS IMU TID tolerance with spot shielding at TRL 4–5; LIDAR SPAD array radiation hardening at TRL 4; flexible tactile substrate vacuum/thermal cycling at TRL 3–4.
+
+Owner: robotics-sensing-autonomy. Risk if wrong: low-medium — sensors are not mass or power constrained; if space qualification drives mass or power overruns, the impact at system level is small. TRL gap in tactile arrays is the highest-consequence failure mode (reduces manipulation safety margin).
+
+### A8. Compute architecture: two-tier RH supervisor + commercial AI accelerator (watchdog)
+
+The sensing/autonomy section establishes a **two-tier compute architecture**: Tier 1 is a radiation-hardened supervisor processor (RAD750-class, 5–10 W, always-on) running safety-critical deterministic control loops; Tier 2 is a commercial AI inference accelerator (Jetson AGX Orin-class, 15–60 W) running perception pipelines and VLA model inference under Tier 1 watchdog supervision. Total compute mass ~1.8 kg including spot shielding.
+
+This architecture is required because no radiation-hardened AI inference processor equivalent to commercial AI accelerators (Jetson AGX Orin: 275 TOPS, 15–60 W) exists at TRL > 4 as of 2026. The Tier 2 watchdog approach accepts commercial component SEU/latchup susceptibility as a managed risk: Tier 1 monitors Tier 2 output validity and issues power-cycle resets on detected anomalies. Spot shielding (5–10 mm Al/Ta laminate, ~0.8 kg) reduces latchup rate by 2–3 orders of magnitude.
+
+**Technology gate:** If a radiation-hardened AI accelerator at TRL 6 becomes available by the 2029 gate (through DARPA HPSC or similar programs), the Tier 2 watchdog architecture may be simplified or replaced. If not — assessed as the more likely outcome — the two-tier watchdog architecture remains through the 2035 first deployment.
+
+Owner: robotics-sensing-autonomy. Risk if wrong: high — the entire onboard autonomy stack depends on Tier 2 inference capability; if Tier 2 latchup rate under actual lunar radiation exceeds spot-shielding mitigation capacity, inference duty cycle degrades and supervisory autonomy function is impaired.
+
+### A9. Foundation models used at supervisory autonomy layer only; not primary task executor
+
+The sensing/autonomy section takes the position that **foundation models (VLA-class, LLM reasoning) are an enabling technology for the supervisory autonomy layer** — crew-robot natural language interface, goal decomposition, anomaly explanation — **but are not the primary task executor at the deliberative or reactive layers** for safety-critical and novel-environment operations. Deliberative and reactive layers use validated, interpretable architectures (MPC, behavior trees, state machines) supplemented by domain-specific fine-tuned learned models.
+
+This position is calibrated to the current state of VLA model generalization: out-of-distribution performance degrades substantially beyond training data distribution, and lunar surface is maximally out-of-distribution for any existing model. Additionally, radiation-induced bit errors in foundation model weights or activations have not been characterized, and large-model failure modes are not bounded.
+
+This assumption is conservative by design and should be revisited at the 2029 and 2035 program gates as: (1) lunar-analog training datasets are constructed, (2) model uncertainty quantification matures, and (3) radiation-effect characterization data is available.
+
+Owner: robotics-sensing-autonomy. Risk if wrong: medium — if the assumption is too conservative, the architecture under-exploits available foundation model capability; if it is too permissive, autonomous task failures in safety-critical contexts are possible. The conservative direction (supervisory layer only) is the safer failure mode for this program.
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]
