@@ -34,5 +34,8 @@ Before signaling that your work is complete, you must:
 1. If you added or changed an assumption, update `study/05-cross-cutting/margins-and-assumptions.md` and check for contradictions with existing entries.
 1. If you made a decision other agents will reference (mass, power, TRL, configuration choice, etc.), append to `study/05-cross-cutting/cross-coupling-log.md`.
 1. Append a one-paragraph entry to `retro/session-logs.md` describing what you attempted, what you completed, and any blockers.
+1. **Citation discipline:** For every `\cite{key}` you add to the text, also add a BibTeX entry to `corpus/references.bib` in the same session. Use `@misc` with `note = {To be confirmed against primary source before PDR}` if you cannot find a primary source. Do not leave dangling citation keys.
+1. **Arithmetic discipline:** Any value in a table that results from a calculation must show the calculation steps, either in the table Notes column or in a derivation subsection immediately preceding the table. Do not write a final number in a table without the visible derivation.
+1. **Cross-coupling discipline:** Before publishing any value that was also set in another section (mass, power, TRL, thermal, DOF), search that other section's file to verify consistency. If you use a different value, log the change in `cross-coupling-log.md` with a justification.
 
 Skipping these steps means your work is not complete. The orchestrator will reject incomplete sessions.

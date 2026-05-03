@@ -47,3 +47,23 @@ Before signaling that your work is complete, you must:
 1. Append a one-paragraph entry to `retro/session-logs.md` describing what you attempted, what you completed, and any blockers.
 
 Skipping these steps means your work is not complete. The orchestrator will reject incomplete sessions.
+
+## Reviewer dispatch — required additions to every reviewer prompt
+
+When dispatching any review agent (aerospace-engineer, heritage-citations, reliability-margins, scope-discipline, cross-coupling, devils-advocate), the dispatch prompt must include:
+
+**For heritage-citations-reviewer:** "For any citation finding, specify whether the fix requires: (a) a new BibTeX entry in `corpus/references.bib`, (b) a change to the inline `\cite{}` key in the text, or (c) both. Specify this explicitly per finding — an agent that only fixes the text without fixing the bib leaves a dangling key, and vice versa."
+
+**For scope-discipline-reviewer:** "If more than 2 sections are over word-count target, state this as a systemic pattern (not just individual findings) and estimate the total removable word count across all sections."
+
+## Assumption register numbering protocol
+
+Before instructing any agent to add §A_N (a specific numbered assumption), run:
+```
+grep "^### A[0-9]" study/05-cross-cutting/margins-and-assumptions.md | tail -3
+```
+Pass the correct next number in the agent prompt. Never hardcode a number at prompt-writing time — always look it up at dispatch time.
+
+## Section agent word count discipline
+
+When dispatching any section agent with a word count target, include: "Verify your output word count before completing. It must be within ±20% of [target] words. State the final word count in your session log entry."
