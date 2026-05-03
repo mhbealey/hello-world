@@ -177,9 +177,14 @@ def parse_open_questions():
     for line in body.splitlines():
         m = pattern.match(line)
         if m:
+            domain = m.group(1).strip()
+            question = m.group(2).strip()
+            # Filter out format-documentation placeholder rows
+            if domain.lower() == "domain" or question.lower() == "question":
+                continue
             rows.append({
-                "domain": m.group(1).strip(),
-                "question": m.group(2).strip(),
+                "domain": domain,
+                "question": question,
                 "context": m.group(3).strip(),
                 "owner": m.group(4).strip(),
                 "by_when": m.group(5).strip(),
@@ -505,11 +510,45 @@ def build_handback(stage_num):
     return "\n".join(out)
 
 
+def check_breadcrumb_freshness():
+    """Warn if breadcrumbs are stale or missing."""
+    issues = []
+
+    sessions_path = RETRO_DIR / "session-logs.md"
+    if sessions_path.exists():
+        body = extract_after_frontmatter(sessions_path.read_text(encoding="utf-8"))
+        if "## " not in body:
+            issues.append("retro/session-logs.md has no session entries")
+    else:
+        issues.append("retro/session-logs.md does not exist")
+
+    reg_path = STUDY_DIR / "05-cross-cutting" / "margins-and-assumptions.md"
+    if reg_path.exists():
+        text = reg_path.read_text(encoding="utf-8").lower()
+        trl_lines = [l for l in text.split("\n")
+                     if "trl" in l and "|" in l and "humanoid" in l]
+        if len(trl_lines) > 1:
+            issues.append(
+                f"Possible TRL contradiction: {len(trl_lines)} TRL-related "
+                "assumption rows. Review margins-and-assumptions.md for consistency."
+            )
+
+    return issues
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--stage", type=int, default=4)
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
+
+    issues = check_breadcrumb_freshness()
+    if issues:
+        print("WARNING: breadcrumb issues detected:")
+        for i in issues:
+            print(f"  - {i}")
+        print("\nProceeding anyway, but the handback may be incomplete.")
+        print()
 
     out_path = args.out or f"handback-stage{args.stage}.md"
     handback = build_handback(args.stage)

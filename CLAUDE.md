@@ -89,6 +89,17 @@ corpus/                           (repo root, not under study/)
 
 The orchestrator invokes sub-agents via the Task tool. Each agent's `description` field in `.claude/agents/` tells the orchestrator when to use it. The cross-cutting agents (`soviet-russian-heritage`, `far-side-base-architect`) should be invoked frequently as consultants to other agents, not just for their own sections.
 
+## Breadcrumb enforcement (mandatory)
+
+Breadcrumbs are not optional. The orchestrator does not consider any work session complete until the following are verified:
+
+1. Every file modified during the session has updated `last-updated` frontmatter.
+1. If substantive work was done (more than minor edits), `retro/session-logs.md` has a new entry covering the session.
+1. If a cross-coupling decision was made (a number, an architectural choice, a TRL claim that other agents will reference), `study/05-cross-cutting/cross-coupling-log.md` has a new entry.
+1. If an assumption was introduced or modified, `study/05-cross-cutting/margins-and-assumptions.md` is updated, and the orchestrator has searched the registry for contradictions before adding.
+
+Stage handback generation will warn if breadcrumbs from the most recent session are missing. This is a hard gate before handback, not a guideline.
+
 ## The handback loop
 
 This project runs as a loop between Claude Code (which executes stages) and a planning conversation (which designs new stages). At the end of each stage, generate a handback document:

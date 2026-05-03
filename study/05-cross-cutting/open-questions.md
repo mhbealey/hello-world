@@ -9,13 +9,17 @@ last-updated: 2026-05-03
 
 This file tracks open questions across the study. Each agent appends questions in their domain that need resolution. The orchestrator reviews and prioritizes.
 
-## Format
+## Format convention
+
+Each entry goes under `## Active Open Questions` using this format:
 
 ```
 - [domain] question — context — who needs to resolve — by when
 ```
 
-## Initial questions (orchestrator-seeded)
+The `domain` tag must be a real domain label (e.g. `autonomy`, `power`, `form factor`). Do not use `domain` as the literal domain tag — that's a placeholder. Entries with `domain` as the literal tag are treated as format documentation, not real questions, and will be filtered from the handback.
+
+## Active Open Questions
 
 - [scope] Does the study cover Mars surface humanoid ops in detail or treat it as architecture-paper-fidelity extension? — Affects scope of conops-integrator and destinations-trajectories — orchestrator — early
 - [autonomy] What's the autonomy TRL we assume by 2035 deployment? — Drives the entire teaming model — autonomy-trl-tasking with human-factors-teaming — early
