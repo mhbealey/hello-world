@@ -3,219 +3,240 @@ title: Aerospace Engineer Review Findings
 status: findings-complete
 owner: aerospace-engineer-reviewer
 last-updated: 2026-05-03
+stage: 8
 ---
 
-# Aerospace Engineer Review Findings
+# Aerospace Engineer Review Findings — Stage 8
 
-## Summary
-
-| Severity | Count |
-|----------|-------|
-| Blocker  | 3     |
-| Major    | 10    |
-| Minor    | 5     |
-| Nit      | 3     |
+**Sections reviewed:**
+- `study/02-human-in-the-loop/01-overview.md` (§02-01)
+- `study/02-human-in-the-loop/02-latency-tradespace.md` (§02-02)
+- `study/02-human-in-the-loop/03-autonomy-trl-tasking.md` (§02-03)
+- `study/02-human-in-the-loop/04-teaming-model.md` (§02-04)
 
 ---
 
 ## Findings
 
-### AE-001 — BLOCKER — 03-actuation-structures.md — DOF table total is wrong by ~13–15 DOF
+### AE-S8-01 — Major — §02-02 — Queqiao-2 relay geometry treats satellite as co-linear with Earth-Moon axis; error is small but derivation is wrong
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
+**Severity:** Major
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Queqiao-2 Relay Geometry"
+**Claim:** "Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900 km from Earth center, yielding OWLT of 400,900 ÷ 299,792 = **1.337 s**"
+**Issue:** The derivation assumes Queqiao-2 is positioned radially outward from Earth on the Earth-Moon centerline (i.e., directly behind the Moon as seen from Earth). This is not the orbital geometry required for simultaneous Earth and far-side line-of-sight. For the satellite to see both Earth and the far side simultaneously, it must be above the lunar limb — not on the anti-Earth axis — which means the Earth-to-satellite slant range is approximately the Earth-Moon distance, not Earth-Moon + altitude. The geometry that makes far-side coverage possible is precisely the geometry where the satellite's altitude above the Moon adds only minimally to the Earth-satellite range.
+
+More precisely: Queqiao-2 at apoapsis above the lunar limb is roughly 384,400 km from Earth (the Earth-Moon distance) plus a projection of the satellite's orbital radius onto the Earth-satellite direction. At 16,500 km altitude and an inclination of 62.4°, the projection is well below 16,500 km. The 400,900 km figure overstates the path length. The correct approach would be to compute the Earth-satellite range from the orbital geometry using the law of cosines; the resulting OWLT is approximately 1.28–1.32 s rather than 1.337 s, and the RTLT is approximately 2.56–2.64 s — materially closer to the direct Earth-Moon RTLT of 2.56 s, not 9% higher.
+
+The cited 2.78–2.92 s RTLT range is therefore overstated by an unknown but potentially significant fraction. The range may be closer to 2.60–2.75 s depending on exact orbital geometry and viewing angle to the base site. The architectural conclusion (Earth supervision is inadequate for the far-side task profile) is not affected — the latency remains in the Lunokhod-tier regime regardless — but a study whose core physics argument rests on latency derivations cannot carry an incorrect geometry.
+
+**Required action:** Replace the additive Earth-Moon + altitude path calculation with a slant-range calculation using the law of cosines, accounting for the actual angular offset of Queqiao-2 from the Earth-Moon radial axis at the orbital positions that provide dual-link coverage. Recompute the RTLT bounds accordingly. If the corrected values shift the RTLT upper end below 2.92 s, update the latency table and the §02-01 overview claim of "2.78–2.92 seconds." The §A17 register entry should be updated if the relay availability calculation is affected.
+
+---
+
+### AE-S8-02 — Minor — §02-02 — RTLT upper bound derivation is not shown; stated 2.92 s is internally consistent but not demonstrated
+
+**Severity:** Minor
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Queqiao-2 Relay Geometry" and Latency Table
+**Claim:** Latency table states OWLT max of 1.46 s and RTLT max of 2.92 s for lunar far side via relay.
+**Issue:** The derivation section only computes the apoapsis (most favorable) geometry in detail, yielding RTLT = 2.78 s. The upper bound of 2.92 s (OWLT 1.46 s) appears in the table without a corresponding derivation. Internal check: 2 × 1.46 = 2.92 ✓ (table is internally consistent). The implied OWLT of 1.46 s requires an Earth-satellite path of 1.46 × 299,792 = 437,696 km. At lunar apogee (406,700 km Earth-Moon) + 17,000 km satellite altitude, the additive path would be 423,700 km, giving 1.413 s OWLT; the far-side surface segment adds ~17,000 ÷ 299,792 = 0.057 s; total OWLT ≈ 1.470 s, RTLT ≈ 2.94 s. The table's 2.92 s is slightly below this additive calculation, and neither calculation has shown its geometry assumptions.
+
+This is a minor issue because the architectural conclusion is insensitive to whether the upper bound is 2.88 or 2.94 s, but the derivation discipline requires both bounds to be shown.
+
+**Required action:** Add a brief parallel derivation for the upper-bound case (lunar apogee geometry, satellite at maximum altitude above far-side limb) showing the geometry assumptions and arithmetic. The derivation should be consistent with the correction requested in AE-S8-01.
+
+---
+
+### AE-S8-03 — Major — §02-04 — Headroom characterization is ambiguous and uses non-standard margin language
+
+**Severity:** Major
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Cognitive Load Under the Three-Tier Model"
+**Claim:** "Headroom: 3.75 person-hours (approximately 3.75÷4.25 = 88% margin over demand)" and "roughly a factor of 2 between demand and capacity"
+**Issue:** The two characterizations are inconsistent and both are stated in non-standard ways that create confusion about whether the budget is comfortable or tight.
+
+Arithmetic check (all correct):
+- Total demand: 2.0 + 1.5 + 0.75 = 4.25 person-hours ✓
+- Capacity: 4 crew × 8 hr × 0.25–0.30 fraction → 8 person-hours ✓
+- Surplus: 8 − 4.25 = 3.75 person-hours ✓
+
+The problem is the characterization: "88% margin over demand" is computed as (capacity − demand) / demand = 3.75 / 4.25 = 88.2%. However, a reader seeing "88% margin" without context will likely interpret it as "the budget is 88% consumed" (i.e., 12% margin remaining), which inverts the correct reading. The standard aerospace margin convention is (capacity − demand) / demand expressed as a positive number when capacity exceeds demand — so 88% margin is formally correct but stylistically unusual. The "factor of 2" characterization (8 / 4.25 = 1.88×) is accurate but rounds aggressively to "2." These two phrasings, placed in adjacent sentences, describe the same surplus in ways that a non-specialist reader will likely misread as contradictory.
+
+Furthermore, the "88% margin over demand" framing is not how cognitive workload budgets are normally presented in human factors literature. The standard presentation is: demand = 4.25 person-hours, capacity = 8 person-hours, utilization = 53% (demand/capacity), margin = 47% of capacity unused. This is the framing a human-factors-teaming reviewer, ConOps agent, or cost-program agent will expect.
+
+**Required action:** Replace "88% margin over demand" with standard utilization and margin language: "supervisory demand = 4.25 person-hours (53% of available capacity); headroom = 3.75 person-hours (47% of capacity)." Remove the inconsistent "factor of 2" claim or replace it with "capacity exceeds demand by 1.88×." The finding does not change the arithmetic — the numbers are correct — only the presentation is non-standard.
+
+---
+
+### AE-S8-04 — Major — §02-04 — Periodic supervision demand calculation uses an unexplained concurrency factor that is the dominant uncertainty in the budget
+
+**Severity:** Major
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Periodic supervision demand"
+**Claim:** "3 × 0.83 × 0.6 concurrency factor = ~1.5 person-hours. (The 0.6 concurrency factor reflects that at any given time, some humanoids will be in autonomy-led phases while others are at checkpoint gates; simultaneous checkpoints from all three robots are rare and represent the peak demand case, not the nominal case.)"
+**Issue:** The 0.6 concurrency factor is the second largest term in the periodic supervision subtotal (1.5 person-hours, 35% of total 4.25 person-hour demand), yet it has no derivation. It is stated as a qualitative judgment ("simultaneous checkpoints from all three robots are rare") without any supporting calculation. A queuing-theoretic estimate of the probability of simultaneous checkpoint events across three independently-operating humanoids could be derived from the checkpoint frequency and duration assumptions already stated in the section. If each humanoid generates approximately 5 checkpoint events per shift with ~10 minute duration in an 8-hour shift, the fraction of time each humanoid is at a checkpoint is 50/480 ≈ 10%. The probability that all three are simultaneously at a checkpoint is 0.10³ = 0.001 — vanishingly small — but the probability that two are simultaneously at a checkpoint is 3 × 0.10² × 0.90 ≈ 2.7%. This suggests the concurrency factor should be closer to 0.9–0.95 (very little overlap), not 0.6, which would imply that 40% of checkpoint time is "lost" to overlap. If the concurrency factor is 0.9 instead of 0.6, the periodic supervision subtotal rises from 1.5 to 2.25 person-hours, and total supervisory demand rises from 4.25 to 5.0 person-hours — reducing the surplus from 3.75 to 3.0 person-hours and changing the utilization from 53% to 63%. The budget still closes, but the margin characterization changes materially.
+
+**Required action:** Derive the 0.6 concurrency factor from first principles, or replace it with a factor derived from a queuing model or simulation of checkpoint event timing across three humanoids. If the factor is revised upward toward 0.9, recompute the total supervisory demand and update the headroom characterization. If the 0.6 factor is defended, show the reasoning (e.g., the 6 jointly-executed task categories are not all running simultaneously; perhaps only 2 of 6 categories are active in a typical shift window, which halves the checkpoint rate).
+
+---
+
+### AE-S8-05 — Minor — §02-04 — Continuous supervision demand estimate (1.5 events × 30 min) is not traced to mission frequency data
+
+**Severity:** Minor
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Continuous supervision demand"
+**Claim:** "A realistic sortie day includes approximately 1–2 continuous-supervision events (a first-execution task, an EVA tool handoff sequence, a new task demonstration). Estimated 1.5 continuous-supervision events per shift × 30 minutes each = 0.75 person-hours."
+**Issue:** The 1.5 events/shift figure is a bare assertion. The task taxonomy in §02-03 lists the tasks requiring continuous supervision: first execution of new task types (T18), human-led locomotion reconfiguration (T12), and EVA tool handoff (T09 — though T09 is listed as jointly executed, not continuously supervised). There is no analysis of how often these events occur per shift at IOC. First execution of a new task type is presumably a rare event (once per new task category, not once per shift). EVA tool handoff would occur only on EVA-days. Continuous supervision events at the rate of 1.5/shift would imply these triggering events are nearly daily, which may be aggressive at IOC when the task library is initially limited. Conversely, during commissioning operations (high rate of first-execution events), 1.5/shift could be conservative.
+
+**Required action:** Trace the 1.5 events/shift estimate to the §02-03 task taxonomy. Specify which tasks drive this estimate and at what operational tempo they occur. If first-execution events are uncommon after an initial commissioning period, the continuous supervision demand should be stated as a function of phase (higher during commissioning, lower during steady-state operations) rather than a single flat estimate.
+
+---
+
+### AE-S8-06 — Blocker — §02-04 — Supervisory capacity derivation is internally inconsistent between Section 2 and Assumption §A19
+
 **Severity:** Blocker
-**Issue:** The joint allocation table uses "each" language throughout (e.g., "Each arm: 4 DOF," "Each hip: 3 DOF," "Each hand: 10–12 DOF") but then reports a total of "~36–40." Summing the bilateral entries correctly: neck 3, torso 2, arms 2×4=8, wrists 2×3=6, hands 2×(10–12)=20–24, hips 2×3=6, knees 2×1=2, ankles 2×2=4, yields **51–55 DOF total**, not 36–40. The error is ~13–15 DOF — roughly a 30% undercount. The subsequent text states "the design-to DOF count is 38 nominal" and sizes actuation mass at 38×~340 g, creating an internal contradiction: either the nominal is 38 (in which case several "each" rows need halving, which makes no physical sense), or the nominal is 51–55 (in which case the actuation mass allocation of 13 kg is severely undersized). The mass budget carries the 38-joint number; if the actual count is 51+, actuation mass at 340 g/joint grows to ~17–19 kg, breaking the 30 kg structure+actuation allocation.
-**Evidence:** Sum of table entries: neck(3) + torso(2) + 2×arm(4) + 2×wrist(3) + 2×hand(10–12) + 2×hip(3) + 2×knee(1) + 2×ankle(2) = 51–55. The "38 nominal" claim in the text matches the body-without-full-hands count (31 body + 7 DOF of hand — inconsistent with the 10–12 DOF/hand entries). Comparable systems: Valkyrie at 44 DOF has no finger joints; R2 at 42 DOF has 12 DOF hands (7-segment fingers × 2 hands with limited independent DOF) — these totals are closer to 44–55 for a fully articulated system.
-**Required action:** Reconcile the table entries and the total. Either (a) restate the "each" rows as bilateral totals and recount, or (b) accept that the nominal DOF is 50+ and revise the actuation mass allocation upward accordingly. The mass-power budget (Section 01-06) must be re-run with the corrected joint count before the budget closes.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2 vs. `study/05-cross-cutting/margins-and-assumptions.md`, §A19
+**Claim (§02-04 Section 2):** "if a 4-person crew allocates 30–40% of time to maintenance, 15% to exercise, and 25% to communications and personal time, approximately 25–30% of total crew-time remains available for supervisory functions… 4 crew × 8 hours × 0.25–0.30 available fraction yields approximately 8–10 person-hours per crew shift available for supervisory demand. The conservative estimate is **8 person-hours per crew shift**"
+**Claim (§A19 in margins register):** "For supervisory activities specifically, the fraction available without competing with science, EVA prep, and personal time is 25–30%, or approximately **3 hours per crew member per shift**. For 4 crew: 4 × 2 hours ≈ 8 person-hr/shift"
+**Issue:** The §02-04 derivation and the §A19 derivation give the same answer (8 person-hours) via two different paths that contradict each other.
+
+§02-04 path: 4 crew × 8 hr/shift × 0.25 fraction = 8 person-hours. This implies each crew member contributes 2 person-hours of supervisory capacity from an 8-hour shift.
+
+§A19 path: fraction available for supervision = 25–30% → "approximately 3 hours per crew member per shift" (3 hours is 37.5% of an 8-hour shift, not 25–30%). Then §A19 states "4 × 2 hours ≈ 8 person-hr/shift" — reverting to 2 hours/crew member despite the preceding sentence saying 3 hours/crew member. The paragraph is internally contradictory: it states 3 hours per crew member and then multiplies by 2 hours per crew member.
+
+Furthermore, the §02-04 arithmetic omits a critical element: the section uses an 8-hour work shift, but Mir crews worked a 12-hour waking day with roughly half dedicated to scheduled activities. If the base operates on a 12-hour waking day with 8 hours of scheduled work, the available supervisory fraction must be applied to the waking period or the working period — and the two calculations give different answers (12 hr × 0.25 = 3 hr/crew member vs. 8 hr × 0.25 = 2 hr/crew member). The document does not state which time base it uses.
+
+**Required action:** (1) Correct the §A19 derivation: either state 2 hours per crew member (matching the 8-hour shift × 25% calculation) or 3 hours per crew member (matching the 25–30% of a 12-hour waking day) — not both in adjacent sentences. (2) State explicitly in §02-04 whether the 8-hour shift is the time base for the capacity calculation or whether a longer waking period is assumed. (3) Reconcile §02-04 Section 2 and §A19 so both documents show identical arithmetic. This is a blocker because the supervisory capacity figure is the denominator of the primary teaming model result.
 
 ---
 
-### AE-002 — BLOCKER — 06-mass-power-budget.md — Thermal radiator sizing violates Stefan-Boltzmann law
+### AE-S8-07 — Major — §02-04 — Supervisor ratio Step 2 conflates per-task supervision intensity with overall supervisor ratio; logic is non-rigorous
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Blocker
-**Issue:** Section 01-06 states: "Radiator sized to reject ~300 W at end-of-mission emissivity (ε = 0.70 EOL per §05); at 50°C panel temperature, required radiator area ~0.3 m² at ~10 kg/m² = ~3.0 kg." The physics does not close. Applying the Stefan-Boltzmann equation Q = ε·σ·A·(T_panel⁴ − T_sink⁴) with ε=0.70, A=0.3 m², T_panel=323 K (50°C): even with an ideal 4 K sky as the sole sink, the maximum rejection is approximately 130 W. To reject 300 W with 0.3 m² at ε=0.70 and T_panel=50°C, the implied sink temperature is imaginary (T_sink⁴ is negative in the solved equation). The area required for 300 W rejection with a realistic effective sink temperature (~4 K sky but ~200–243 K effective accounting for ground view factor from a body-mounted panel) is approximately 0.7–1.5 m² — 2.3–5× larger than stated. During the lunar day, the equatorial surface reaches ~390 K (117°C), which is above the panel temperature; a horizontally oriented radiator in that environment absorbs heat rather than rejecting it. The 3 kg thermal mass line item in the budget is therefore substantially undersized if the robot must reject 300+ W during active lunar-day operations.
-**Evidence:** Stefan-Boltzmann: Q = 0.70 × 5.67×10⁻⁸ × 0.3 × (323⁴ − T_sink⁴). Solving for T_sink when Q=300: T_sink⁴ = 323⁴ − 300/(0.70 × 5.67×10⁻⁸ × 0.3) = 1.09×10¹⁰ − 2.52×10¹⁰ = −1.43×10¹⁰. No real solution exists. At T_sink=4 K: Q = 0.70 × 5.67×10⁻⁸ × 0.3 × 323⁴ = 129 W. At a realistic effective sink of 243 K (vertical radiator with ~85% sky, 15% lunar-day ground view): Q = 100 W. Area required for 300 W at 243 K effective: 0.7–1.5 m² depending on geometry.
-**Required action:** Redo the radiator sizing with explicit sink temperature assumptions, view-factor analysis for the robot's body geometry during lunar-day operation, and proper Stefan-Boltzmann arithmetic. The thermal management mass line item (currently 3.0 kg in §01-06) is likely undersized by a factor of 2–4×, which threatens the mass budget closure. Coordinate with space-environments agent on radiator orientation options and the thermal model required before PDR.
-
----
-
-### AE-003 — BLOCKER — 02-form-factor-tradespace.md — Evaluation matrix "weighted total" row contains arithmetic errors that inflate the A-vs-B gap
-
-**Section:** `study/01-optimal-space-humanoid/02-form-factor-tradespace.md`
-**Severity:** Blocker
-**Issue:** The evaluation matrix table's "Weighted total" row (line 120) states scores of A=3.60, B=3.35, C=2.95, D=2.55, E=2.80. The document itself then provides a "Raw weighted totals" recalculation section that gives A=3.65, B=3.55, C=3.25, D=2.90, E=2.85 — which are the correct arithmetic results. The table row is wrong in all five values. The practical consequence is that the table implies an A-versus-B gap of 0.25, whereas the actual gap is 0.10. The document's own Section 4 text then correctly quotes 3.65 and acknowledges the narrow gap ("the bipedal form wins primarily on C1"), but the table — which is what a reader or downstream agent will likely reference — overstates the margin for the winning form factor by 2.5×. In a study that must be transparent about the closeness of this call (the centaur is the legitimate second choice), an error that makes the winning candidate look 2.5× more dominant than it is undermines analytical credibility.
-**Evidence:** Recomputed from table scores and weights: A = 5(0.25)+3(0.20)+2(0.15)+3(0.15)+4(0.10)+4(0.10)+5(0.05) = 1.25+0.60+0.30+0.45+0.40+0.40+0.25 = 3.65. Table claims 3.60. B = 4(0.25)+4(0.20)+4(0.15)+3(0.15)+2(0.10)+3(0.10)+4(0.05) = 1.00+0.80+0.60+0.45+0.20+0.30+0.20 = 3.55. Table claims 3.35. All other candidates similarly incorrect in the table row.
-**Required action:** Correct the "Weighted total" row in the evaluation matrix to match the values already correctly computed in the "Raw weighted totals" subsection. Verify that the Section 4 discussion text is updated to acknowledge that the A-B gap is 0.10 (not 0.25), which it currently does implicitly but should state explicitly so the table and text are consistent.
-
----
-
-### AE-004 — MAJOR — 03-actuation-structures.md — 340 g/joint actuator mass claim is unsupported and likely undersized for primary load-bearing joints
-
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
 **Severity:** Major
-**Issue:** Section 01-03 states actuation mass at "~38 joints at mean ~340 g actuator mass" and cites "HD-Electric actuator mass density from Atlas Electric heritage scales favorably vs. SEA." No citation is provided for the 340 g mean, and no breakdown distinguishes small finger joints (~50–100 g feasible) from large hip/knee joints (~500–900 g needed). Hip and knee joints on a 75 kg bipedal robot must produce 150–250 N·m of peak torque. A Harmonic Drive AG CSF-20 flexspline assembly (rated ~200 N·m peak torque) alone masses approximately 500 g — and still requires a brushless motor, encoder, and housing. The 340 g mean can only be achieved if the hand and wrist joints (which can be very light) numerically dominate, but the mass-critical joints are the 12 locomotion joints, not the ~20 hand/wrist joints. If the 12 locomotion joints average 700 g and the 26 upper-body/hand joints average 150 g, the weighted mean is 700×(12/38) + 150×(26/38) = 221+103 = 324 g — close to the claim, but the 700 g assumption for locomotion joints is itself unverified. The Atlas Electric heritage cited does not publish actuator-level mass breakdown; the full-system 89 kg for 56 DOF (full system per-joint: ~1590 g/DOF) cannot directly validate a 340 g/actuator claim.
-**Evidence:** Harmonic Drive AG datasheet: CSF-14 (100 N·m) ~200 g unit; CSF-20 (200 N·m) ~500 g unit; CSF-25 (360 N·m) ~900 g unit. Adding a brushless motor in the 50–150 N·m torque class: ~150–300 g for the motor alone. Hip joint requiring 150 N·m during locomotion: CSF-14 + motor ≈ 350–500 g minimum, not including encoder and housing. This is already at or above the claimed 340 g mean for a single major joint.
-**Required action:** Provide a joint-by-joint mass allocation that distinguishes between small (wrist, finger, neck) joints and large (hip, knee, ankle, shoulder) joints. Cite Harmonic Drive AG or equivalent catalog data for the specific flexspline sizes required at each joint class. If the mean drops below 340 g only because finger joints are very light, the locomotion-critical joint mass must be explicitly broken out and the locomotion actuation sub-budget verified.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 3, "Derivation Step 2"
+**Claim:** "At TRL 7 deliberative layer (2035 IOC), 12 of 20 mission tasks are autonomy-led. Each autonomy-led task reduces active supervision demand from the NIP-10 continuous-control requirement to the on-demand monitoring posture (0.05 person-hours per robot-hour vs. effectively 1.0+ for NIP-10-style operation). The factor-of-20 reduction in per-task supervision demand directly translates to a factor-of-20 improvement in supervisor ratio for those tasks."
+**Issue:** The final claim — "directly translates to a factor-of-20 improvement in supervisor ratio" — does not follow. A factor-of-20 improvement in per-task supervision intensity would translate to a factor-of-20 improvement in supervisor ratio only if all tasks were autonomy-led. But the allocation is 12/20 autonomy-led, 6/20 jointly-executed, and 2/20 human-led. The jointly-executed tasks are specifically the ones that dominate supervisory demand (the periodic supervision subtotal of 1.5 person-hours in the cognitive load calculation exceeds the on-demand subtotal of 2.0 person-hours only marginally). The supervisor ratio is driven by the jointly-executed and human-led tasks, not the autonomy-led ones.
+
+More precisely: the NIP-10 baseline of 5:1 cannot be improved by a factor of 20 to reach 0.25:1 (1:4), because the jointly-executed tasks impose a supervision floor that is not captured in the factor-of-20 argument. The ratio derivation would be more honest if it computed the NIP-10 equivalent demand for a 2035 task mix directly: 12 tasks × 0.05 + 6 tasks × 0.2 + 2 tasks × 1.0 = 0.6 + 1.2 + 2.0 = 3.8 relative units per robot, compared to the NIP-10 equivalent of approximately 20 relative units (all tasks at 1.0+ supervision intensity). This gives a factor-of-5 improvement, not factor-of-20, yielding a rough ratio of 5:1 ÷ 5 = 1:1, which is consistent with the Step 3 finding of 1:1.5 effective at peak demand.
+
+**Required action:** Revise Step 2 to drop the "factor-of-20 improvement in supervisor ratio" claim and replace it with a proper weighted computation of effective supervision demand across the 2035 task mix. The conclusion (1:2–3 supervisor ratio at IOC) is probably correct; the logical path to it needs to be fixed. A task-weighted demand calculation is more defensible than a single-task intensity ratio extrapolated across all tasks.
 
 ---
 
-### AE-005 — MAJOR — 06-mass-power-budget.md — Lunar night survival power "closes" with 2 W margin — this is not budget closure
+### AE-S8-08 — Minor — §02-03 — TRL table "Current Space TRL" conflates platform TRL with algorithm TRL for navigation
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Major
-**Issue:** The power budget table states that the lunar night survival mode with margin is 148 W against a 150 W goal, and declares "Status: Lower bound closes (148 W vs. 150 W goal)." A 2 W margin — 1.3% of the target — does not constitute budget closure at concept phase. The 30% margin requirement per NASA-STD-5001 was already applied to compute the 148 W figure; any additional uncertainty in individual line items (Tier 1 processor quiescent draw, communications beacon power, minor heater inefficiencies) eats this immediately. Further, the lower bound of the thermal uncertainty range (85 W survival heaters) is the optimistic end of a 3× range (85–175 W). Using the midpoint heater estimate shifts the pre-margin total to ~175 W and the margin-included figure to ~228 W, well above the 150 W goal. The document correctly notes the upper bound does not close (304 W vs. 150 W goal) but frames the lower-bound closure as acceptable. That framing should be rejected: a number that is within rounding error of the goal at the most optimistic heater assumption, and that blows past the goal by 2× at the central estimate, is not closed.
-**Evidence:** Lower bound calculation: IMU(2) + Tier1(5) + heaters_electronics(85) + heaters_joints(20) + comms(2) = 114 W pre-margin; 114 × 1.30 = 148.2 W. The 2 W margin is less than the expected uncertainty in Tier 1 quiescent draw alone. Central estimate heaters (midpoint: 130 W electronics + 35 W joints): 2+5+130+35+2 = 174 W pre-margin; 174 × 1.30 = 226 W with margin — 51% over goal.
-**Required action:** Revise the budget closure assessment: the lunar night survival power budget does NOT close at concept phase. The goal should be stated as ≤230 W (or revised based on the thermal model range) rather than ≤150 W until the thermal model reduces the uncertainty range below ±30 W. The far-side-base-architect must be notified that the FSP reservation per hibernating humanoid should be provisioned at 300 W until the thermal model closes, not 150 W.
-
----
-
-### AE-006 — MAJOR — 06-mass-power-budget.md — Locomotion-only power mode not shown; §A3 steady-state spec is unverified
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Major
-**Issue:** The margins register (§A3) specifies "500 W steady-state locomotion" as the power budget baseline. Section 01-06 does not include a pure locomotion mode in its power table; it shows "full locomotion + manipulation" and "stationary manipulation." The derivation note in the actuation section acknowledges the 260 W locomotion joint figure is based on Valkyrie scaling with a 0.55 "normal vs. vigorous gait" factor — but this factor is explicitly described as having "no direct heritage validation for this platform." Adding non-actuation consumers to 260 W (LIDAR ~20 W, cameras ~10 W, IMU ~4 W, Tier 1 ~8 W, Tier 2 ~40 W, cooling ~20 W, comms ~12 W = ~114 W overhead) gives a pure-locomotion total of ~374 W pre-margin and ~486 W with 30% margin — barely under the 500 W steady-state goal, with no slack. This critical mode is absent from the budget table, making it impossible to verify §A3 from the presented data.
-**Evidence:** §A3 (margins register) states "500 W steady-state locomotion." Power table in §01-06 has no locomotion-only row. Derivation note in §01-06 actuation power section: "The study uses 260 W based on an additional 0.55 factor for normal vs. vigorous gait — a parametric assumption with no direct heritage validation for this platform. This is acknowledged as a budget stress point."
-**Required action:** Add a pure locomotion mode row to the power budget table, showing all consumers active during locomotion with manipulation joints at zero or standby. Verify that the total with margin closes under 500 W. If it does not close, §A3 must be revised and the implications flagged to the far-side-base-architect.
-
----
-
-### AE-007 — MAJOR — 06-mass-power-budget.md / 03-actuation-structures.md — Actuation power derivation uses SEA heritage to justify HD-Electric budget with unexplained 15% efficiency credit
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Major
-**Issue:** The locomotion actuation budget (260 W design-to) derives entirely from Valkyrie SEA power data scaled by mass ratio and a 15% efficiency improvement credit. Valkyrie uses series-elastic actuators; the selected architecture is HD-Electric with active impedance control. These are fundamentally different mechanical systems with different loss pathways. SEA stores and releases energy in the compliance element; HD-Electric transmits through a cycloidal flexspline. The 15% efficiency improvement for HD-Electric over SEA is asserted without citation. Atlas Electric's efficiency is cited as 85–90% electrical-to-mechanical — but Valkyrie's SEA efficiency is not published in the references cited. Without both numbers, the delta cannot be computed. Additionally, the 0.55 "normal vs. vigorous gait" factor applied after the mass scaling has no cited precedent for this robot class. The combined effect of the mass-ratio scaling, the 15% credit, and the 0.55 gait factor produces the final 260 W number through a three-step derivation chain where each step introduces unvalidated assumptions.
-**Evidence:** Section 01-06 actuation power note: "scales by mass ratio (75/129) and applying a 15% efficiency improvement credit for next-generation electric actuators over Valkyrie's 2015-era SEA technology." No citation provided for the 15% claim. "The study uses 260 W based on an additional 0.55 factor for normal vs. vigorous gait — a parametric assumption with no direct heritage validation for this platform."
-**Required action:** Either (a) provide a citation for HD-Electric vs. SEA efficiency differential, or (b) validate the 260 W estimate against measured power draw data from a comparable commercial HD-electric biped (Unitree G1 or H1 locomotion power during walking is publicly available in some research publications). Document the uncertainty range on the 260 W number explicitly; it should carry at least ±50% uncertainty until validated.
-
----
-
-### AE-008 — MAJOR — 01-overview.md — Atlas Electric DOF reported as 56; Boston Dynamics claims 28 DOF
-
-**Section:** `study/01-optimal-space-humanoid/01-overview.md`
-**Severity:** Major
-**Issue:** The heritage table lists Atlas Electric with "DOF (total): 56." Boston Dynamics' published specifications for Atlas Electric (2024) describe 28 degrees of freedom. The 56 figure may conflate articulated DOF with the number of actuators or may reference an earlier Atlas hydraulic variant's specification. This error propagates into the actuation section: Section 01-03 references "Atlas Electric heritage" for HD-Electric efficiency and actuator mass scaling. If the robot has 28 DOF rather than 56, then the per-joint actuator mass implied by Atlas heritage doubles (89 kg / 28 joints full-system = 3.2 kg/joint full-system basis vs. the 1.6 kg/joint from the 56-DOF figure), which makes the study's 340 g/joint claim even harder to justify from Atlas heritage.
-**Evidence:** The review brief itself notes: "Atlas Electric is 89 kg for 28 DOF — that's ~3.2 kg/joint." The Boston Dynamics Atlas Electric product page (2024) describes 28 degrees of freedom. The section's "56 DOF" entry is inconsistent with primary source data.
-**Required action:** Correct the heritage table entry to 28 DOF for Atlas Electric. Revisit the actuation section's heritage anchors: the per-joint mass scaling from Atlas at 28 DOF vs. 56 DOF changes the supporting argument for the 340 g/joint figure.
-
----
-
-### AE-009 — MAJOR — 04-sensing-autonomy.md — TRL applied to "terrestrial sensor market" rather than to a specific system/application
-
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
-**Severity:** Major
-**Issue:** The sensing section states: "High-dynamic-range machine vision cameras with space-qualified lenses exist at TRL 5-6 in the terrestrial sensor market." TRL is a property of a specific system developed for a specific application, not a property of a commercial market or product class. TRL 5-6 means "component/subsystem validated in relevant environment" or "system/subsystem model or prototype demonstrated in a relevant environment" — these are achievements of a development program, not characterizations of what commercial customers can buy off the shelf. The phrasing implies there exist camera units that have completed TRL 5–6 milestones for the lunar outdoor illumination application, which is not what the section means. The same misuse appears in the sensor summary table's TRL column for HDR cameras: "6-7" with a separate "Space TRL gap" column listing "TRL 4-5." It is unclear whether the 6-7 refers to terrestrial use (which would be more accurately labeled as COTS commercial readiness level, not NASA TRL) or the specific application.
-**Evidence:** Section text: "High-dynamic-range machine vision cameras with space-qualified lenses exist at TRL 5-6 in the terrestrial sensor market; the qualification delta for vacuum and radiation is a development item." Table column heading "TRL (terrestrial)" with value "6-7" for HDR cameras. NASA TRL definitions apply to specific applications, not product categories.
-**Required action:** Replace "TRL 5-6 in the terrestrial sensor market" with a specific claim about what application the camera has been qualified for at TRL 5-6 (e.g., "industrial machine vision in high-contrast environments at TRL 7-8; lunar outdoor illumination application is TRL 3-4 pending a qualification program"). Revise the sensor table to avoid the TRL(terrestrial)/space-TRL dual-column confusion — either use a single application-specific TRL with a narrative on the space gap, or clearly define what "terrestrial TRL" means in the column header.
-
----
-
-### AE-010 — MAJOR — 03-actuation-structures.md / 05-environments-hardening.md — FFKM at −180°C is TRL 2–3, not TRL 3–4; overstated maturity
-
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`; `study/01-optimal-space-humanoid/05-environments-hardening.md`
-**Severity:** Major
-**Issue:** Both sections and the margins register (§A6) rate FFKM/Kalrez-class lip seal performance at −180°C as TRL 3–4. TRL 3 is "analytical and experimental proof of concept"; TRL 4 is "component-level validation in laboratory environment." The problem is that standard perfluoroelastomers (FFKM) transition to a glass-like state and become brittle at temperatures well below −100°C — this is a fundamental materials-science property of fluoropolymers, not an untested parameter. Kalrez 4079 (Dow's coldest-rated compound) is rated to −42°C. No commercial FFKM formulation is currently qualified or tested near −180°C. Achieving elastomeric performance (i.e., able to deform and seal under compression) at −180°C would require a fundamentally different chemistry — likely a perfluoropolyether-based or silicone-based elastomer — not a compound variation on existing FFKM. The FFKM approach at −180°C is not a development item at TRL 3–4; it is a materials research problem with no demonstrated proof of concept, placing it at TRL 2 at best. Calling it TRL 3–4 overstates maturity and may cause the program to underestimate the risk and timeline.
-**Evidence:** Fluoroelastomers (including FFKM) exhibit glass transition temperatures (Tg) of approximately −50°C to −70°C for Kalrez-class materials. Below Tg, the material is rigid, cannot seal, and becomes prone to fracture under load. The −180°C requirement is approximately 110–130°C below the glass transition — this is not a qualification extension challenge, it is a fundamental phase-change problem. PFPE (perfluoropolyether) greases are used at these temperatures (confirmed by Lunokhod and space mechanism heritage), but PFPE elastomers for dynamic sealing at −180°C have no published validation data.
-**Required action:** Revise TRL assessment for FFKM seals at −180°C to TRL 2 (concept formulated, no experimental proof). Evaluate whether the design requirement itself should be reconsidered: can the joint architecture maintain seal zone temperature above −60°C (the demonstrated FFKM floor) by design, using the joint heater power already allocated? If yes, the materials challenge disappears and joint heaters become a hard design requirement rather than a mitigation option. The actuation and environments sections should state explicitly which approach is baseline (FFKM + heaters to maintain above −60°C, vs. develop a new compound for −180°C operation).
-
----
-
-### AE-011 — MAJOR — 06-mass-power-budget.md — Battery 100% depth of discharge assumed; no cold-temperature capacity derate at sortie start
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Major
-**Issue:** The battery sizing assumes 2.0 kWh provides a 4-hour sortie at 500 W steady-state, using 100% depth of discharge (DoD). Lithium-ion cells operated at 100% DoD have substantially shorter cycle life than cells operated at 80% DoD (cycle life typically 3–5× longer at 80% DoD vs. 100% DoD for space-qualified Li-ion). Additionally, the sortie begins immediately after the robot exits its charging dock, at which point battery temperature is at or near the 0°C minimum operating temperature; Li-ion capacity at 0°C is typically 70–85% of rated capacity at 20°C. Together, the DoD and cold-temperature effects mean the effective available energy for the first sortie of each day is closer to 1.1–1.4 kWh (70–85% cold-temperature capacity × 80% DoD × 2.0 kWh), supporting a 2.5–3.3 hour sortie, not 4 hours. The document acknowledges the cold-temperature issue in §A13 but sizes the battery at 100% DoD for 2.0 kWh without carrying the cold-temperature capacity reserve. Conversely, if the capacity reserve is added (25% cold reserve per §A13), the cell mass grows from 12.5 kg to 15.6 kg, consuming 18% of the growth allowance.
-**Evidence:** Section 01-06: "Mission requirement: a 4-hour EVA sortie at 500 W steady-state draw = 2,000 Wh = 2.0 kWh design capacity." This assumes 100% DoD. §A13: "if operational practice requires a 25% depth-of-discharge reserve (due to cold-temperature capacity derating before warm-up completion at start of sortie), the required cell capacity grows to 2.5 kWh and cell mass grows to 15.6 kg." The cold-temperature effect is acknowledged but not carried in the design-to baseline.
-**Required action:** State the DoD assumption explicitly in the battery sizing (e.g., 80% DoD is standard for cycle-life-critical applications). Add the cold-temperature capacity reserve at the design-to level rather than as a footnote sensitivity. The 4-hour sortie baseline should require either (a) the battery warms to operating temperature before the sortie begins (adding to the 45–90 minute warm-up time already cited), or (b) the cell capacity is sized for the cold-start worst case. The power system mass line item should reflect whichever answer is selected.
-
----
-
-### AE-012 — MAJOR — 01-overview.md — Robonaut 2 upper torso mass "~68 kg estimated, unverified" is inconsistent with published data
-
-**Section:** `study/01-optimal-space-humanoid/01-overview.md`
-**Severity:** Major
-**Issue:** The heritage table lists R2 mass as "~150 (full config with legs); upper torso ~68 (estimated from published torso-only config, **unverified**)." If the full R2 system with legs is ~150 kg and the legs added ~29 kg (per the 14-DOF, 7-per-leg add-on configuration), the torso-only mass is approximately 120 kg, not 68 kg. The 68 kg estimate appears to reflect only the upper torso and arms, potentially excluding the pelvis, hip structure, and lower spine. The 68 kg figure is used implicitly in Section 01-03 to anchor heritage for hand mass ("Hands: ~1.8 kg each (R2 hand mass heritage)"), but if the R2 arm system (arms + hands only) is within a 68 kg reference that actually covers the full upper body structure, the 1.8 kg/hand figure is taken from an unverified and likely incorrect sub-system attribution. The published NASA R2 fact sheet and Diftler et al. ICRA 2011 paper should provide definitive sub-system masses.
-**Evidence:** Published R2 total mass with legs: ~150 kg; leg add-on: ~29 kg per published accounts of the ISS leg upgrade; implied torso+arms+hands mass: ~120 kg. The 68 kg estimate in the table is self-described as "estimated" and "unverified." The 1.8 kg/hand figure in §01-03 cites "R2 hand mass heritage" without a specific value from a primary source.
-**Required action:** Verify R2 torso-only mass against the primary source (Diftler 2011 or NASA R2 fact sheet). If the torso+arms+hands mass is ~120 kg (not 68 kg), revise the heritage table entry. Update the "R2 hand mass heritage" anchor in §01-03 with a primary-source citation and verified number. If the R2 hand is heavier than 1.8 kg, the end-effector mass allocation in §01-03/§01-06 must be revised.
-
----
-
-### AE-013 — MAJOR — 05-environments-hardening.md — Survival heater estimate methodology conflates Mars overnight with 14-day lunar night without correction
-
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
-**Severity:** Major
-**Issue:** The parametric survival heater estimate derives from "Mars rover WEB draws approximately 100 W-hr overnight in cold conditions," then states that scaling to the humanoid's "smaller electronics volume but longer lunar night" yields 50–150 W continuous. This derivation has a units error and a methodology flaw. The Mars WEB figure of "~100 W-hr overnight" is an energy quantity (Wh), not a power level (W). A Mars night at the equator is approximately 7 hours (half of a ~24.6-hour Martian day); 100 Wh over 7 hours = ~14 W average heater power. A lunar night is 336 hours (14 Earth days). To maintain the same temperature with the same insulation and electronics volume, 14 W × (336/7) = 672 Wh/night, but that is not 672 W — it remains approximately 14 W average if the thermal resistance is unchanged. The section then adds joint heaters (20–50 W) and electronic compartment heaters (50–150 W), for 70–200 W. The disconnect is that the 50–150 W electronics heater range is not derived from the Mars WEB analogy at all — it is a new parametric claim that is not traced to any source. The electronics heater power depends on the thermal resistance between the electronics compartment and the ambient environment, which for a bipedal humanoid body has not been calculated. The wide 3× range (50–150 W) for electronics heaters alone reflects the absence of any thermal model, not a validated parametric range.
-**Evidence:** Section text: "A Mars rover WEB draws approximately 100 W-hr overnight in cold conditions; scaled to the humanoid's smaller electronics volume but longer lunar night, the survival heater estimate becomes: Parametric survival heater estimate: 50–150 W continuous draw from FSP during lunar night hibernation." The derivation is not shown. The cross-cutting log (entry 2026-05-03 on thermal) acknowledges this is TRL 2, parametric only.
-**Required action:** Show the derivation explicitly, including the assumed thermal resistance of the electronics compartment (in K/W), the assumed electronics dissipation during hibernation (equal to Tier 1 power draw plus comms beacon, approximately 7–10 W), and the resulting temperature differential that the heater must maintain. Flag that the current estimate has no analytical basis beyond analogy. The power budget and the FSP provisional reservation must carry the upper bound (200 W continuous, 300 W with margin) until a first-principles thermal model replaces the analogy.
-
----
-
-### AE-014 — MINOR — 04-sensing-autonomy.md — LIDAR specific power range is very wide (10–30 W); 3× uncertainty not explained
-
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
 **Severity:** Minor
-**Issue:** The sensor table lists solid-state LIDAR at 10–30 W (duty cycled) with a note that active power is 20–30 W and duty-cycled average is ~10 W. The 3× range between active (20–30 W) and average (10 W) may be defensible if duty cycle is well characterized, but the table conflates active power and average power in a single cell, creating ambiguity. In the mass-power budget, the LIDAR appears at 20 W (picking the midpoint of the active range without explanation). The duty-cycle assumption driving the average should be stated: what fraction of operations involves outdoor locomotion (requiring LIDAR active) vs. indoor manipulation (LIDAR standby)?
-**Required action:** Separate LIDAR active and standby power into distinct table entries. State the assumed duty cycle (e.g., 50% locomotion, 50% manipulation) and carry the resulting weighted average into the budget explicitly.
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1, Navigation row
+**Claim:** "Navigation — 3D mapping, terrain avoidance: Current Space TRL 8. Space TRL 8: Mars AutoNav (Curiosity, Perseverance) is the unambiguous heritage — stereo-camera-derived point-cloud terrain classification and path planning, operating autonomously since 2012."
+**Issue:** The TRL 8 claim is defensible for the AutoNav algorithm in the specific application of wheeled rover navigation on Mars, but it is presented in a table column titled "Current Space TRL" for the general task category "Navigation — 3D mapping, terrain avoidance" in the context of a bipedal humanoid on the lunar surface. This is not a TRL for the mission application; it is a TRL for a related but different application (wheeled rover, different gravity, different surface, different platform kinematics). The notes column partially hedges this ("gap is speed and platform"), but the TRL 8 entry in the "Current Space TRL" column will be read by downstream agents as meaning the capability is 95%+ demonstrated for the application at hand. The correct reading is: the algorithm (point-cloud-based terrain avoidance) is at TRL 8 on wheeled rovers in Mars gravity; the application to bipedal humanoid locomotion in lunar gravity is at TRL 3–4 because no biped has operated on any planetary surface.
+
+**Required action:** Split the navigation row into "Navigation algorithm (point cloud mapping and path planning)" at TRL 8 (AutoNav heritage) and "Navigation for bipedal platform in lunar 1/6-g" at TRL 2–3 (concept only; no biped has operated on a planetary surface). Or add a column clarifying what the Space TRL 8 claim applies to, so the gap to mission application is explicit. This distinction matters for the task allocation: T03 (navigate to GPS sample point) is listed as "TRL 8 (met)" in the task taxonomy, which is plausible for the mapping and path planning algorithm but not for the full task including bipedal execution.
 
 ---
 
-### AE-015 — MINOR — 01-overview.md — Figure 02 "20+ hr runtime" at 2.25 kWh implies ~112 W average, inconsistent with a 70 kg active humanoid
+### AE-S8-09 — Major — §02-03 — Task allocation count in the table (12/6/2) is inconsistent with the task table itself
 
-**Section:** `study/01-optimal-space-humanoid/01-overview.md`
+**Severity:** Major
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 4 and Section 3
+**Claim:** "At 2035 IOC, 12 of 20 tasks are autonomy-led; 6 are jointly executed (requiring defined human interaction but not continuous supervision); 2 are human-led."
+**Issue:** Counting from the task allocation table in Section 4 at IOC (2035):
+
+**Autonomy-led at IOC:** T01, T03, T04, T06 (after first run), T07, T08, T10, T11, T15, T19 (after first run), T20 = **11 tasks**
+
+**Jointly executed at IOC:** T02, T05, T09, T13, T14, T16, T17 = **7 tasks**
+
+**Human-led at IOC:** T12, T18 = **2 tasks**
+
+Total: 11 + 7 + 2 = 20 ✓ (count is correct), but the breakdown is 11/7/2, not 12/6/2 as stated in the summary claim.
+
+The discrepancy is T16 (radio telescope calibration), which the Section 3 text lists under "Jointly executed by 2035" but the table entry shows "Jointly executed (scientist authorizes via relay; robot executes)" at IOC — consistent with jointly executed. However, Section 3 also lists T16 under "Jointly executed by 2035," which is consistent with the table. The mismatch is between the summary count claim (12/6/2) and what can be counted in the table (11/7/2).
+
+One likely explanation: the document authors may have counted T06 and T19 each as autonomy-led even when "after first supervised run" is the qualifier — but those first runs represent a human-led or jointly-executed execution that is not captured in the count. If first-run executions are excluded from the autonomy-led count, T06 and T19 drop to jointly-executed for the IOC period, making the split 9/9/2 — even further from the 12/6/2 claim.
+
+The summary count is used in §02-04 as the basis for the cognitive load model and supervisor ratio. If the correct split is 11/7/2 (or 9/9/2), the periodic supervision subtotal rises substantially.
+
+**Required action:** Recount the task allocation table row by row at IOC to produce the verified split. If the split is 11/7/2, update the summary claim in Section 4 of §02-03, the §02-01 overview, and the §02-04 teaming model's cognitive load inputs. If the split is 9/9/2 (treating first-run events as jointly-executed), the periodic supervision demand rises and the headroom calculation in §02-04 must be rerun. This is a blocker-class arithmetic issue if the cognitive load model is based on the incorrect 12/6/2 split, but classified Major because the overall conclusions are likely robust to the correction.
+
+---
+
+### AE-S8-10 — Minor — §02-03 — Counter-case engagement omits the strongest version of the pro-autonomy argument (cost-of-crew)
+
 **Severity:** Minor
-**Issue:** The heritage table records Figure 02 as having a "2.25 kWh battery with 20+ hr runtime" — a figure flagged as "requiring verification." The implied average power draw is 2250 Wh ÷ 20 hr = 112.5 W. A 70 kg humanoid actively walking and manipulating at a BMW factory should draw substantially more than 112 W average; Spot (32 kg) consumes approximately 100 W during active locomotion. Boston Dynamics Atlas's rated total power is unpublished but estimated at several hundred watts during operation. The 112 W average for a 70 kg humanoid performing factory tasks is implausible and contradicts the comparative power figures for similar platforms. If confirmed, it would represent a revolutionary efficiency advance that would require specific callout and scrutiny rather than passing without comment.
-**Required action:** Flag this figure more prominently. If the 20+ hr runtime at 2.25 kWh is correct, Figure 02 must be drawing <115 W average — which would be the most power-efficient bipedal humanoid by a factor of ~3× over any comparable platform. Either (a) the runtime or battery capacity figure is wrong, or (b) Figure 02 primarily stands still during its factory deployment (not walking actively). This distinction matters for the study's power budget assumptions.
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 5
+**Claim:** Section 5 presents three answers to the counter-case ("why do high-autonomy humanoids need human supervision?") focused on OOD failure, consequence asymmetry, and the Lunokhod bidirectional lesson.
+**Issue:** The section takes the brief's instruction to "seriously address the counter-case" seriously for the technical arguments, but misses the most economically consequential version: the cost of the forward-deployed crew. A 4-person permanent crew at a lunar far-side base represents an order-of-magnitude more program cost than robotic-only operations, and the counter-case in its strongest form is not "autonomy handles OOD well" but "the cost of crew makes the human value floor prohibitively expensive; better to accept higher autonomous failure rates than pay for permanent crew." This is a program-level argument, not a technical performance argument, and it is the version that will appear in program reviews and budget discussions. The study takes the forward-deployment commitment as load-bearing, but the counter-case section should engage the economic version to be complete.
+
+**Required action:** Add a fourth point to the counter-case response addressing the cost argument. The response is: the economic case for the humanoid architecture rests on the crew multiplier (a small crew supervising a large humanoid fleet produces more task-hours than a crew operating without robots or a purely autonomous fleet requiring periodic servicing missions). The cost argument for forward deployment is not "crew is cheap" but "crew at the far side is what makes the humanoid fleet productive, and the productivity differential justifies the crew cost." This argument is implied in §02-01's treatment of supervision as a lever for productivity, but it should be stated explicitly in the counter-case section.
 
 ---
 
-### AE-016 — MINOR — 03-actuation-structures.md — "Labyrinth seals TRL 7–8 in terrestrial contaminated service" — application gap not quantified
+### AE-S8-11 — Nit — §02-02 — Earth-Moon mean distance used for RTLT derivation is IAU nominal; actual mean varies by ±3%
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
-**Severity:** Minor
-**Issue:** The dust mitigation section claims labyrinth seals are at "TRL 7–8 in terrestrial contaminated service" (food processing, foundry robots). The electrostatic adhesion mechanism of lunar regolith — charged particles attracted to surfaces and driven into gaps by mechanical cycling — is physically different from the inertial/gravitational particle transport mechanisms that labyrinth seals are designed against in industrial environments. A labyrinth sized for gravitational particle exclusion (geometric blocking of particles above a certain size) will not necessarily perform against electrostatically driven fine particles that can creep along surfaces and into gaps over thousands of cycles. This distinction is not discussed; the TRL 7–8 claim may apply to the labyrinth principle but not to the specific mechanism (electrostatic fine-particle ingestion under vacuum cycling) that is the primary threat.
-**Required action:** Qualify the TRL claim: "TRL 7–8 for gravitational/inertial particle environments; TRL 3–4 for electrostatic fine-particle environments similar to lunar regolith." This does not necessarily change the architectural choice (labyrinth seals are still the right first line of defense) but changes the test program requirements.
-
----
-
-### AE-017 — MINOR — 05-environments-hardening.md — Mars solar panel emissivity degradation rate used as lunar radiator analog without correction for different dust physics
-
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
-**Severity:** Minor
-**Issue:** Section 4.2 cites Mars lander/rover data (MER Spirit, Phoenix) showing "emissivity degradation rates of 2–5% per month on horizontal solar panels" and uses this to bound lunar radiator degradation. The section itself flags this as "[VERIFY — this figure is for Mars dust under Mars conditions; lunar particle size and settling rate differ]." The Mars dust settlement mechanism is primarily gravitational (Mars has 0.38 g and an atmosphere that keeps small particles airborne and then settles them uniformly); the lunar mechanism is primarily electrostatic adhesion with UV photoemission driving positive charging on sunlit surfaces. These are different physical processes with different size distributions and different adhesion energies. The Mars figure cannot be used as a quantitative proxy without correction; it is at best qualitative confirmation that dust degrades surface properties.
-**Required action:** Drop the Mars-to-lunar extrapolation from the quantitative radiator margin statement. The 18–24% emissivity margin (ε BOL 0.85 vs. ε EOL 0.70) may still be appropriate, but it should be justified by electrostatic adhesion estimates or Apollo data on surface property changes, not by Mars dust settling rates.
-
----
-
-### AE-018 — MINOR — 06-mass-power-budget.md — Signal cabling mass parametric (3.3% of total) has no cited heritage
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Minor
-**Issue:** The signal cabling, connectors, and brackets line item (2.5 kg) is stated as "parametric: ~3.3% of total design-to." No heritage is cited for this fraction. For a robot with 38+ actuated joints, each requiring power and encoder signal harness runs from a central electronics bay through the body structure to the joint, plus LIDAR, cameras, IMU, F/T sensors, tactile arrays, and compute interconnects, 2.5 kg is a potentially aggressive lower bound. R2's internal cabling is noted to be extensive (38 processors, 350+ sensors), though its exact harness mass is not published.
-**Required action:** Provide a bottom-up estimate or a cited heritage fraction for cabling mass. Robonaut 2 or Valkyrie wiring harness data, if available in the published design papers, should be used. If not available, increase the parametric estimate range to 3–6% of total mass to reflect the high sensor and actuator count and note the uncertainty.
-
----
-
-### AE-019 — NIT — 02-form-factor-tradespace.md — "Lunokhod counterargument" section states Lunokhod 2 km figure without citing LRO-revised distance
-
-**Section:** `study/01-optimal-space-humanoid/02-form-factor-tradespace.md`
 **Severity:** Nit
-**Issue:** Section 4 states "Lunokhod 1 and Lunokhod 2 together traversed approximately 48 km." Lunokhod 2's traverse was revised upward from ~37 km to ~39.15 km by LRO high-resolution camera mapping (2010). The section also states "Lunokhod 1 traversed 10.5 km over 11 months" (correct), giving a total of ~49.7 km. "~48 km" is within rounding, but the LRO-revised figure should be cited for precision.
-**Required action:** Update to "approximately 50 km (Lunokhod 1: 10.5 km; Lunokhod 2: 39.2 km per LRO photogrammetric revision)."
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Physical constants and distances used"
+**Claim:** "Earth-Moon mean distance: 384,400 km (IAU nominal value). Earth-Moon mean RTLT: 1.282 × 2 = **2.56 s**"
+**Issue:** The IAU 384,400 km figure is the nominal semi-major axis of the Moon's orbit. The actual mean Earth-Moon distance varies due to the lunar orbital eccentricity (e ≈ 0.055), giving a perigee of ~356,500 km and apogee of ~406,700 km — a ±7% range around the mean. The mean over a full orbit is very close to the nominal (within 0.1%), so the 384,400 km figure is appropriate for the mean case. However, the direct Earth-Moon RTLT in the latency table is stated as a fixed 2.38–2.71 s range (near side), which implies min OWLT of 1.19 s and max OWLT of 1.36 s. Verification: 356,500 ÷ 299,792 = 1.189 s ≈ 1.19 s ✓; 406,700 ÷ 299,792 = 1.357 s ≈ 1.36 s ✓. These numbers are correct. The mean OWLT derivation (384,400 ÷ 299,792 = 1.282 s) is also correct. No arithmetic error, just a nit on presentation.
+
+**Required action:** No numerical change needed. Optionally, note in the derivation that the 384,400 km is the semi-major axis (not the true mean distance), which differs from the true mean by <0.1% due to orbital eccentricity — negligible for this analysis.
 
 ---
 
-### AE-020 — NIT — 03-actuation-structures.md / 06-mass-power-budget.md — "~340 g" vs. "~342 g" per joint inconsistency between sections
+### AE-S8-12 — Nit — §02-04 — §A14 cross-reference for the gait factor is erroneous; correct reference is §A16
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`; `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Nit
-**Issue:** Section 01-03 states "~38 joints at mean ~340 g actuator mass = 13.0 kg." Section 01-06 states "38 joints × ~342 g mean actuator assembly mass." 38 × 342 g = 12,996 g ≈ 13.0 kg. The discrepancy between 340 and 342 is immaterial numerically but indicates the sections were not cross-checked at the final draft stage.
-**Required action:** Standardize to one figure in both sections (342 g per joint, since 38 × 342 = 12,996 ≈ 13.0 kg).
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 3, Step 2 (and review prompt watch item)
+**Claim:** The review brief's watch item states "The 0.55 gait factor referenced in §02-04 from §A14." However, §02-04 does not reference §A14 or the 0.55 gait factor at any point in the document. The 0.55 gait factor is registered in §A16 of the margins register ("Locomotion power gait factor: 0.55") and is derived in §02-03's TRL table notes and the §01-06 power budget. §A14 covers actuator mass sensitivity (342 g vs. 385 g/joint). Section §02-04 references §A8, §A9, §A15, §A11, §A1, §A17, §A18, §A19 — but not §A14.
+**Issue:** The §02-04 document correctly does not invoke the gait factor (which is an actuation power assumption, not a teaming model input). No cross-reference error exists within §02-04 itself. The erroneous §A14 attribution is in the review prompt, not the reviewed document. However, if future versions of §02-04 attempt to import the gait factor assumption as a supervisor ratio input (e.g., to argue that lower locomotion power implies longer unattended sortie duration), the correct citation will be §A16, not §A14.
+
+**Required action:** No action required in §02-04. Confirm that §A16 (gait factor) and §A14 (actuator mass) are distinct assumptions with distinct owners and that neither document cross-references the wrong one.
 
 ---
 
-### AE-021 — NIT — 04-sensing-autonomy.md — Nvidia Jetson AGX Orin: 275 TOPS figure should be qualified (INT8 vs. FP16 precision)
+### AE-S8-13 — Minor — §02-03 — TRL for novelty handling is TRL 3 terrestrial / TRL 2 space, but task T17 requires TRL 7 by IOC — gap is understated
 
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
-**Severity:** Nit
-**Issue:** Section 2 cites "275 TOPS" for the Jetson AGX Orin. NVIDIA's 275 TOPS figure is for INT8 (8-bit integer) precision. For VLA foundation model inference in FP16 (16-bit floating point) — the precision assumed for the 7B parameter weight discussion — the effective compute is roughly 137 TOPS. For FP32 it is approximately 68 TOPS. The compute capacity for the inference use case described in the section is meaningfully different from the marketing headline figure.
-**Required action:** Clarify that 275 TOPS applies to INT8 precision; state the applicable FP16 figure (~137 TOPS) for the VLA inference application described.
+**Severity:** Minor
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1 and Section 2
+**Claim:** Novelty handling row: "Current Space TRL: 2. Current Terrestrial TRL: 3. Gap to Mission Requirement: TRL 5 by 2035; TRL 7 by 2038–2040." Task T17 (habitat breach — locate and report): "Novelty handling + Navigation. Min TRL for Full Autonomy: TRL 7. Must be partially autonomous."
+**Issue:** T17 requires the robot to autonomously initiate inspection and locate a habitat breach on an alert — the section assigns this a minimum TRL 7 requirement. But the novelty handling TRL table says TRL 5 by 2035. This is a contradiction: T17 cannot simultaneously require TRL 7 and be expected to execute at TRL 5. The gap is called out correctly in the 2029 gate analysis ("not executable even with human-in-loop in 2029: T10 and T12 require TRL 7"), but T17 is not mentioned in the same breath as these demanding tasks despite sharing the TRL 7 requirement.
+
+Checking the task allocation table, T17 at IOC is "Jointly executed (robot locates, human decides sealing action)." The "must be partially autonomous" qualification in the task taxonomy means the robot must autonomously initiate, not that the full response is autonomous. "Partially autonomous" TRL could be lower than TRL 7 for the overall task, if initiation is handled by reactive (TRL 6) and location reporting is handled by navigation (TRL 8 met). The TRL 7 stated in the task taxonomy as "Min TRL for Full Autonomy" may refer to full autonomy (robot locates AND decides sealing response), not partial autonomy (robot locates, human decides). This distinction is important but is not stated clearly.
+
+**Required action:** Clarify whether the TRL 7 in T17's task taxonomy row refers to full autonomy (including the sealing decision) or partial autonomy (location only, with human decision). If it refers to full autonomy, the 2035 jointly-executed allocation is consistent — the robot is not fully autonomous at IOC. If it refers to the partial-autonomy threshold required for the jointly-executed mode, the TRL must be reconciled with the novelty handling TRL 5 ceiling for 2035. Add a note in the task taxonomy explaining what "Min TRL for Full Autonomy" means when the 2035 allocation is jointly-executed (i.e., full autonomy is the post-2040 target, not the IOC requirement).
+
+---
+
+### AE-S8-14 — Major — §02-01 and §02-04 — Forward-deployed crew latency stated as "≤50 ms" but no derivation of on-base network topology is provided or cited
+
+**Severity:** Major
+**Section:** `study/02-human-in-the-loop/01-overview.md`, Section 1; `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 3, Tier A; `study/02-human-in-the-loop/04-teaming-model.md`, Section 5
+**Claim:** "The forward-deployed crew on the far-side base habitat operates at ≤50 ms RTLT to the humanoids." (§02-01); "Target for this study: ≤50 ms RTLT from crew workstation to humanoid over the base network." (§02-02); "The far-side-base-architect must confirm that the on-base network achieves ≤50 ms RTLT from every deployed humanoid position to the primary crew workstation." (§02-04)
+**Issue:** The ≤50 ms RTLT target is stated in three separate documents as the architectural commitment for Tier A supervision, but its derivation is never shown and the reference for the "direct teleoperation viable zone" (0–200 ms) is cited in §02-02 as the upper bound of viability, not as the derivation of 50 ms specifically. The distance from the crew workstation to the humanoid(s) at the far-side base governs this latency. At the speed of light, 50 ms RTLT corresponds to a one-way distance of 0.025 s × 299,792 km/s = 7,495 km — obviously far more than the physical base dimensions. The physics of light propagation implies that any on-base wired or short-range radio network with cable/signal runs under a few kilometers will achieve sub-millisecond propagation latency. The binding constraint is not propagation latency but network protocol latency: video codec decode latency (10–30 ms for hardware-accelerated H.264/H.265), TCP/IP round-trip handshake, and display rendering. The 50 ms target is almost certainly achievable for any reasonable on-base network design, but the document treats it as an open requirement without demonstrating this.
+
+The issue is that the study's load-bearing argument rests on the contrast between Tier A (≤50 ms) and Tier B (2.78 s). If the ≤50 ms figure is easily achievable and requires no special design (just a standard wired Ethernet or Wi-Fi 6 local network with hardware video decode), that should be stated. Instead, the document's repeated "the far-side-base-architect must confirm" language implies this is a non-trivial design challenge, which it is probably not for the distances involved.
+
+**Required action:** Show the on-base network latency derivation. State the physical base dimensions (crew quarters to robot maximum deployment distance), derive propagation latency, add codec and protocol overhead, and confirm the 50 ms figure is achievable. If 50 ms is trivially met (it almost certainly is), state this and remove the forward-looking "architect must confirm" language, or replace it with a more specific task for the architect (e.g., "confirm that the codec pipeline and display latency do not exceed 40 ms to preserve margin against the 50 ms target in the highest-demand haptic feedback scenario").
+
+---
+
+## Summary Count
+
+| Severity | Count |
+|---|---|
+| Blocker | 1 |
+| Major | 6 |
+| Minor | 5 |
+| Nit | 2 |
+| **Total** | **14** |
+
+---
+
+## Stage 8 Findings Notes
+
+**What closed cleanly:**
+- The 2.78 s RTLT physics argument (Queqiao-2 relay, minimum achievable) is structurally correct even if the geometry approximation in AE-S8-01 is imprecise; the architectural conclusion is insensitive to the correction.
+- The TRL table in §02-03 is notably more rigorous than typical concept-phase autonomy assessments. The notes column showing derivation, not just numbers, and the explicit separation of space TRL from terrestrial TRL, is the right approach. The finding in AE-S8-08 is a refinement, not a repudiation.
+- The counter-case engagement in §02-03 Section 5 is genuinely substantive; the Lunokhod bidirectional reading is particularly strong. AE-S8-10 adds to it rather than questioning it.
+- The supervisory demand arithmetic (4.25 person-hours) is internally correct in §02-04 Section 2 given the stated assumptions. The finding in AE-S8-03 is about presentation, not arithmetic. AE-S8-04 challenges the derivation of a key input assumption.
+- The human value floor concept in §02-03 Section 3 is the right architectural move. The seven categories are defensible and well-reasoned. No findings challenge the substance of this section.
+
+**What requires resolution before the document can be referenced by downstream agents (ConOps, cost-program):**
+- AE-S8-06 (Blocker): The supervisory capacity derivation contradiction between §02-04 and §A19 must be resolved. The capacity figure is the denominator of the teaming model.
+- AE-S8-09 (Major): The 12/6/2 task split claim must be reconciled with the actual table count (11/7/2). All downstream uses of this split must be updated if the count changes.
+- AE-S8-03 (Major): Margin language must be corrected before the headroom figure is cited in ConOps or cost documents.
+- AE-S8-01 (Major): Relay geometry must be corrected before the RTLT figure is cited as a load-bearing physics value.

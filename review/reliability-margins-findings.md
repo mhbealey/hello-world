@@ -3,261 +3,303 @@ title: Reliability and Margins Review Findings
 status: findings-complete
 owner: reliability-margins-reviewer
 last-updated: 2026-05-03
+stage: 8
 ---
 
-# Reliability and Margins Review Findings
+# Reliability and Margins Review Findings — Stage 8
+
+**Scope:** Question (b) sections — `study/02-human-in-the-loop/01-overview.md`, `02-latency-tradespace.md`, `03-autonomy-trl-tasking.md`, `04-teaming-model.md` — and assumptions register §A15–§A19.
+
+---
 
 ## Summary
 
 | Severity | Count |
 |----------|-------|
-| Blocker  | 2     |
-| Major    | 11    |
-| Minor    | 8     |
-| Nit      | 4     |
+| Blocker  | 1     |
+| Major    | 6     |
+| Minor    | 5     |
+| Nit      | 3     |
+| **Total** | **15** |
 
 ---
 
 ## Findings
 
-### RM-001 — BLOCKER — 06-mass-power-budget.md — Lunar night power budget goal is circular and the stated closure is misleading
+### RM-B01 — Blocker — 02-04 — "1 OOD alert per 4-hour sortie" is an invented rate with no derivation, cited source, or uncertainty bound, and it is load-bearing for crew headroom closure
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Blocker
-**Number/claim:** "Lower bound closes (148 W vs. 150 W goal); upper bound does NOT close (304 W)" — the table presents a "Mode design goal" of ≤150 W for lunar night survival, then states closure is conditional on the lower bound of the thermal estimate resolving correctly.
-**Problem:** The 150 W goal is drawn directly from the lower end of the 70–200 W parametric thermal range in §A10. The power budget table therefore compares a pre-margin survival estimate (114–234 W design-to) to a goal that is itself derived from one end of the same uncertainty range. This is circular: the "goal" carries no independent grounding, and closure is guaranteed at the lower bound by construction rather than by analysis. The table's "closes / does not close" status treats an unvalidated parametric lower bound as a confirmed requirement. Meanwhile, the real risk — FSP demand may reach 300 W per humanoid with margin — is documented only in the prose note, not in the table closure row.
-**Required action:** Remove the 150 W figure as a "Mode design goal" in the power budget table. Separate the fixed hibernation electronics draw (IMU 2 W + Tier 1 5 W + comms 2 W = 9 W, independently derivable with no thermal uncertainty) from the thermal reservation (70–200 W, TRL 2, thermally-model-dependent). The table's survival mode status row should read: "Fixed electronics draw closes (9 W, trivially); thermal reservation is open-range pending thermal model (see §A10); conservatively provision 300 W with margin per humanoid for FSP planning until TRL 5 thermal model is available." This is not a budget that can be declared closed for the survival mode.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (On-Demand Supervision), and Section 2 (Cognitive Load Analysis)
+**Number/claim:** "A conservative estimate of one OOD alert per 4-hour sortie per humanoid (3 humanoids = approximately 3 alerts per shift) × 15 minutes average resolution = 45 minutes of anomaly response per crew shift distributed across the team."
+**Problem:** This figure is the denominator that determines whether the supervisory load model closes with the claimed 2× headroom margin. Specifically:
+
+- The on-demand anomaly budget is 0.75 person-hours/shift (3 alerts × 15 min each).
+- This feeds directly into the total supervisory demand of 4.25 person-hours/shift.
+- The headroom of 3.75 person-hours (88% margin) is the study's primary claim that 4 crew can supervise 3 humanoids.
+
+If the OOD alert rate is 2 per humanoid per 4-hour sortie (6 total per shift) instead of 3 per shift, the anomaly budget grows to 1.5 person-hours. Total demand becomes 5.0 person-hours, and headroom compresses to 3.0 person-hours — still positive but the claim of "roughly a factor of 2" between demand and capacity no longer holds. If each alert takes 30 minutes rather than 15, the entire headroom margin is consumed by anomaly response alone.
+
+No source is provided for either the 1-per-sortie rate or the 15-minute resolution time. The word "conservative" is asserted, not demonstrated. The rate is not bounded with an upper uncertainty. There is no heritage — no prior space robot operation, no terrestrial factory deployment, and no analog study — that characterizes OOD alert frequency at a TRL 7 deliberative-layer autonomy system in a novel environment. The Lunokhod heritage cited throughout the section concerns operator-commanded operations, not autonomous operations that self-generate OOD alerts. This is a fabricated number in the most load-bearing position of the cognitive load arithmetic.
+
+**Required action:**
+
+1. Add a derivation footnote that shows where 1 alert/sortie comes from. If the figure is a parametric estimate with no heritage, state it as such explicitly: "This rate is a parametric assumption with no heritage basis. It is a study planning assumption, not a validated operational rate."
+2. Add a sensitivity row to the cognitive load arithmetic table: "If OOD alert rate is 2/sortie/humanoid (6 total/shift) at 30-min mean resolution time, anomaly response budget is 3.0 person-hours. Total demand rises to 5.25 person-hours, and headroom compresses to 2.75 person-hours (52% margin above demand). The claim of 2× headroom holds only if the 1-alert/sortie/15-minute resolution estimate is correct."
+3. The headroom factor stated in §A19 ("headroom factor ~2×") must be qualified to reflect this sensitivity. Replace "headroom factor ~2×" with "headroom factor ~2× under the 1-OOD-alert/sortie/humanoid planning assumption; sensitivity analysis required before treating this as a program commitment."
+4. Assign the alert rate characterization to a named program activity: terrestrial analog deployments of the humanoid in novel environments, monitored for OOD flag frequency per operating hour, with results feeding the 2029 gate review.
 
 ---
 
-### RM-002 — BLOCKER — 06-mass-power-budget.md — Locomotion actuation 260 W design-to relies on an invented 0.55 multiplier with no heritage validation
+### RM-M01 — Major — 02-04 §1 — The 0.6 concurrency factor in the periodic supervision calculation is asserted without derivation or bound
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Blocker
-**Number/claim:** "The study uses 260 W based on an additional 0.55 factor for normal vs. vigorous gait — a parametric assumption with no direct heritage validation for this platform."
-**Problem:** The derivation chain is: Valkyrie 1,800 W × (75/129) × 0.85 efficiency ≈ 890 W → ×0.65 locomotion fraction ≈ 580 W → ×0.55 normal-gait factor = 260 W. The file explicitly states the 0.55 factor "has no direct heritage validation." The power budget then applies 30% margin to this figure, arrives at a locomotion mode total of 616 W, and declares closure against the 800 W cap. If the normal-gait factor is 0.75 rather than 0.55 — a more conservative but equally unsupported assumption — the locomotion actuation line is ~435 W, the design-to total is ~649 W, and the 30%-margin total is ~844 W, which exceeds the 800 W cap. Budget closure is contingent on an invented multiplier.
-**Required action:** Add the 0.55 gait factor to the assumption register as a new entry (§A14). State explicitly in the budget table note: "Power budget closure against the 800 W cap is conditional on the gait power validation simulation (referenced in §03, Section 5, item 3) confirming that normal walking draws ≤0.55× vigorous-gait power for this platform at 75 kg in 1/6 g on prepared regolith paths. Until that simulation closes, the locomotion mode power budget closure should be read as conditional." The budget section closure statement ("Yes, with two qualifications") must be revised to add this as a third qualification.
-
----
-
-### RM-003 — MAJOR — 03-actuation-structures.md §4 — Actuation mass 13.0 kg lacks a concrete per-joint heritage anchor
-
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
 **Severity:** Major
-**Number/claim:** "Actuation (motors, harmonic drives, QDD wrist/hand motors) | 13.0 | 16.9 | ~38 joints at mean ~340 g actuator assembly mass; HD-Electric actuator mass density from Atlas Electric heritage scales favorably vs. SEA"
-**Problem:** The 340 g mean actuator mass per joint is the critical number determining whether the 30 kg structure+actuation constraint closes. Atlas Electric (89 kg, 56 joints) is cited, but Atlas does not publish per-joint actuator breakdown data. Harmonic Drive AG CSD/CSF series is mentioned in the notes but no specific product, bore size, or published mass is cited. "Scales favorably vs. SEA" is a directional assertion without a data point. The 13.0 kg figure — the second-largest allocated mass item — is therefore a bare number.
-**Required action:** Provide a specific heritage anchor: either (a) a named Harmonic Drive AG product with published mass at the relevant bore/torque class scaled across the joint distribution, or (b) a published actuator assembly mass from Atlas Electric or a comparable HD-Electric robot. If no published source exists, state explicitly that 340 g/joint is a parametric estimate, add it to the assumption register, and note the budget consequence if mean actuator mass is 450 g (actuation line becomes ~17.1 kg, pushing structure+actuation total to ~32.1 kg design-to, above the 30 kg constraint).
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, periodic supervision sub-calculation
+**Number/claim:** "For 3 humanoids with overlapping checkpoint schedules (not all running jointly-executed tasks simultaneously): approximately 3 × 0.83 × 0.6 concurrency factor = ~1.5 person-hours."
+**Problem:** The 0.6 concurrency factor — meaning, on average, only 60% of the humanoids are simultaneously at a checkpoint gate requiring human attention — directly reduces the periodic supervision load from 2.5 person-hours (3 × 0.83) to 1.5 person-hours. This single factor saves 1.0 person-hour of the total 4.25 person-hour demand. The document's parenthetical explanation ("at any given time, some humanoids will be in autonomy-led phases while others are at checkpoint gates; simultaneous checkpoints from all three robots are rare") is a qualitative assertion, not a derivation.
+
+The concurrency factor depends on the relative duration of autonomous task phases versus checkpoint-gate phases, and on the checkpoint scheduling discipline of the operations team. If two of three humanoids are executing jointly-executed tasks simultaneously (a plausible scenario during a high-density sortie day), the effective concurrency factor rises toward 0.8–0.9, pushing periodic supervision demand to 2.0–2.25 person-hours. The document itself acknowledges the "high-density sortie day" as a stress case that the headroom must absorb — but the stress case is never quantified against the headroom.
+
+**Required action:**
+
+1. Derive the 0.6 factor from first principles or bound it: estimate the fraction of task time at checkpoint gates vs. executing autonomously for each jointly-executed task category. Use the checkpoint interval stated earlier in the same section (15–30 minutes between reviews for prepared-path operations; trigger-based for manipulation). If a typical jointly-executed task has 20% of its time at checkpoint gates and 80% executing autonomously, and tasks are uncorrelated across robots, the probability that any two are simultaneously at a gate is 0.2² = 0.04, and the expected fraction of time with 2+ robots simultaneously at gates is low. Show this calculation.
+2. If the 0.6 factor cannot be derived, flag it as a planning assumption and add a sensitivity: "If simultaneous checkpoint density is 0.8 rather than 0.6, periodic supervision demand rises from 1.5 to 2.0 person-hours; total demand rises from 4.25 to 4.75 person-hours; headroom compresses from 3.75 to 3.25 person-hours."
+3. Add a cross-reference to the ConOps agent, who must validate the concurrency factor against the actual sortie-day task scheduling structure.
 
 ---
 
-### RM-004 — MAJOR — 03-actuation-structures.md §4 — Joints/sealing 4.0 kg (105 g/joint) has no comparable heritage for sealed space joints
+### RM-M02 — Major — 02-04 §2 — The 8 person-hours/shift supervisory capacity derivation contains a numerical inconsistency in §A19
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
 **Severity:** Major
-**Number/claim:** "Joints, bearings, sealing hardware | 4.0 | 5.2 | Labyrinth housings, elastomeric seals, cross-roller bearings; 38 joints × ~105 g mean"
-**Problem:** 105 g per joint for a novel space-qualified sealed joint assembly (labyrinth geometry + FFKM lip seal + cross-roller bearing + housing) has no published comparable. Cross-roller bearings are catalog items with published mass, but the labyrinth housing is bespoke. No space mechanism with this seal architecture has been built, so there is no heritage data point. The figure's precision (exactly 4.0 kg = 38 × 105.26 g) is implausible for a design at this level of maturity.
-**Required action:** Decompose the 105 g/joint estimate: estimate cross-roller bearing mass from catalog data at relevant bore diameters (e.g., IKO CRBH series), add a housing mass estimate with stated wall thickness and material, add the FFKM seal mass (known from catalog data for elastomeric O-rings or lip seals at relevant bore sizes), and sum. Show the calculation. If the total exceeds 105 g for the primary joints (hip, knee, shoulder are larger and heavier than wrist or finger joints), average across the size distribution. Add the resulting range as an assumption register entry.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2; `study/05-cross-cutting/margins-and-assumptions.md`, §A19
+**Number/claim:** Section 2 of §02-04 states: "At an 8-hour nominal work shift, 4 crew × 8 hours × 0.25–0.30 available fraction yields approximately 8–10 person-hours per crew shift available for supervisory demand. The conservative estimate is 8 person-hours per crew shift."
+
+§A19 states: "For supervisory activities specifically, the fraction available without competing with science, EVA prep, and personal time is 25–30%, or approximately 3 hours per crew member per shift. For 4 crew: 4 × 2 hours ≈ 8 person-hr/shift."
+
+**Problem:** The two derivations are internally inconsistent:
+
+- §02-04 uses: 4 crew × 8 hours × 0.25–0.30 = 8–9.6 person-hours (rounds to "8–10").
+- §A19 uses: 4 crew × 2 hours = 8 person-hours.
+
+At 0.25 fraction of an 8-hour shift, 1 crew member has 2.0 hours of supervisory time. That is consistent with the §A19 "4 × 2 = 8" calculation. But §A19's prose says the available fraction is "25–30%, or approximately 3 hours per crew member per shift." 25–30% of an 8-hour shift is 2.0–2.4 hours, not 3 hours. Three hours corresponds to 37.5% of an 8-hour shift, which is inconsistent with the stated 25–30% fraction and inconsistent with the Mir baseline of 30–40% maintenance absorption (which would leave less than 25% for supervision once exercise and personal time are deducted).
+
+The §A19 document also applies the Mir baseline differently from §02-04: §A19 says "30–40% maintenance absorption... with maintenance absorption at 35%, a 12-hour crew waking period leaves approximately 65% = 7.8 hours for other activities" and then derives 25–30% supervisory fraction from the 12-hour waking period — not the 8-hour work shift. If the base period is 12 hours (waking), 0.25 × 12 = 3 hours per crew member — consistent with §A19's stated "3 hours per crew member" but inconsistent with §02-04's use of an 8-hour shift as the base period.
+
+The result (8 person-hours/shift capacity) may survive either derivation path, but two different base periods (8-hour work shift and 12-hour waking period) are used interchangeably to justify the same number. This is a derivation consistency failure.
+
+**Required action:**
+
+1. Choose a single base period and apply it consistently: either (a) 8-hour nominal work shift, in which case 25–30% supervisory fraction yields 2.0–2.4 hours/crew member and 8–9.6 person-hours/shift for 4 crew, or (b) 12-hour waking period, in which case 25% supervisory fraction yields 3 hours/crew member and 12 person-hours/shift for 4 crew — which is a materially higher and less conservative estimate. The conservative commitment should use (a).
+2. Reconcile §A19 prose with its own calculation: change "approximately 3 hours per crew member per shift" to "approximately 2 hours per crew member per 8-hour shift (25% of 8 hours)" to match the arithmetic.
+3. State the capacity figure as a range: "8.0–9.6 person-hours/shift (4 crew × 8 hours × 0.25–0.30)" rather than a point estimate of 8 person-hours. Using the conservative lower bound (8.0) is defensible but should be labeled as conservative.
 
 ---
 
-### RM-005 — MAJOR — 03-actuation-structures.md §4 — End-effector mass 4.5 kg has an internal foot-mass inconsistency
+### RM-M03 — Major — 02-04 §1 — The periodic supervision 0.2 person-hours/robot-hour cost factor is stated as a derivation but the arithmetic does not reproduce the value
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
 **Severity:** Major
-**Number/claim:** "End-effectors | 4.5 | 5.9 | Hands: ~1.8 kg each (R2 hand heritage); feet: ~0.45 kg each including handrail jaw"
-**Problem:** Section 2 of the same file states "approximately 0.3–0.5 kg per foot" for the handrail-capture jaw add-on. If 0.3–0.5 kg is the jaw add-on alone, the foot total (foot structure + jaw) must be larger than 0.45 kg, making the end-effector subtotal (3.6 + 0.9 = 4.5 kg) underestimated. If 0.45 kg is the complete foot end-effector including the jaw, then the jaw is most of the foot mass and the foot structure itself has near-zero mass — implausible. The two numbers coexist without reconciliation. Additionally, the R2 hand heritage for 1.8 kg is stated without citing a specific R2 mass measurement — R2 factsheets publish general specifications but not hand-level mass breakdowns.
-**Required action:** Clarify whether 0.45 kg is the jaw add-on or the complete foot. Provide a cited R2 hand mass figure or state the derivation (e.g., "R2 hand system estimated at ~2.2 kg per side from the 42-DOF torso at ~68 kg with a ~6% hand fraction"). If R2 hand mass is not published, flag it as an unverified parametric estimate.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Periodic Supervision)
+**Number/claim:** "Crew time cost. Approximately 0.2 — one person-hour of supervision per five robot-hours of operation. Derivation: a typical 8-hour operational shift with jointly-executed tasks running involves approximately 4–6 checkpoint interactions, each consuming 5–10 minutes of active crew attention. That totals 20–60 minutes of active supervisory work per 8-hour shift per humanoid, yielding a 0.04–0.125 person-hour per robot-hour ratio; 0.2 is the conservative upper estimate across a high-density task day."
+**Problem:** The arithmetic derivation yields 0.04–0.125 person-hours per robot-hour. The document then states "0.2 is the conservative upper estimate" — but 0.2 is above the top of the derived range (0.125), not at its upper end. The document does not explain what additional factor produces the jump from the 0.125 upper bound to 0.2. Furthermore, the periodic supervision demand calculation in Section 2 uses "~0.2 person-hr/robot-hr × 3 robots × 5 hr active window = ~3.0 person-hr/shift" — but this differs from what the summary table calls "~0.2 person-hr/robot-hr" for periodic supervision: applying 0.2 across a full 8-hour shift for 3 robots would yield 0.2 × 8 × 3 = 4.8 person-hours, not 3.0 person-hours. The 3.0 figure uses a 5-hour active window that is not explained or derived anywhere.
+
+**Required action:**
+
+1. Close the gap between the derived upper bound (0.125 person-hours/robot-hour) and the stated conservative value (0.2): either explain what the additional factor is (perhaps scheduling overhead, concurrent alert handling, or checkpoint decision latency) or reduce the stated value to 0.125 and accept a lower demand estimate.
+2. Define and defend the "5 hr active window" used in the Section 2 calculation. If jointly-executed tasks run for 5 of 8 operational hours per humanoid, state this explicitly and derive it (e.g., "3 of 20 tasks are jointly-executed and each task runs ~30 minutes, totaling ~2.5 hours per humanoid per shift, but with task setup and transition this grows to ~5 hours"). If the 5-hour window is a round estimate, flag it as such.
+3. Revise the summary table to use a value consistent with the arithmetic, or acknowledge that the 0.2 factor is deliberately set above the derived range to provide margin and state by how much.
 
 ---
 
-### RM-006 — MAJOR — 06-mass-power-budget.md — Signal cabling 2.5 kg (3.3%) uses the low end of a stated 3–5% range without justification
+### RM-M04 — Major — 02-04 §3 — The supervisor ratio 1:4–5 post-2035 advancement rests on a "60% reduction in checkpoint demand" claim that is not derived
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Major
-**Number/claim:** "Signal cabling, connectors, and brackets | 2.5 | Parametric: ~3.3% of total design-to pre-margin | Standard parametric estimate for complex robotic system at 3–5% of mass."
-**Problem:** The "standard parametric estimate" range is 3–5%; the budget uses 3.3% (the low end) without explanation. The upper end of the range (5% of 75 kg = 3.75 kg) is 50% higher than the budgeted figure. Additionally, "standard parametric estimate for complex robotic system" is asserted without a citation. The separate "main power harness" line at 1.9 kg (2.5%) partially overlaps in scope — the signal cabling notes include "power connector assemblies" which may also appear in the power harness line.
-**Required action:** (a) Justify the choice of 3.3% over the mid or upper range (e.g., the power harness is separately accounted, so the signal-only harness is lower fraction), or place the design-to at the midpoint (4%, = 3.0 kg) and document the budget consequence. (b) Cite a heritage source for the 3–5% parametric range. (c) Clarify the boundary with the main power harness line to confirm no double-counting or gaps.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 3, Step 4
+**Number/claim:** "By 2040, 16–17 of 20 tasks at autonomy-led level reduces the jointly-executed checkpoint demand by approximately 60%, reducing total supervisory demand per shift from 4.25 to approximately 2.5 person-hours. Against the same 8 person-hour capacity, the headroom grows to 5.5 person-hours — sufficient to support a 1:4–5 ratio."
+**Problem:** The 60% reduction in checkpoint demand is asserted without a derivation. The figure matters because it is the stated justification for the 2040 supervisor ratio of 1:4–5. If the reduction is only 40% rather than 60%, total demand at 2040 would be approximately 3.1 person-hours rather than 2.5, and the headroom would be approximately 4.9 person-hours — still permitting 4–5 humanoids per supervisor but with less margin than claimed. Additionally, the text says 16–17 of 20 tasks migrate to autonomy-led by 2040, which is a 2–3 task increase from the IOC figure of 12. The task allocation table in §02-03 shows only T16 (calibration) explicitly migrating to autonomy-led by 2040; T05 and T09 are described as potentially lightening but not confirmed as migrating. The 16–17 task claim appears to require T05 and T09 to migrate — which contradicts the task allocation table's "Jointly executed" designation for T05 at 2040.
+
+**Required action:**
+
+1. Derive the 60% checkpoint demand reduction from the task allocation table: identify which tasks shift from jointly-executed to autonomy-led between 2035 and 2040, compute the checkpoint demand reduction from each migration, and sum. If T05 and T09 do not migrate (consistent with the task allocation table), recompute the 2040 demand with only T16 migrating.
+2. Reconcile with the task allocation table: the 16–17 tasks autonomy-led claim in §02-04 must match the count in §02-03's "Allocation at Full Operation (2040)" column. As of the current task table, T05, T09, T13, T14, T17 remain jointly-executed or human-led at 2040, leaving only 13–14 autonomy-led tasks. This must be made consistent.
+3. If the 1:4–5 ratio rests on a projection that requires autonomy migration the task table does not support, the ratio should be revised or the task table must be updated — whichever is the correct position.
 
 ---
 
-### RM-007 — MAJOR — 06-mass-power-budget.md — Thermal radiator sizing arithmetic appears inconsistent with the Stefan-Boltzmann equation
+### RM-M05 — Major — §A15–§A19 — §A19 periodic supervision demand arithmetic uses a different calculation path from §02-04 and produces a slightly different total
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Major
-**Number/claim:** "Radiator sized to reject ~300 W at end-of-mission emissivity (ε = 0.70 EOL per §05); at 50°C panel temperature, required radiator area ~0.3 m² at ~10 kg/m² = ~3.0 kg."
-**Problem:** Applying the Stefan-Boltzmann equation for a radiator at 50°C (323 K) against a lunar daytime environment at ~40°C (313 K) with ε = 0.70: net heat flux = 0.70 × 5.67×10⁻⁸ × (323⁴ − 313⁴) ≈ 0.70 × 5.67×10⁻⁸ × 1.27×10⁹ ≈ 50 W/m². To reject 300 W: area = 300 / 50 = 6.0 m², not 0.3 m². The 0.3 m² claim would require a net flux of 1,000 W/m², which is inconsistent with the stated temperature conditions. The derivation is not shown, so it is unclear what environmental temperature assumption was used. If 0 K was assumed (deep space), the net flux at 323 K would be ~0.70 × 5.67×10⁻⁸ × 323⁴ ≈ 681 W/m², giving area = 300 / 681 ≈ 0.44 m² — closer to 0.3 m² but still inconsistent, and using 0 K for the lunar daytime environment is non-conservative. The 10 kg/m² areal density is also unsourced.
-**Required action:** Show the complete Stefan-Boltzmann calculation: state the assumed lunar environment radiation temperature T_lunar (for daytime vs. nighttime case), compute net radiative flux in W/m², compute required area, and multiply by the stated areal density. Cite a source for 10 kg/m² radiator areal density (e.g., a space radiator reference from a published heat rejection system). If the 0.3 m² figure is wrong, revise the thermal management mass line and assess impact on the 75 kg design-to closure.
+**Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A19
+**Number/claim:** §A19 derives supervisory demand as: "12 autonomy-led tasks: ~0.05 person-hr/robot-hr × 3 robots × 8 hr operational window = ~1.2 person-hr/shift; 6 jointly-executed tasks: ~0.2 person-hr/robot-hr × 3 robots × 5 hr active window = ~3.0 person-hr/shift; Total: ~4.2 person-hr/shift."
+
+§02-04 Section 2 derives: on-demand subtotal 2.0 person-hours; periodic supervision 1.5 person-hours; continuous supervision 0.75 person-hours; total 4.25 person-hours.
+
+**Problem:** The two derivation paths produce different figures (4.2 vs. 4.25 person-hours) via different arithmetic structures and neither is flagged as a simplification of the other.
+
+More substantively: §A19's periodic supervision demand (3.0 person-hours) is derived as 0.2 × 3 robots × 5 hr active window = 3.0 person-hours. But §02-04's periodic supervision demand (1.5 person-hours) applies the 0.6 concurrency factor and derives a different number. The two figures are:
+- §A19: 3.0 person-hours (no concurrency factor applied)
+- §02-04: 1.5 person-hours (with 0.6 concurrency factor)
+
+These differ by a factor of 2. A cross-cutting assumption register that contains a demand figure twice as large as the section-level analysis creates a risk of downstream agents using the wrong basis. The §A19 derivation drops the concurrency factor correction that §02-04 applies; this is not flagged anywhere.
+
+**Required action:**
+
+1. Reconcile the periodic supervision demand figures between §A19 and §02-04. Choose one derivation path, apply it consistently, and footnote the reconciliation. The concurrency-corrected 1.5 person-hours from §02-04 is the more detailed derivation; §A19 should adopt it with an explicit note that the 0.6 concurrency factor is from §02-04 Section 2.
+2. The total demand figure in §A19 (4.2 person-hours) should match §02-04 (4.25 person-hours) or the difference should be explained. If §A19 is intentionally simplified, label it "simplified demand estimate — see §02-04 Section 2 for full derivation."
 
 ---
 
-### RM-008 — MAJOR — 06-mass-power-budget.md — Power harness 1.9 kg and signal cabling 2.5 kg together lack heritage; boundary between them is potentially overlapping
+### RM-M06 — Major — 02-03 §2 — T10 SPE shelter return "15–30 minutes" time window is stated without a derivation or source
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Major
-**Number/claim:** Power harness: "Parametric estimate: 2.5% of total system mass for the main power harness = 75 kg × 0.025 = 1.9 kg design-to." Signal cabling notes: "Covers all signal harness (joint encoders, sensors, compute buses), power connector assemblies, cable routing brackets."
-**Problem:** Both lines are parametric fractions without cited heritage. "Power connector assemblies" appears in the signal cabling notes but belongs conceptually to the power harness scope. If power connectors are in both lines, the combined 4.4 kg may include double-counted items. Neither the 2.5% power harness fraction nor the 3.3% signal harness fraction is traceable to a published space mechanism or robotic system harness mass breakdown.
-**Required action:** Define explicitly what each line covers and confirm non-overlap. Provide at least one heritage data point for the combined harness fraction (~5.8% of system mass): a published data point from Valkyrie, R2, a satellite harness study, or a SAWE paper on robotic system cabling mass fractions. If no published source exists, flag both lines as parametric estimates and add a combined harness uncertainty statement to §A5 or a new assumption entry.
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Task T10
+**Number/claim:** "Robot must self-initiate shelter return on Tier 1 radiation monitor threshold, within 15–30 minutes; human authorization impractical in time-critical SPE scenario."
+**Problem:** The 15–30 minute window is the stated requirement driving the "Must be fully autonomous" classification for T10. This window determines whether the task can be human-led or must be fully autonomous — a classification with direct consequences for the TRL requirements on the reactive layer (TRL 7 required by 2035 for T10). The figure has no derivation or citation. The relevant physics is: SPE onset time varies from minutes (the most intense events, e.g., the 1956 February event) to hours (slower-rising events like the September 2005 event). The dose rate at which human intervention becomes inadequate to prevent unacceptable exposure depends on the SPE spectrum, the shielding configuration, and the acceptable exposure limit. None of these are stated.
+
+A 15–30 minute return requirement is plausible but could be anywhere from 5 minutes (fast-rising hard-spectrum event at high fluence rate) to several hours (slow-rise soft-spectrum event). The classification of T10 as "Must be fully autonomous" changes if the window is, say, 2 hours — in which case human authorization with a Tier B (Earth relay) response would be feasible.
+
+**Required action:**
+
+1. Derive the 15–30 minute window from first principles: state the design SPE (specify a percentile, e.g., "Carrington-class SPE is the bounding case; the 1989 October event is the design requirement at the 99th percentile fluence rate at 1 AU"), state the acceptable total exposure limit (in mSv or rad), and compute the maximum allowable time from onset to shelter arrival given the humanoid's unshielded dose rate during the event. Show the arithmetic.
+2. If the 15–30 minute window cannot be derived from available data, flag it as a parametric assumption, add it to the assumption register, and state the sensitivity: "If the allowable response time is >60 minutes, T10 may be classifiable as jointly-executed with Earth relay authorization rather than fully autonomous."
+3. This finding cross-couples to §A11 (radiation hardening strategy) and the TRL requirements in §A1. Flag for space-environments agent review.
 
 ---
 
-### RM-009 — MAJOR — 05-environments-hardening.md — Radiator emissivity margin description is mathematically inverted
+### RM-N01 — Minor — 02-04 §2 — The Mars-500 behavioral torpor finding is cited as a risk but no quantitative degradation bound is stated
 
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
-**Severity:** Major
-**Number/claim:** "Size radiators to maintain required heat rejection at ε = 0.70 (end-of-mission degraded), providing 18–24% emissivity margin above the 0.85 beginning-of-life value."
-**Problem:** 0.70 is below 0.85, not above it. The phrase "emissivity margin above the 0.85 BOL value" is the inverse of what is being described. What is being described is: size to work at ε = 0.70, which accommodates a degradation of (0.85 − 0.70) / 0.85 = 17.6% from BOL. Calling this "margin above" the BOL value is incorrect. Furthermore, the stated range "18–24%" cannot be derived from the single EOL value (0.70) alone — only one number (17.6%) can be computed from the stated BOL/EOL pair.
-**Required action:** Replace with: "Radiators are sized to maintain required heat rejection at end-of-mission emissivity ε = 0.70, which accommodates an ~18% emissivity degradation from the ε = 0.85 BOL coating specification. The degradation basis is [cite §05's Mars solar panel analogy]. Remove the claim of "18–24% margin above the 0.85 BOL value" — this characterization is mathematically inverted and misleading.
-
----
-
-### RM-010 — MAJOR — 05-environments-hardening.md — Silicon TID conversion from LND measurement is a major unstated assumption driving the entire radiation strategy
-
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
-**Severity:** Major
-**Number/claim:** "At the lunar surface, the GCR-dominated spectrum delivers approximately 20–30 krad (silicon) per year at the surface without shielding, based on modeling studies \cite{schwadron2014radiation} [VERIFY]"
-**Problem:** The Chang'e-4 LND measurement (60 µSv/hr = 0.53 Gy/yr) is biologically-weighted dose equivalent, not silicon TID. The conversion factor from dose-equivalent to silicon krad is spectrum-dependent and can range from approximately 10:1 to 50:1 depending on the GCR particle composition and energy spectrum at 1 AU. The [VERIFY] flag acknowledges this, but the 20–30 krad(Si)/yr figure is used in §A12 as the working value, driving the 7-year TID budget (140–210 krad), which in turn justifies the hybrid radiation strategy and the 3-year Tier 2 ORU replacement cycle. If the conversion is 2× higher (40–60 krad/yr), the 7-year budget becomes 280–420 krad, the Tier 2 lifetime drops to ~18 months (not 3 years), and the ORU replacement strategy and spares budget are materially different. This is a Major finding because the uncertainty is not bounded in the assumption register.
-**Required action:** Add an explicit uncertainty bound to §A12 in the assumption register: "If the silicon TID conversion factor is 2× the nominal estimate, annual unshielded dose becomes 40–60 krad(Si)/yr and the 7-year unshielded budget becomes 280–420 krad. Under these conditions, Tier 2 shielded lifetime may shorten to 18 months or less, requiring a revised ORU replacement cadence and spares budget." The [VERIFY] flag should also carry a named responsible agent (space-environments) and a gate date (before PDR).
-
----
-
-### RM-011 — MAJOR — 04-sensing-autonomy.md — SEU/latchup rate "1–10 events per day" lacks derivation; shielding reduction "2–3 orders of magnitude" is physically implausible for GCR HZE ions
-
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
-**Severity:** Major
-**Number/claim:** "Single-event latchup in commercial CMOS at the lunar far side is expected at a rate of approximately 1-10 events per day without shielding, based on Perseverance's radiation environment data scaled to humanoid operating temperature." And: "Spot-shielding (5-10 mm aluminum, ~0.5-1.0 kg mass penalty per compute board) reduces latchup rate by 2-3 orders of magnitude."
-**Problem:** (a) "Scaled to humanoid operating temperature" is not how SEL rate is derived: SEL rate depends on particle LET spectrum and device LET threshold, not on device temperature (temperature affects the holding current threshold but not the primary event rate). The derivation methodology is physically incorrect. (b) 2–3 orders of magnitude SEL reduction from 5–10 mm aluminum is achievable for SPE proton events (low energy, stopped by aluminum), but GCR heavy ions dominate SEL in CMOS and have energies >100 MeV/nucleon where aluminum shielding provides minimal attenuation — the shielding improvement for GCR SEL is far less than 100×. Both claims are unsupported and the shielding claim is likely to be overly optimistic by 1–2 orders of magnitude for the dominant SEL driver.
-**Required action:** (a) Replace "scaled to humanoid operating temperature" with the correct physics: state a LET threshold for the Jetson class CMOS, reference a GCR heavy-ion fluence model at lunar surface (e.g., CREME96 or ISO 15390), and compute an approximate SEL rate per day. (b) Revise the shielding reduction claim to distinguish SPE proton events (where aluminum is effective, 2–3 orders of magnitude achievable) from GCR HZE ions (where aluminum shielding provides <10× reduction at the relevant energies). State which regime dominates SEL for this device class.
-
----
-
-### RM-012 — MAJOR — 06-mass-power-budget.md — Subsystem NTE values in §03 and system-level NTE in §06 create an unacknowledged double-margin
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Major
-**Number/claim:** "The 30% margin per NASA-STD-5001 applies at the total system level; subsystem allocations carry their own parametric uncertainty within the system margin." Meanwhile §03, Section 4 presents: "Structure + actuation total | 30.0 | 39.0" where 39.0 is design-to × 1.30.
-**Problem:** §03 computes subsystem NTE values by applying 30% to each subsystem design-to. §06 then applies 30% again at the total system level (75 × 1.30 = 97.5 kg). These two applications of 30% margin are not reconciled. If the destinations-trajectories agent uses the §03 structure+actuation NTE (39.0 kg) instead of the §06 system NTE (97.5 kg) as the planning basis, the structure+actuation block carries an implicit 1.30 × 1.30 = 1.69 margin factor. The budget section's statement that margin "applies at the total system level" is inconsistent with the §03 practice of computing subsystem NTEs.
-**Required action:** Add a clarifying statement in §06: "Subsystem NTE values in §03 (e.g., 39.0 kg for structure+actuation) are computed as design-to × 1.30 for internal subsystem tracking only. They are not additive inputs to the system NTE. The system NTE of 97.5 kg is computed once from the 75.0 kg system design-to per NASA-STD-5001. Downstream users (destinations-trajectories, far-side-base-architect) must use 75.0 kg design-to / 97.5 kg NTE as the manifest figures, not subsystem NTEs." Also flag this explicitly in the cross-coupling log for the destinations-trajectories agent.
-
----
-
-### RM-013 — MINOR — 02-form-factor-tradespace.md — Weighted totals in evaluation matrix table disagree with the computed totals stated below
-
-**Section:** `study/01-optimal-space-humanoid/02-form-factor-tradespace.md`
 **Severity:** Minor
-**Number/claim:** Table "Weighted total" row: "**3.60** | **3.35** | **2.95** | **2.55** | **2.80**" vs. immediately following "Raw weighted totals: A = 3.65, B = 3.55, C = 3.25, D = 2.90, E = 2.85"
-**Problem:** The table row and the corrected totals below disagree for all five candidates. The "Raw weighted totals" block exists only to correct the table — the two sets of numbers coexist without reconciliation. Any reader who stops at the summary table sees incorrect scores. The margin between A (bipedal) and B (centaur) narrows from 0.30 (table: 3.60 vs 3.35) to 0.10 (computed: 3.65 vs 3.55), which is a material difference in the strength of the position.
-**Required action:** Correct the "Weighted total" row in the evaluation matrix table to match the computed totals: A = 3.65, B = 3.55, C = 3.25, D = 2.90, E = 2.85. Delete the redundant "Raw weighted totals" block. Acknowledge in the surrounding text that the margin between bipedal and centaur is narrow (0.10 points) — the section's prose already does this but should reference the correct numbers.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, Long-Duration Degradation
+**Number/claim:** "Behavioral torpor. Crew sedentariness increased monotonically across the mission... For a supervisory role, reduced spontaneous activity is a leading indicator for reduced alertness and delayed anomaly response."
+**Problem:** The Mars-500 finding is relevant and correctly cited, but the section does not bound the performance degradation quantitatively. If behavioral torpor reduces supervisory alertness by, say, 15–20% over a 6-month rotation, the effective supervisory capacity decreases from 8 person-hours to approximately 6.4–6.8 person-hours. This reduces headroom from 3.75 to 2.15–2.55 person-hours — still positive but meaningfully tighter. The finding is cited as a risk without quantifying its consequence on the headline numbers.
+
+**Required action:**
+
+Add a quantitative degradation bound: "The Mars-500 results suggest anomaly response times and task performance scores may degrade by 10–30% over a 6-month rotation for individual crew members with the most pronounced torpor effects \cite{basner2013mars500}. Applying a conservative 20% performance degradation to one of four crew members (25% of supervisory capacity) reduces effective supervisory capacity from 8 to approximately 7.4 person-hours — still above the 4.25 person-hour demand but eroding 16% of the headroom. This degradation should be included in the ConOps sensitivity model." If the Mars-500 data does not support a specific percentage, state the limitation explicitly.
 
 ---
 
-### RM-014 — MINOR — 06-mass-power-budget.md — BMS and battery housing 20% overhead lacks a specific heritage citation
+### RM-N02 — Minor — 02-04 §1 — Continuous supervision cognitive load "degrades above two hours" is cited to a source that may not contain this specific claim
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Minor
-**Number/claim:** "Heritage from space battery programs: approximately 18–22% overhead on cell mass. Using 20%: 2.5 kg."
-**Problem:** "Space battery programs" is not a citable heritage source. The ISS battery replacement project is cited in §A13 for cell energy density (160 Wh/kg) but the 18–22% overhead fraction is not attributed to that or any other specific program. This matters because the BMS+housing line (2.5 kg) is significant within the power system's 16.9 kg total.
-**Required action:** Cite the specific space battery program (ideally the ISS ORU battery replacement, or a published conference paper from the Space Power Workshop or IECEC) that documents the cell mass vs. total assembly mass ratio. If unavailable, decompose the 2.5 kg: BMS electronics (~X g based on published radiation-tolerant BMS IC count), cell interconnects (~Y g for Z cells), structural housing with MLI (~W g based on a stated wall thickness and dimensions). This decomposition makes the number reviewable without a heritage cite.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Continuous Supervision)
+**Number/claim:** "Empirically, this sustained vigilance is cognitively expensive in the 40–60 minute range and degrades above two hours for highly skilled monitoring tasks \cite{kanas2008space}."
+**Problem:** The \cite{kanas2008space} reference — Kanas and Manzey's "Space Psychology and Psychiatry" — is a behavioral health text covering crew psychology, interpersonal dynamics, and workload in space generally. It is plausible that it discusses vigilance degradation, but it is not primarily a human factors performance text. The specific claims — "40–60 minute" cognitive expense and ">2 hours" degradation — are precise figures that require a specific vigilance research citation (e.g., Parasuraman 1979 sustained attention studies, Warm et al. 2008 on vigilance decrement). If these numbers come from Kanas and Manzey's synthesis of vigilance literature, the underlying primary source should be cited.
+
+**Required action:**
+
+Verify that \cite{kanas2008space} contains the specific 40–60 minute and 2-hour degradation figures, and if it cites primary vigilance literature, cite that literature directly. If the figures are standard vigilance research findings (the "vigilance decrement" literature), cite a primary reference such as Warm JS, Parasuraman R, Matthews G (2008) "Vigilance requires hard mental work and is stressful" *Human Factors* 50(3), which documents the temporal profile of vigilance degradation.
 
 ---
 
-### RM-015 — MINOR — 05-environments-hardening.md — 10% optical degradation figure is extrapolated from Mars solar panels to lunar camera lenses without a correction factor
+### RM-N03 — Minor — §A17 — The "75–85% availability" figure for Queqiao-2 is stated without a calculation basis
 
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
 **Severity:** Minor
-**Number/claim:** "Combined, these can maintain optical performance within 10% of beginning-of-life levels for multi-year service life — parametric assumption based on Mars solar panel degradation data extrapolated to the lunar dust environment [VERIFY with dedicated test data]."
-**Problem:** Mars solar panels and lunar camera lenses differ in substrate material, dust particle properties, gravity, and the measure of degradation (solar cell output vs. optical transmission). The analogy is weak in multiple directions. The 10% figure is specific enough to be used for ConOps planning (cleaning interval, replacement schedule), but it has no lunar-specific basis. Lunar dust is more angular and electrostatically adherent than Mars dust; the lunar degradation rate could be substantially higher.
-**Required action:** Replace the specific 10% figure with a stated range (e.g., 10–30%) and note the direction of the conservatism: "Lunar dust is expected to adhere more strongly than Mars dust due to angular particle morphology and electrostatic charging, suggesting the lunar degradation rate may exceed the Mars-based estimate. The 10% figure should be treated as an optimistic lower bound. Dedicated lunar simulant optical degradation testing is required before the sensor cleaning interval can be specified in ConOps."
+**Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A17; also `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1
+**Number/claim:** "Queqiao-2 provides approximately 75–85% availability of simultaneous dual-line-of-sight coverage for a receiver at the equatorial far side (based on its 24-hour elliptical frozen orbit geometry)."
+**Problem:** The 75–85% availability figure appears in both §02-02 and §A17 but is derived differently in each. §02-02 states it is "estimated at 75–85% per orbit for a receiver at the equatorial far side, degrading toward the polar regions" based on "orbital geometry (apoapsis above the lunar limb, providing the elevation angle required for far-side coverage)." This is qualitative reasoning without a geometric calculation. The actual availability depends on the minimum elevation angle from which Queqiao-2 can simultaneously see the far-side receiver and Earth, the orbital geometry at periapsis vs. apoapsis, and the orbital period fraction spent in each geometry. None of this is computed.
+
+The 75–85% range is the basis for the finding that Queqiao-2 alone is insufficient (requiring a second satellite), which is an architectural requirement with cost and schedule consequences (§A17: "the far-side-base-architect must carry this as an infrastructure prerequisite for the IOC milestone, not a growth option"). The figure is consequential enough to require more than an orbital geometry qualitative assertion.
+
+**Required action:**
+
+Add a two-sentence geometric derivation: "Based on Queqiao-2's elliptical frozen orbit (24-hour period, inclination 62.4°, apoapsis ~16,500 km, periapsis ~200–250 km above lunar surface), the satellite spends approximately [X]% of its orbital period above the minimum elevation angle required for simultaneous Earth and far-side equatorial receiver line-of-sight. This geometric argument yields the 75–85% range; detailed link availability computation with actual orbit elements is required before the relay architecture is treated as baselined." If this computation has been done (and cited in \cite{spj2021lunarrelay}), cite the specific table or figure from that reference.
 
 ---
 
-### RM-016 — MINOR — 04-sensing-autonomy.md — Wrist camera TRL listed as "8" in sensor table but no wrist camera has been space-qualified in a humanoid
+### RM-N04 — Minor — 02-01 §2 — "Factor of 5–10x" productivity differential between Tier A and Tier B supervision is unsupported by cited heritage
 
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
 **Severity:** Minor
-**Number/claim:** "Wrist cameras (RGB mono) | 2 | 0.15 | 3-5 | **8** | Vacuum/thermal qual: TRL 5-6"
-**Problem:** TRL 8 means "system complete and flight qualified." The "Space TRL gap" column for this row correctly states "Vacuum/thermal qual: TRL 5-6," which implies the technology is not at TRL 8 for the space application. The TRL 8 in the terrestrial column and the TRL 5-6 in the space gap column are internally inconsistent — the relevant TRL for this program is the space TRL (5-6), and citing TRL 8 terrestrial without qualification overstates readiness. Additionally, the 0.15 kg mass estimate (75 g per wrist camera) is stated without citing a specific product.
-**Required action:** Revise the terrestrial TRL for wrist cameras from 8 to 6–7 (commercial machine vision cameras are TRL 7–8 as a product class, but the space-humanoid wrist camera application is not yet TRL 8). Cite a specific product to anchor the 75 g per unit mass estimate (e.g., a named FLIR or Basler camera in the relevant mass class).
+**Section:** `study/02-human-in-the-loop/01-overview.md` (Section 4 reference in §02-02 Section 4); `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 4
+**Number/claim:** "The productivity differential between the two regimes — for a task profile that includes novel manipulation, infrastructure installation, and scientific sampling — favors forward deployment by a factor estimated at 5–10× for task-hours delivered per crew-hour invested."
+**Problem:** The 5–10× productivity differential is the quantitative claim that justifies the economic case for forward-deployed humans. It is stated as an "estimate" without any derivation or cited study. The only heritage used in the immediate context is Lunokhod's traverse rate (1–2 km/hr maximum under frame-advance teleoperation). "Supervised autonomy at ≤50 ms RTLT can achieve speeds an order of magnitude higher" is asserted — but "an order of magnitude higher traverse speed" is not the same as "5–10× higher task-hours delivered per crew-hour invested." Traverse rate and task productivity are different measures; the conversion requires assumptions about task mix, checkpoint frequency, and crew involvement per task that are not shown.
+
+Additionally, neither the numerator (task-hours delivered at ≤50 ms RTLT) nor the denominator (crew-hours invested) is quantified for the Tier A case, so the ratio is not a ratio — it is an assertion.
+
+**Required action:**
+
+Either derive the 5–10× figure from the cognitive load arithmetic in §02-04 (which at least contains a structured demand model), or replace it with a more defensible framing: "The cognitive load arithmetic in §02-04 shows that 4 crew supervising 3 humanoids in periodic supervision mode can deliver 3 humanoid-operational-days per crew-day. Under Lunokhod-heritage direct teleoperation at Tier B latency, an analogous crew would manage approximately 1 rover-equivalent operational day per five crew-members per crew-day. The productivity leverage is therefore approximately 3÷(1/5) = 15× — but this comparison conflates latency regime, autonomy TRL, and task complexity. The honest answer is that the leverage is large and positive, but a specific factor requires a task-level simulation, not an assertion." Alternatively, mark the 5–10× figure explicitly as a "rough order-of-magnitude estimate, not a derived value."
 
 ---
 
-### RM-017 — MINOR — 03-actuation-structures.md — Boot cover 500-hour replacement interval is not in the assumption register
+### RM-N05 — Minor — 02-03 §3 — "500–2,000 taught demonstrations per new tool type" is stated without any cited basis
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
 **Severity:** Minor
-**Number/claim:** "Replacement interval: parametrically assumed at 500 surface-hours, to be validated by accelerated abrasion testing."
-**Problem:** The 500-hour boot cover replacement interval is acknowledged as parametric with no heritage, but it does not appear in the margins-and-assumptions register (§A1–§A13). This assumption has direct consequences for the consumables manifest and the far-side-base-architect's logistics model. The §06 consumables line carries only "boot covers (2 pairs, 0.2 kg each): 0.45 kg" for initial deployment — it does not carry the ongoing resupply mass implied by a 500-hour replacement cycle on a humanoid logging hundreds of hours per lunar day.
-**Required action:** Add §A14 (or next available) to the margins-and-assumptions register for the boot cover replacement interval. Note the consumables manifest consequence: at 500-hour intervals on a humanoid logging ~300 surface-hours per lunar month, annual resupply is approximately 7 pairs of boot covers (~1.4 kg/year/humanoid), which is not reflected in the §06 consumables line.
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1, T04/manipulation category
+**Number/claim:** "A lunar base task library must be assembled using ground simulant hardware, prior to deployment, at an estimated 500–2,000 taught demonstrations per new tool type."
+**Problem:** This range is stated without a source. The demonstration count drives pre-deployment ground operations scope: if the humanoid must master 20 tool types and each requires 1,000 demonstrations, the ground program involves 20,000 demonstrations, with implications for schedule and cost. The ALOHA/ACT reference (\cite{zhao2023aloha}) that appears in the section documents bimanual manipulation learning from demonstrations, but ALOHA's published demonstration counts for novel objects were in the range of 50–200 episodes per task, not 500–2,000. The upper end of the stated range (2,000) may be conservative, but it is not reconciled with published demonstration efficiency figures.
+
+**Required action:**
+
+Cite the basis for the 500–2,000 range, or replace it with a derivation: "Based on published imitation learning results (e.g., ALOHA at 50–200 demonstrations per task for lab-scale manipulation \cite{zhao2023aloha}), a lunar surface task under distribution shift conditions may require 5–10× more demonstrations than the lab baseline to achieve comparable success rates, yielding approximately 250–2,000 demonstrations per task. Using 500–2,000 as the planning range is conservative at the high end." If no citation supports the range, flag it explicitly as a parametric estimate and add it to the assumption register as a program planning assumption.
 
 ---
 
-### RM-018 — MINOR — 06-mass-power-budget.md — 100% depth-of-discharge assumption is embedded in a parenthetical, not stated as a design assumption
+### RM-Nit01 — Nit — §A18 — The 1:8–10 hard ceiling is described as "TRL-independent" but is implicitly dependent on crew size remaining at 4
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Minor
-**Number/claim:** "Mission requirement: a 4-hour EVA sortie at 500 W steady-state draw = 2,000 Wh = 2.0 kWh design capacity." Budget stress note: "if deeper depth-of-discharge margins (80% vs. 100% assumed here)..."
-**Problem:** The 100% usable depth-of-discharge is identified only in the parenthetical stress note — it is not stated as an explicit design assumption in the main derivation. For space-qualified Li-ion cells in cold environments (the humanoid battery will be at sub-zero temperature at the start of a sortie after overnight hibernation), usable DoD is typically limited to 70–80% by the cell manufacturer to preserve cycle life. Assuming 100% DoD means the battery provides full rated capacity at the first cycle — which may be realistic for peak capacity but not for cold-start conditions or end-of-life. If the operational DoD is 80%, the battery must be 2.5 kWh (not 2.0 kWh) for the same 4-hour sortie, adding ~3.1 kg to the cell mass.
-**Required action:** Promote the 100% DoD assumption to explicit status in the main battery sizing derivation, not just the parenthetical. Add a note: "100% usable DoD is assumed for the battery sizing. This requires confirmation against the selected cell's cold-temperature DoD guidance. If DoD is limited to 80%, required cell capacity increases to 2.5 kWh and cell mass increases to ~15.6 kg at 160 Wh/kg, consuming ~19% of the 16.8 kg growth allowance." This point is noted in §A13 but should be present at the point of use in the derivation as well.
-
----
-
-### RM-019 — MINOR — 06-mass-power-budget.md — Electronics vault mass midpoint selection (1.0 kg of 0.5–1.5 kg range) is unexplained
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
-**Severity:** Minor
-**Number/claim:** "Electronics vault + torso structural radiation shielding | 1.0 | §05, Section 3, Option 3 | §05 estimates 0.5–1.5 kg for this element. Using midpoint."
-**Problem:** The 0.5–1.5 kg range represents a 3× uncertainty span. Using the midpoint (1.0 kg) is defensible at concept phase, but the reason for the midpoint rather than a conservatively-placed value (e.g., 1.2 kg) is not stated. This is not a critical finding because the magnitude is small (0.2 kg difference vs. 16.8 kg growth allowance), but the practice of using range midpoints without explanation is a systematic budget discipline issue visible across multiple line items.
-**Required action:** Add one sentence: "Midpoint selected because the shielding depth requirement (2–4 mm Al, §05) is itself bounded, limiting the upside risk to ~1.5 kg. Budget consequence of upper bound vs. midpoint: +0.5 kg, absorbed within growth allowance."
-
----
-
-### RM-020 — NIT — 01-overview.md — Atlas 85–90% efficiency figure used in §03 but cited only there, not at point of first appearance in §01 heritage table
-
-**Section:** `study/01-optimal-space-humanoid/01-overview.md`
 **Severity:** Nit
-**Number/claim:** Heritage table, Atlas Electric row, "Key lessons" column: "Efficiency figure of 85–90% electrical-to-mechanical is best-in-class but total rated draw is unpublished."
-**Problem:** The 85–90% efficiency figure is the primary heritage anchor for the HD-Electric actuation selection in §03. It first appears in the §01 heritage table without a citation. The citation (\cite{bostondynamics2024atlas}) appears in §03 when the number is used for design decisions. A reviewer tracing the heritage chain must search forward from §01 to find the source of a number that first appears in §01.
-**Required action:** Add the citation \cite{bostondynamics2024atlas} inline in the Atlas row of the §01 heritage table so the efficiency figure is attributed at its first use.
+**Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A18
+**Number/claim:** "Hard ceiling approximately 1:8–10 regardless of TRL due to human value floor saturation in a 4-person crew."
+**Problem:** The ceiling is not TRL-independent — it is crew-size-dependent. A 6-person crew with the same human value floor tasks would have a ceiling of approximately 1:12–15. The ceiling is correctly derived from the combination of the human value floor and the fixed 4-person crew size, but calling it "TRL-independent" is imprecise. A reviewer might read "TRL-independent" as implying that even with a larger crew the ceiling holds.
+
+**Required action:**
+
+Replace "regardless of TRL" with "regardless of TRL for a 4-person crew." Add: "This ceiling scales with crew size; a 6-person crew at the same autonomy TRL has a ceiling of approximately 1:12."
 
 ---
 
-### RM-021 — NIT — 06-mass-power-budget.md — ISS battery citation flagged as unconfirmed; this is the anchor for the largest mass line item
+### RM-Nit02 — Nit — 02-02 §2 — Sheridan Level column in the latency table conflates normative framework with empirical claims
 
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md`
 **Severity:** Nit
-**Number/claim:** "\cite{nasa_iss_battery} — NASA ISS battery replacement project (2017–2019); lithium-ion ~160 Wh/kg space-qualified heritage. [Cite to be confirmed against primary source before PDR]"
-**Problem:** The 160 Wh/kg design-to energy density — the anchor for the largest single mass line item (12.5 kg battery cells) — rests on an unconfirmed citation. This should be a flag for immediate confirmation, not a PDR-deferred item.
-**Required action:** Confirm the citation before the next stage. The ISS Lithium-Ion Battery Orbital Replacement Unit program (GS Yuasa / Aerospace Corporation) has published conference papers at IECEC and the Space Power Workshop that document cell-level energy density. Identify the specific reference, confirm the 160 Wh/kg figure, and update \cite{nasa_iss_battery} to the confirmed source.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 2, Sheridan/Verplank table
+**Number/claim:** The table maps RTLT ranges to "Sheridan Level range" (e.g., "200 ms–1 s: 3–5") with "Operational mode" and "Human role" columns.
+**Problem:** The document correctly notes "Sheridan's framework is not a performance curve — it is a normative taxonomy." But then the latency-to-Sheridan-level mapping is presented in a table format that implies precision: specific RTLT breakpoints map to specific Sheridan Level ranges. The empirical literature (METERON, KONTUR-2) is cited to "confirm" these tiers, but neither METERON nor KONTUR-2 uses the Sheridan taxonomy in its reporting. The mapping is the authors' interpretation, not a finding from those experiments. A reader could mistake the table for heritage data.
+
+**Required action:**
+
+Add a table footnote: "Sheridan Level assignments are this study's interpretation of the latency-operational-mode mapping, not findings from the cited experiments. The empirical literature confirms qualitatively distinct operating modes at the stated latency tiers but does not specify Sheridan Level values. The level ranges are illustrative."
 
 ---
 
-### RM-022 — NIT — 05-environments-hardening.md — Mars solar panel dust degradation reference direction is not stated relative to lunar case
+### RM-Nit03 — Nit — 02-03 §5 — Counter-case section cites \cite{black2024pi0} and \cite{unitree2024h1} with [UNVERIFIED] flags — these appear in a substantive claim without resolution
 
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md`
 **Severity:** Nit
-**Number/claim:** "Mars lander and rover data (MER Spirit, Phoenix) document emissivity degradation rates of 2–5% per month... [VERIFY — this figure is for Mars dust under Mars conditions; lunar particle size and settling rate differ]."
-**Problem:** The [VERIFY] flag correctly identifies the Mars-to-lunar extrapolation problem, but does not state the expected direction: is the lunar case expected to be worse or better than Mars? A reviewer or the thermal management agent cannot assess conservatism without knowing the expected sign of the correction.
-**Required action:** Add one sentence: "Lunar dust particles are more angular and electrostatically adherent than Mars aerosol dust, and lack the beneficially large gravitational settling force that eventually causes some Mars dust to fall away from panels. The lunar emissivity degradation rate is expected to be equal to or worse than the Mars reference; the 2–5%/month figure should be treated as a conservative lower bound for the lunar case."
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 5 and References
+**Number/claim:** "\cite{black2024pi0} — pi-0 VLA model; cross-task generalization; supervisory layer capability baseline. [UNVERIFIED — cite pending primary source confirmation]" and "\cite{unitree2024h1} — Unitree H1; bipedal locomotion on prepared surfaces; commercial TRL baseline. [UNVERIFIED]"
+**Problem:** Both citations appear in the main body of the section (pi-0 is cited in Section 5's counter-case; Unitree H1 is cited in Section 1's TRL assessment table) and in §A9. [UNVERIFIED] flags on citations used in substantive TRL assessments and in the counter-case argument leave open the possibility that the primary sources contradict the claims made. These are not load-bearing in the same way as the anomaly rate figure, but unverified citations on TRL claims in a PDR-track document are a citation discipline issue.
+
+**Required action:**
+
+Resolve both citations before Stage 9. For \cite{black2024pi0}: the pi-0 paper (Black et al., Physical Intelligence, 2024) is an arXiv preprint available at arXiv:2410.24164 — this should be verifiable against the primary source. For \cite{unitree2024h1}: Unitree's published product documentation or press releases should be sufficient to confirm locomotion capability claims. Remove [UNVERIFIED] once confirmed, or revise the claim if the source does not support it.
 
 ---
 
-### RM-023 — NIT — 03-actuation-structures.md — 45–55% structure+actuation fraction for terrestrial humanoids is asserted without a citation
+## §A15–§A19 Completeness Assessment
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md`
-**Severity:** Nit
-**Number/claim:** "The parametric assumption used here is that structure + actuation constitutes 45–55% of total system mass in terrestrial humanoids"
-**Problem:** This range is cited without a reference. No commercial or research humanoid publishes subsystem mass breakdowns, so this figure is an estimate. The ≤40% space humanoid target is characterized as "aggressive relative to terrestrial heritage" based on this estimate, but without a source the "aggressive" characterization has no anchor.
-**Required action:** Either cite a source (robotics systems engineering text, SAWE paper, or a derived estimate from Valkyrie/R2 mass fractions using the structure and actuation information available in published papers) or flag the 45–55% range explicitly as an unverified parametric estimate in the assumption register.
+**§A15 (Boot cover replacement interval: 500 surface-hours).** Present and complete. Contains: interval definition, consumables manifest consequence (7 pairs/year/humanoid, 4.2 kg/year for three humanoids), validation path, and assigned owners. The "no heritage" acknowledgment is explicit. No gaps.
+
+**§A16 (Locomotion power gait factor: 0.55).** Present and complete. Contains: derivation of the 0.55 factor (inherited from RM-002 remediation), the 0.84 cap-break threshold calculation, and technology gate assignment. The sensitivity analysis (factor 0.75 → 733 W with margin, still within 800 W cap) is shown. No gaps.
+
+**§A17 (Relay constellation availability ≥95%).** Present and complete. Contains: the 75–85% single-asset shortfall, the two-satellite requirement, the autonomous safe-mode TRL requirement during outages, and path dependency. The derivation of 75–85% is qualitative (see RM-N03 above — Minor finding), but the assumption entry itself is properly structured.
+
+**§A18 (Supervisor ratio 1:2–3 at IOC, 1:4–5 at full operation).** Present and complete. Contains: five-step derivation chain, NIP-10 heritage baseline, §A1 autonomy curve link, cognitive load arithmetic reference, post-2035 advancement path, and hard ceiling justification. Risk characterization is appropriate.
+
+**§A19 (Crew composition at IOC: 4 crew, 3 humanoids, headroom factor ~2×).** Present but contains the internal arithmetic inconsistency identified in RM-M02 (12-hour waking period vs. 8-hour shift as base period) and the demand-figure mismatch with §02-04 identified in RM-M05. The structure and scope are correct; the arithmetic requires correction.
+
+**Overall §A15–§A19 verdict:** All five entries are present (satisfying the presence requirement). §A15, §A16, and §A17 are complete. §A18 is substantially complete but inherits the 2040 task count inconsistency from RM-M04. §A19 contains arithmetic inconsistencies requiring correction (RM-M02, RM-M05).
+
+---
+
+## Summary Count
+
+| Severity | Count | Findings |
+|----------|-------|----------|
+| Blocker  | 1     | RM-B01 |
+| Major    | 6     | RM-M01 through RM-M06 |
+| Minor    | 5     | RM-N01 through RM-N05 |
+| Nit      | 3     | RM-Nit01 through RM-Nit03 |
+| **Total** | **15** | |
 
 ---
 
 ## Key Patterns
 
-1. **Invented multipliers used to close the power budget.** The 0.55 gait-normalization factor (RM-002) and the prior 0.65 locomotion-fraction allocation both appear in the single derivation chain that closes the locomotion mode budget against the 800 W cap. Neither factor has a cited heritage basis. The budget should not be declared closed until a task-level actuation simulation validates these multipliers.
-
-2. **Subsystem NTE × system NTE creates an unacknowledged double-margin.** §03 computes per-subsystem NTEs at design-to × 1.30; §06 then applies 30% again at system level. The relationship is never reconciled (RM-012), creating risk that downstream agents use subsystem NTE values incorrectly.
-
-3. **Parametric line items with suspicious precision.** Several parametric estimates close to round numbers that sum to exactly 58.2 kg allocated and exactly 16.8 kg growth allowance (signal cabling = 2.5 kg, joints/sealing = 4.0 kg, consumables = 0.9 kg). The level of precision in parametric concept-phase estimates suggests some values may have been adjusted to make the budget close at 75.0 kg rather than being independently derived.
-
-4. **[VERIFY] flags present but not uniformly acted on.** §05 and §06 contain [VERIFY] annotations, but the silicon TID conversion finding (RM-010) — which drives the radiation strategy — is unresolved and the uncertainty range is not bounded in the assumption register. Each [VERIFY] should carry a named owner and a gate date.
-
-5. **Wide thermal range (70–200 W) dominates power budget risk.** The 3× uncertainty span in the lunar night thermal reservation (§A10) propagates into the single confirmed budget non-closure (RM-001). Until the thermal model reaches TRL 5, the power budget's conditional closure language should be foregrounded in the section closure statement, not deferred to a prose note.
+The dominant failure mode across the Question (b) sections is **invented load-bearing constants with no derivation, no uncertainty bound, and no heritage anchor placed precisely where the arithmetic closes.** The most consequential instance is the 1-OOD-alert/sortie/humanoid rate (RM-B01), which is the single number that converts the cognitive load model from a system that could exceed its 8 person-hour capacity into one with an apparently comfortable 2× headroom margin. A reviewer who accepts that number without question reads a closed budget; a reviewer who asks where it comes from finds nothing. The same pattern appears at lesser severity in the 0.6 concurrency factor (RM-M01), the 0.2 person-hours/robot-hour periodic supervision cost (RM-M03), the 60% checkpoint demand reduction at 2040 (RM-M04), the 15–30 minute SPE response window (RM-M06), and the 5–10× productivity differential (RM-N04). Every structural closure point in the teaming model rests on at least one number that was chosen to produce the desired result rather than derived from data. This is not evidence of dishonesty — it is evidence of a model that was built from the answer backward. The fix is to (1) label every invented constant explicitly as a parametric planning assumption, (2) add a sensitivity table showing what happens when each constant is varied by ±50%, and (3) identify which constants are program commitments requiring analog data before the 2029 gate, vs. which are merely notional at concept phase. Until that sensitivity table exists, the 2× headroom claim should not be presented as a program commitment.

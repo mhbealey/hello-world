@@ -3,202 +3,209 @@ title: Heritage Citations Review Findings
 status: findings-complete
 owner: heritage-citations-reviewer
 last-updated: 2026-05-03
+stage: 8
 ---
 
-# Heritage Citations Review Findings
+# Heritage Citations Review Findings — Stage 8
 
-## Summary
+**Scope:** Section 02 files only: `study/02-human-in-the-loop/01-overview.md`, `02-latency-tradespace.md`, `03-autonomy-trl-tasking.md`, `04-teaming-model.md`
 
-| Severity | Count |
-|----------|-------|
-| Blocker  | 2     |
-| Major    | 6     |
-| Minor    | 5     |
-| Nit      | 4     |
+**Method:** All cite keys extracted and checked against `corpus/references.bib`; five specific claims verified by web search.
 
 ---
 
-## Spot-check log
+## Citation Key Inventory
 
-| Claim | Source cited | Verified? | Notes |
-|-------|-------------|-----------|-------|
-| Atlas Electric mass: 89 kg | `\cite{bostondynamics2024atlas}` | YES | Multiple sources confirm 89 kg. |
-| Atlas Electric DOF: 56 | `\cite{bostondynamics2024atlas}` | PARTIAL — CONFLICT | Web search confirms 56 DOF. However, the heritage table in §01-01 claims 56 DOF, while §03 actuation description calls Atlas's actuator type "planetary roller-screw linear actuators" — Atlas Electric uses custom direct-drive electric actuators, not harmonic drives or roller screws. The "planetary roller-screw" description applies to the older hydraulic Atlas; the 2024 electric version uses fully rotational joints with custom high-density electric actuators, not linear roller-screw actuators. This is a mischaracterization in the heritage table. |
-| Atlas Electric efficiency 85–90% electrical-to-mechanical | `\cite{bostondynamics2024atlas}` | YES | Confirmed by multiple sources including Boston Dynamics' own blog post "An Electric New Era for Atlas." |
-| NASA Valkyrie R5 mass: 129 kg, 44 DOF | `\cite{nasa2023valkyrieFactsheet}` | YES | NASA fact sheet and Wikipedia both confirm 129 kg and 44 DOF. |
-| Chang'e-4 LND radiation: ~60 µSv/hr dose equivalent | `\cite{zaconte2020lnd}` | PARTIAL — ATTRIBUTION ERROR | The ~60 µSv/hr figure is correct and verified (Zhang et al., Science Advances, 2020, DOI: 10.1126/sciadv.aaz1334). However, the citation key `zaconte2020lnd` and the references section in §05 attributes this to "Wimmer-Schweingruber et al." — the actual lead author is Shenyi Zhang (Robert F. Wimmer-Schweingruber is a co-author). The citation key name "zaconte" matches neither author and appears to be an invented/incorrect key name. |
-| Lunokhod 2 distance: 39.16 km | `\cite{huntress2011soviet}` (in §04) | PARTIAL — WRONG SOURCE | The 39.16 km figure is correct (LRO photogrammetry revised from 37 km). However, this measurement was NOT in Huntress & Marov 2011 — the LRO-based cartographic revision was published post-2011 (ScienceDirect paper on LROC NAC imaging). Huntress & Marov (2011) would have cited the older ~37 km estimate. The soviet-russian-heritage.md notes "39.16 km (revised upward from original 37 km estimate by LRO laser ranging analysis)" as distinct recent data. |
-| Mars rover AutoNav operational since 2014 (TRL 8 claim) | `\cite{ono2018msl}` | PARTIALLY WRONG | §04 text states AutoNav has "been operational on Curiosity and Perseverance since 2014" and uses it as TRL 8 heritage. Web search confirms AutoNav debuted on Curiosity in August 2013 (not 2014). The cited Ono et al. paper is a 2015 IEEE Aerospace Conference paper; BibTeX entry in references.bib gives `year = {2015}` but the paper title says "2015 IEEE Aerospace Conference" and the content describes Curiosity AutoNav. The claim in §04 uses "since 2014" which is slightly off from the actual 2013 debut. Not a major error but the date is incorrect. |
-| FEDOR/Skybot F-850 mass: 106 kg | No direct citation in §01-01 | UNVERIFIABLE — CONFLICT | The heritage table cites 106 kg with no citation. Web search returns both 106 kg and 160 kg from different sources. The soviet-russian-heritage.md (§6) gives "~160 kg (launch configuration)". The 106 kg figure may refer to the robot without launch packaging or the operational configuration; the 160 kg figure appears in Russian sources for the launch-ready configuration. The value is unverified and conflicts with the study's own heritage notes. |
-| Robonaut 2 leg installation: 40 hours vs. 20 planned | `\cite{space2018r2return}` | YES | Confirmed by NASA sources: leg installation took ~40 hours vs. ~20 planned. |
-| ISS Li-ion battery ~160 Wh/kg (space-qualified) | `\cite{nasa_iss_battery}` | PARTIALLY CONFIRMED | ISS Li-ion cells achieved ~155 Wh/kg at beginning of life (BOL), per NASA NTRS documents. The study uses 160 Wh/kg as "design-to," which is slightly optimistic vs. the 155 Wh/kg documented BOL figure. The citation `\cite{nasa_iss_battery}` carries a note "Cite to be confirmed against primary source before PDR" — flagged as unconfirmed by the author. |
-| Lunokhod 1 distance: 10.5 km | `\cite{huntress2011soviet}` | YES | Confirmed at ~10.54 km. |
-| Atlas Electric actuator type: "planetary roller-screw linear actuators" | `\cite{bostondynamics2024atlas}` | WRONG | Atlas Electric (2024) uses custom direct-drive rotational actuators, not linear planetary roller-screw actuators. The roller-screw actuators were a feature of the hydraulic-to-electric transition concept (Atlas Electric blog) but the production 2024 model uses fully rotational joints with custom direct-drive motors. The §01-01 heritage table's description is technically incorrect. |
+All `\cite{key}` occurrences found in the four Section 02 files:
+
+| Key | Used in file(s) | In references.bib? |
+|---|---|---|
+| `sheridan1978teleoperators` | 01-overview, 02-latency | YES |
+| `huntress2011soviet` | 01-overview, 02-latency, 03-autonomy-trl-tasking, 04-teaming-model | YES |
+| `zhao2023aloha` | 01-overview, 03-autonomy-trl-tasking, 04-teaming-model | YES |
+| `basner2013mars500` | 01-overview, 04-teaming-model | YES |
+| `cnsa2024queqiao2` | 01-overview, 02-latency, 04-teaming-model | YES |
+| `lroc_lunokhod2_traverse` | 02-latency | YES |
+| `meteron2019analog1` | 02-latency | YES |
+| `meteron2015haptics2` | 02-latency | YES |
+| `schmaus2019suprvisjustin` | 02-latency | YES |
+| `kontur2016forcefeedback` | 02-latency | YES |
+| `ono2018msl` | 02-latency, 03-autonomy-trl-tasking | YES |
+| `spj2021lunarrelay` | 02-latency | YES |
+| `kanas2008space` | 04-teaming-model | YES |
+| `diftler2011r2` | 03-autonomy-trl-tasking | YES |
+| `ssrms2020ntrs` | 03-autonomy-trl-tasking | YES |
+| `bmw2024figuredeployment` | 03-autonomy-trl-tasking | YES |
+| `agility2024digit` | 03-autonomy-trl-tasking | YES |
+| `unitree2024h1` | 03-autonomy-trl-tasking | YES |
+| `bdatlaselectric2024` | 03-autonomy-trl-tasking | YES |
+| `black2024pi0` | 03-autonomy-trl-tasking, 04-teaming-model | YES |
+| `nvidia2023jetson` | 03-autonomy-trl-tasking | YES |
+| `nasa_sma_spektr` | 04-teaming-model | YES |
+
+**Result: Zero dangling citation keys across all four Section 02 files.** Every `\cite{key}` in the text resolves to an entry in `corpus/references.bib`. This is the correct baseline posture and contrasts favorably with the Stage 6 findings for Section 01.
+
+---
+
+## Spot-Check Verification Log
+
+| # | Claim | Citation | Verified? | Findings |
+|---|---|---|---|---|
+| 1 | METERON SUPVIS Justin: "task-level supervisory command is robust to 800 ms delays" | `schmaus2019suprvisjustin` | YES — accurate | Search confirms 832 ms average round-trip delay (800–1132 ms range) in SUPVIS Justin sessions 2017–2018. The key finding (task-level supervisory command robust to 800 ms; direct teleoperation not) is accurately characterized. MINOR: The text attributes SUPVIS Justin to "2015–2016" (§02-02, Heritage Anchor 2) but ISS crew sessions occurred in 2017–2018. Confirmed by DLR METERON website. |
+| 2 | Sheridan/Verplank 1978 10-level taxonomy | `sheridan1978teleoperators` | YES — accurate | The 10-level taxonomy is confirmed by multiple scholarly sources. Correct institution (MIT Man-Machine Systems Laboratory). Publication exists in NASA NTRS (NTRS citation 19790007441). The BibTeX entry's techreport type and institution are correct. |
+| 3 | Lunokhod NIP-10 five-person crew structure: driver, navigator, systems engineer, antenna operator, commander | `huntress2011soviet` | YES — accurate | Five-man crew structure confirmed across multiple independent sources including Wikipedia Lunokhod programme article and Smithsonian Air & Space. Roles confirmed as: driver (joystick), navigator, antenna operator, flight/systems engineer, commander. NIP-10 location at Simferopol-28 / Shkolnoye, Crimea confirmed. |
+| 4 | Mars-500 Basner et al. 2013 PNAS: hypokinesis increased, sleep altered, one crew member accounted for majority of errors | `basner2013mars500` | YES — accurate | DOI 10.1073/pnas.1212646110 confirmed. PNAS vol. 110, no. 7, pp. 2635–2640. Key findings accurately reported: protracted hypokinesis across mission; sleep/wake alterations; individual variability in performance degradation. The study's characterization is faithful to the published findings. |
+| 5 | Queqiao-2 orbital parameters: periapsis ~200–250 km, apoapsis ~16,000–17,000 km, inclination 62.4°, period ~24 hours | `cnsa2024queqiao2` | PARTIALLY WRONG — see HC-08 | The planned parameters (200 × 16,000 km, 62.4°, 24 hr) are accurately reported. However, independent tracking by Scott Tilley in September 2024 revealed the satellite entered a 119.25° retrograde orbit (~254 × 16,941 km), not the planned 62.4° prograde orbit. The 62.4° inclination figure is the planned/nominal specification, not the confirmed operational orbit. The satellite is confirmed operational and relaying for Chang'e-4, but the actual orbital inclination differs from the value cited throughout the study. |
+| 6 | Lunokhod frame-advance technique: "7–20 second image update interval" | `lroc_lunokhod2_traverse` | YES — accurate | Multiple sources confirm: Lunokhod 2 cameras returned images at 3.2, 5.7, 10.9, or 21.1 seconds per frame. Operational update interval of "7 to 20 seconds" for operators cited in Murphy 1998 CMU technical report. The `lroc_lunokhod2_traverse` citation is a cartography paper; image update interval data is more accurately sourced to mission documentation, but the interval range is correct. |
+| 7 | Lunokhod 2 terminal failure: "drove into a crater whose trailing shadow was not visible in the preceding frame, covering the solar panels with dust" | `lroc_lunokhod2_traverse` | PARTIALLY WRONG — see HC-09 | The Smithsonian Air & Space account clarifies: Lunokhod 2 descended into a crater; when operators maneuvered it out, the lid touched the crater wall, depositing dust on the solar cells; when the lid closed, that dust was deposited onto the radiators (not directly the solar panels). The insulation effect then caused thermal overheating — the mechanism was radiator contamination, not direct solar panel coverage. The text's "covering the solar panels with dust" is a simplification that misidentifies the failure mechanism. |
+| 8 | Lunokhod 1 traverse: "10.54 km over 10.5 months" | `huntress2011soviet` / `lroc_lunokhod2_traverse` | PARTIALLY WRONG — see HC-10 | Lunokhod 1 operated from November 17, 1970 through ~September 14, 1971 (last contact), with operations formally ended October 4, 1971 — approximately 10.5 months, correct. However, LRO photogrammetry (Karachevtseva et al., same paper group as lroc_lunokhod2_traverse) revised the Lunokhod 1 traverse from 10.54 km to 9.93 km. The lroc_lunokhod2_traverse citation is for Lunokhod 2 only; the Lunokhod 1 distance revision is from a companion paper not cited in the study. |
+| 9 | Mir crew time: "30–40% of crew time went to unscheduled maintenance" | `kanas2008space` | UNCERTAIN — see HC-11 | Web searches did not confirm this specific percentage from Kanas & Manzey or the Mir Mission Chronicle. The ESA Mir bulletin describes crew workday as "6.5 net working hours for experimental work and/or system maintenance" with significant unscheduled maintenance. The 30–40% figure is plausible and consistent with known Mir operational history, but cannot be confirmed as a figure from Kanas & Manzey 2008 specifically without access to the full text. The citation may be an over-attribution to Kanas & Manzey for a figure from the NASA Mir Mission Chronicle (NASA TP-98-207890). |
+| 10 | TORU collision: "cosmonaut Tsibliev's incomplete mental model of the Progress spacecraft's altered center of gravity response characteristics" | `nasa_sma_spektr` | YES — accurate | Confirmed by NASA SMA safety message and multiple historical accounts. Tsibliev commanded manual TORU docking; Progress M-34 had altered CG due to overloaded cargo; the vehicle did not respond as expected; collision with Spektr followed. The URL given in the BibTeX entry matches the actual NASA SMA document location. |
 
 ---
 
 ## Findings
 
-### HC-001 — BLOCKER — §01-01 / §01-03 — Atlas Electric actuator type misidentified as roller-screw linear
+### HC-01 — Major — §02-02 — METERON SUPVIS Justin experiment dated "2015–2016" but ISS sessions occurred 2017–2018
 
-**Section:** `study/01-optimal-space-humanoid/01-overview.md` (heritage table) and `study/01-optimal-space-humanoid/03-actuation-structures.md` (Section 1, HD-Electric discussion)
-**Severity:** Blocker
-**Claim:** §01-01 heritage table lists Atlas Electric actuation type as "Electric (planetary roller-screw linear actuators, high-density NdFeB motors)". §03 cites Atlas Electric as heritage for HD-Electric harmonic drive efficiency of 85–90%.
-**Citation status:** Cited (`\cite{bostondynamics2024atlas}`) but used incorrectly
-**Issue:** The 2024 Atlas Electric uses custom fully-rotational direct-drive actuators, not linear planetary roller-screw actuators. The roller-screw linear architecture appeared in Boston Dynamics' electric-transition prototype era, not the 2024 production robot. More critically, §03 uses Atlas Electric as the primary heritage citation for "HD-Electric with harmonic drives" — but Atlas Electric does not use harmonic drives. It uses custom high-torque direct-drive motors. The 85–90% efficiency figure appears to be correctly attributed (multiple sources confirm Boston Dynamics published this for the electric Atlas), but the claim that this efficiency comes from harmonic drive transmissions cannot be sourced to Atlas. The entire actuation architecture section's HD-Electric position is supported by a heritage mischaracterization. The heritage citation justifies harmonic drives using a robot that doesn't use them.
-**Required action:** (1) Correct the §01-01 heritage table actuator description from "planetary roller-screw linear actuators" to "custom fully-rotational direct-drive electric actuators." (2) Remove Atlas Electric as the primary heritage citation for the harmonic drive architecture choice in §03. Find an appropriate primary citation for harmonic drive efficiency (e.g., Harmonic Drive AG technical papers, SSRMS joint documentation) or reframe the HD-Electric position with the correct heritage. The efficiency figure (85–90%) can remain attributed to Atlas Electric as a benchmark for electric actuator performance generally, but not as evidence that harmonic drives achieve this efficiency.
-
----
-
-### HC-002 — BLOCKER — §01-05 — Chang'e-4 LND citation key is non-existent in references.bib and lead author is wrong
-
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md` (Section 1 and Section 3)
-**Severity:** Blocker
-**Claim:** The radiation dose rate of ~60 µSv/hr is attributed to `\cite{zaconte2020lnd}` and references section identifies this as "Wimmer-Schweingruber et al."
-**Citation status:** Fabricated key / Wrong attribution
-**Issue:** Two problems: (1) The BibTeX key `zaconte2020lnd` does not appear in `/home/user/hello-world/corpus/references.bib` at all — the citation is made but the BibTeX entry was never added to the corpus. (2) The lead author on the Science Advances paper (DOI: 10.1126/sciadv.aaz1334) is Shenyi Zhang, not Wimmer-Schweingruber. Wimmer-Schweingruber is a co-author. The references section of §05 reads "Wimmer-Schweingruber et al." which is the wrong primary attribution. The 60 µSv/hr figure itself is correct and verified, so the underlying data is real — but the citation scaffolding is wrong on both counts.
-**Required action:** (1) Add a properly formed BibTeX entry to `corpus/references.bib` for Zhang et al. (2020), Science Advances, DOI 10.1126/sciadv.aaz1334. (2) Rename the citation key (e.g., `zhang2020lnd`) and update all in-text citations and the §05 references section accordingly. (3) Correct the attribution in §05 references section from "Wimmer-Schweingruber et al." to "Zhang, S. et al. (lead author)."
-
----
-
-### HC-003 — MAJOR — §01-04 — AutoNav "TRL 8 since 2014" claim: wrong year and unsupported TRL level
-
-**Section:** `study/01-optimal-space-humanoid/04-sensing-autonomy.md` (Section 3, Reactive Layer discussion and Section 5 Lunokhod counterpoint)
 **Severity:** Major
-**Claim:** "Mars rover AutoNav traverse capability applied to a biped — AutoNav has been operational on Curiosity and Perseverance since 2014, representing the most relevant flight heritage for autonomous operation at this layer."
-**Citation status:** Cited (`\cite{ono2018msl}`) — incorrect year in claim
-**Issue:** AutoNav on Curiosity debuted on August 27, 2013, not 2014. The JPL press release "NASA's Mars Curiosity Debuts Autonomous Navigation" is from 2013. The year error is minor in isolation but "since 2014" reads as a programmatic fact supporting a TRL claim. More substantively, the text in §04 does not explicitly say "TRL 8" but the study's broader claims use AutoNav as a TRL 8 reference for deliberative path planning; the referenced Ono et al. 2015 paper is a conference paper on risk-aware path planning algorithms, which is terrain classification and path planning research — not a TRL 8 certification or demonstration. The BibTeX entry in references.bib confirms this is a 2015 IEEE Aerospace Conference paper. Using a methods/research paper as evidence of operational TRL 8 status is a misuse of the citation.
-**Required action:** Correct the year from "since 2014" to "since 2013." Clarify that AutoNav's operational status on Curiosity/Perseverance supports a TRL heritage claim for the capability class (terrain-classified autonomous traverse) but the Ono et al. citation is a research paper on the method, not a TRL validation report. Supplement with a more direct operational heritage citation (e.g., JPL mission status reports or the Science Robotics 2023 paper on Perseverance autonomous systems) if TRL 8 is to be claimed explicitly.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 2
+**Claim:** "The METERON SUPVIS Justin experiments (2015–2016) tested a supervisory control approach at ISS-to-ground latency."
+**Citation status:** Citation exists (`schmaus2019suprvisjustin`); date in text is wrong
+**Issue:** The Schmaus et al. 2019 paper documents SUPVIS Justin ISS crew sessions conducted in 2017 and 2018 (first session August 25, 2017 with Sergei Ryazansky; second session March 2018 with Scott Tingle; third session with Alexander Gerst in 2018). The ground preparation and simulation work began earlier, but the actual ISS-to-ground teleoperation experiments took place in 2017–2018, not 2015–2016. The METERON project began around 2013, and Haptics-1/Haptics-2 experiments were earlier, which may explain the date confusion — but SUPVIS Justin specifically ran in 2017–2018. The BibTeX entry for `schmaus2019suprvisjustin` correctly gives the paper year as 2019, which would be consistent with a 2017–2018 experimental campaign. The "2015–2016" date in the text is incorrect for the SUPVIS Justin sessions specifically.
+**Required action:** Correct "2015–2016" to "2017–2018" for the SUPVIS Justin ISS sessions. If the intent was to reference the earlier ground-based preparation phases, clarify that the ISS crew sessions occurred in 2017–2018. Verify against `schmaus2019suprvisjustin` primary paper which states the experiment dates.
 
 ---
 
-### HC-004 — MAJOR — §01-01 / §01-05 — FEDOR mass conflict between heritage table and soviet-russian-heritage.md
+### HC-02 — Major — §02-02 — Queqiao-2 inclination stated as 62.4° but actual orbital inclination is ~119.25° (retrograde)
 
-**Section:** `study/01-optimal-space-humanoid/01-overview.md` (heritage table row for FEDOR/Skybot F-850)
 **Severity:** Major
-**Claim:** Heritage table gives FEDOR mass as 106 kg with no citation. §05 references section cites `\cite{therobotreport2019skybot}` for FEDOR.
-**Citation status:** Uncited in heritage table; conflicts with own study's heritage notes
-**Issue:** The `soviet-russian-heritage.md` document in §6 gives FEDOR's mass as "~160 kg (launch configuration)." The §01-01 heritage table gives 106 kg with no citation or note explaining the discrepancy. Web search returns both figures — 106 kg appears to be the operational robot-only configuration, while 160 kg includes launch support hardware. The 106 kg figure may be defensible but the discrepancy between 106 kg in the heritage table and ~160 kg in the study's own verified heritage notes creates an internal inconsistency. No citation supports either figure in the heritage table. The heritage table's FEDOR entry for DOF also notes "48 (brushless motor count used as DOF proxy; actual articulated DOF unverified)" — the mass should receive the same "unverified" treatment.
-**Required action:** Add a citation for the 106 kg figure or mark it **[VERIFY]**. Add a note to the heritage table explaining the discrepancy with the ~160 kg launch-configuration figure documented in `soviet-russian-heritage.md`. The two figures should be reconciled before PDR with a note distinguishing operational robot mass from launch-manifest mass.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md` (Queqiao-2 Relay Geometry); `study/02-human-in-the-loop/01-overview.md` (§4); `study/02-human-in-the-loop/04-teaming-model.md` (Pillar 1)
+**Claim:** "Queqiao-2 occupies an elliptical frozen orbit around the Moon with a periapsis of approximately 200–250 km and an apoapsis of approximately 16,000–17,000 km above the lunar surface, with an orbital period of approximately 24 hours and an inclination of 62.4°."
+**Citation status:** Citation exists (`cnsa2024queqiao2`); the nominal parameters are from CNSA's pre-launch specification; the actual operational orbit differs
+**Issue:** Independent astronomer Scott Tilley determined in September 2024 that Queqiao-2 entered a retrograde orbit with inclination approximately 119.25° and dimensions approximately 254 × 16,941 km — not the planned 62.4° prograde frozen orbit of 200 × 16,000 km. This is not a small rounding difference; the inclination differs by 57 degrees and the orbit is retrograde rather than prograde. The satellite is confirmed operational (successfully relayed for Chang'e-4 and Chang'e-6) so the change does not invalidate the relay function, but the claimed orbital parameters — specifically the 62.4° inclination — are the pre-launch design specification, not the confirmed operational state. The latency calculations in §02-02 are not materially affected (path lengths change only modestly given apoapsis altitude is similar), but the coverage geometry analysis (availability percentages, the "75–85% per orbit for a receiver at the equatorial far side") depends on inclination and would need to be revisited against the actual 119.25° retrograde orbit. 
+
+The `cnsa2024queqiao2` BibTeX note correctly says "CNSA official communications and mission announcements, March–April 2024" — that is accurate as far as it goes. The issue is that independently observed post-deployment tracking revealed the actual orbit differs from what those March–April 2024 announcements described.
+**Required action:** (1) Update the inclination statement from "62.4°" to the confirmed value (~119.25° retrograde) or qualify it explicitly as "planned/nominal specification per CNSA pre-launch announcements; actual operational inclination reported by independent tracking at ~119.25° retrograde (Scott Tilley, September 2024)." (2) Flag that the coverage availability estimate of 75–85% was derived for the 62.4° prograde orbit and has not been validated against the actual retrograde orbit geometry. (3) Update the `cnsa2024queqiao2` BibTeX note to acknowledge the post-deployment tracking discrepancy.
 
 ---
 
-### HC-005 — MAJOR — §01-02 — Lunokhod 2 distance attributed to Huntress & Marov (2011), which predates the LRO measurement
+### HC-03 — Major — §02-02 — Lunokhod 2 terminal failure mechanism is mischaracterized: radiators contaminated, not solar panels directly covered
 
-**Section:** `study/01-optimal-space-humanoid/02-form-factor-tradespace.md` (Candidate B discussion) and `study/01-optimal-space-humanoid/04-sensing-autonomy.md` (Section 5 Lunokhod counterpoint)
 **Severity:** Major
-**Claim:** §02 refers to "Lunokhod's 10.5-km traverse over 11 months" (cited to `\cite{huntress2011soviet}`). §04 states "Lunokhod accumulated 48 km of traverse over two vehicles across multiple years" (cited to `\cite{huntress2011soviet}`).
-**Citation status:** Partially wrong — Huntress & Marov 2011 predates the LRO-revised figure
-**Issue:** The 39.16 km figure for Lunokhod 2 (noted in `soviet-russian-heritage.md`) is based on LRO photogrammetry analysis published after 2011 (the ScienceDirect cartography paper). Huntress & Marov (2011) would have cited the older ~37 km estimate. Citing Huntress & Marov for "48 km total" (§04: 10.5 km + ~37-39 km) is possible only if using the more recent revised figure for Lunokhod 2 distance — but then the source for the Lunokhod 2 portion must be the LRO-based cartography paper, not Huntress & Marov. The claim is supportable but the citation is wrong for the more precise modern figure. §02 avoids the specific distance claim (says only "10.5-km traverse" for Lunokhod) — this is correctly attributed. §04's "48 km" aggregate is where the citation mismatch occurs.
-**Required action:** For §04's "48 km of traverse over two vehicles," add a second citation for the LRO-based Lunokhod 2 revised distance alongside `\cite{huntress2011soviet}`, and add the LRO cartography paper to `corpus/references.bib`. Alternatively, use ~47 km (10.5 + ~37 km original estimate) with Huntress & Marov as the sole citation and note the LRO revision in a footnote.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1
+**Claim:** "Lunokhod 2's final months: the rover drove into a crater whose trailing shadow was not visible in the preceding frame, covering the solar panels with dust that terminated the mission."
+**Citation status:** Citation exists (`lroc_lunokhod2_traverse`); the claimed mechanism is factually inaccurate
+**Issue:** The Lunokhod 2 terminal sequence, as documented in multiple sources including the Smithsonian Air & Space retrospective and the 2003 retrospective paper (Kemurdzhian et al.), was as follows: (1) The rover descended into a small crater (~4.5 m across) because the crater's shadow was hidden behind crater walls in the navigation camera view. (2) When operators maneuvered the rover out of the crater, the open lid of the solar panel array touched the crater wall, causing lunar soil to be deposited on the solar cells. (3) When the lid was then closed for the lunar night, that accumulated soil was transferred onto the thermal radiators on the rover body. (4) The insulating effect of soil on the radiators prevented adequate heat rejection; internal temperatures rose to fatal levels on the following day. The mission-ending failure was thus **radiator contamination causing thermal failure**, not direct solar panel coverage reducing power. The solar cells were briefly dirtied but the vehicle was not killed by power loss; it was killed by overheating. The text's framing ("covering the solar panels with dust that terminated the mission") misidentifies both the primary contamination surface (radiators, not solar panels) and the failure mode (thermal runaway, not power loss).
+
+This matters programmatically because the text draws from this heritage the lesson about situational awareness and latency — which is valid. But the specific technical claim about the mechanism is wrong, and if used in a subsequent design argument about solar panel dust protection (as it might be in Section 05 or the far-side-base-architect section), the wrong lesson would be drawn.
+**Required action:** Correct the failure mechanism description to: the rover descended into a crater whose rim was not visible in the preceding frame; during recovery, the open solar lid contacted the crater wall, depositing soil on the solar cells; when the lid closed, this soil was deposited onto the thermal radiators; insulation of the radiators caused thermal overheating that terminated the mission. The latency-and-situational-awareness lesson is preserved; the technical claim is corrected.
 
 ---
 
-### HC-006 — MAJOR — §01-03 — "Valkyrie at 21 W mean per joint" used as HD-Electric efficiency proxy when it is SEA data
+### HC-04 — Minor — §02-02 — Lunokhod 1 traverse distance of "10.54 km" is the superseded figure; LRO revision gives 9.93 km
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md` (Section 5, Open Question 3) and `study/01-optimal-space-humanoid/06-mass-power-budget.md` (Section 2, Actuation power notes)
-**Severity:** Major
-**Claim:** §03 states: "at 21 W mean per joint (from Valkyrie SEA per-joint data \cite{paine2015valkyrieActuator}, adjusted for improved efficiency), simultaneous full-effort engagement of 38 joints would exceed 800 W."
-**Citation status:** Cited but methodologically misused
-**Issue:** The Paine et al. 2015 paper describes Valkyrie's SEA (Series Elastic Actuator) per-joint power performance. The study's chosen actuation architecture is HD-Electric (harmonic drives), explicitly selected *instead of* SEA partly on the basis that HD-Electric is more mass-efficient. Using SEA per-joint power data as the baseline for an HD-Electric architecture then "adjusting for improved efficiency" is a circular argument: the adjustment factor is not cited to any source. The 800 W peak power budget derives in part from this unadjusted SEA-to-HD conversion. The power budget is one of the study's primary numerical commitments that flows downstream to far-side-base-architect and cost-program. Using the wrong baseline actuator heritage for the power estimate and applying an uncited efficiency adjustment factor is a major methodological issue for a document that emphasizes margin discipline.
-**Required action:** Either find HD-Electric-specific per-joint power data from Atlas Electric or comparable harmonic-drive robot platforms, or explicitly document the SEA-to-HD efficiency adjustment factor with a citation. The §03 open question already flags this as needing a "task-level simulation" — that should also note the absence of HD-Electric heritage data for per-joint power. The §A3 power budget assumption in the margins register should flag this derivation as an estimated value, not a heritage-anchored value.
-
----
-
-### HC-007 — MAJOR — §01-03 — "HD-Electric efficiency 85–90%" attributed to Atlas which uses direct drive, not harmonic drives
-
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md` (Section 1, HD-Electric description)
-**Severity:** Major
-**Claim:** "Electrical-to-mechanical efficiency of 85–90% is documented for Atlas \cite{bostondynamics2024atlas}."
-**Citation status:** Cited but misattributed to wrong mechanism
-**Issue:** This is a consequence of HC-001. The 85–90% figure is real and attributable to the electric Atlas platform. However, the section uses this figure as evidence for harmonic drive efficiency specifically, saying it is "documented for Atlas \cite{bostondynamics2024atlas}." Since Atlas Electric uses direct-drive, not harmonic drives, this figure is evidence for direct-drive electric actuator efficiency — not for harmonic drives. Harmonic drives are known to have lower efficiency (typically 70–85% depending on reduction ratio and load) due to flexspline friction, which the Atlas figure would actually overstate. The study's actuation architecture choice (harmonic drives) may be undermined by this misattribution: if the efficiency figure that makes HD-Electric attractive is actually from a direct-drive robot, the case for harmonic drives loses its strongest published efficiency support.
-**Required action:** Separate the efficiency claim from the Atlas citation. Cite Atlas Electric efficiency (85–90%) as evidence for modern electric actuator performance generally. Find and cite primary sources specific to harmonic drive efficiency (Harmonic Drive AG product data, SSRMS actuator papers, or Valkyrie HD joint papers if any exist) to establish the HD-Electric efficiency range independently. If primary sources show harmonic drive efficiency is lower than 85–90%, this must be reflected in the power budget.
-
----
-
-### HC-008 — MINOR — §01-06 — ISS battery citation marked by author as unconfirmed; energy density value slightly optimistic
-
-**Section:** `study/01-optimal-space-humanoid/06-mass-power-budget.md` (Section 1, Battery Sizing; Section 5, §A13)
 **Severity:** Minor
-**Claim:** "ISS battery replacement project using lithium-ion at ~160 Wh/kg, 2017–2019" cited to `\cite{nasa_iss_battery}`.
-**Citation status:** Author self-flagged as unconfirmed; value slightly off
-**Issue:** The citation carries its own note: "[Cite to be confirmed against primary source before PDR]." This is a responsible flag by the author, but a citation carrying this note should not anchor a budget assumption. The NTRS document on ISS Li-ion batteries reports 155 Wh/kg at beginning-of-life (BOL), not 160 Wh/kg. The study uses 160 Wh/kg as the design-to value. This 3% overstatement (5 Wh/kg) translates to approximately 0.4 kg of optimism in the battery cell mass calculation — within noise, but against the study's own commitment to heritage-before-invention and margin discipline. Additionally, `\cite{nasa_iss_battery}` does not appear in `corpus/references.bib`, making it a dangling citation.
-**Required action:** (1) Add the NTRS ISS Li-ion battery paper to `corpus/references.bib` with a proper BibTeX entry. (2) Confirm the energy density figure against the primary source (NTRS 20160012048 or 20170003873 appear to be the relevant documents). (3) If the correct figure is 155 Wh/kg, revise the design-to value or note the 5 Wh/kg optimism as a known deviation with explicit justification.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1
+**Claim:** "The Lunokhod traverse record — 10.54 km for Lunokhod 1 over 10.5 months; 39.16 km for Lunokhod 2 over approximately 5 months."
+**Citation status:** `lroc_lunokhod2_traverse` cited; internally inconsistent treatment of the two rovers
+**Issue:** The study cites `lroc_lunokhod2_traverse` (Karachevtseva et al., Planetary and Space Science, 2013) which is the LRO photogrammetry paper for Lunokhod 2, correctly establishing the revised 39.16 km figure. However, the same research group published a companion paper for Lunokhod 1 (Karachevtseva et al., Planetary and Space Science, 2013 — separate paper, same DOI series) that revised the Lunokhod 1 distance from the telemetry-based 10.54 km to **9.93 km** based on LRO NAC imagery. The study correctly uses the LRO-revised 39.16 km for Lunokhod 2 but retains the older, pre-LRO 10.54 km for Lunokhod 1. This is internally inconsistent: both figures should either use the LRO-revised values (9.93 km and 39.16 km) or both use the original telemetry-based estimates.
+
+The combined traverse total cited in Section 02-03 as reference to "48 km of lunar surface with two vehicles" (implying 10.54 + ~37 original estimate ≈ 47.5 km, or 10.54 + 39.16 ≈ 49.7 km, or correctly 9.93 + 39.16 = 49.09 km) varies depending on which figures are used. The inconsistency does not affect the latency argument substantively, but it represents sloppy handling of the heritage record in a document that emphasizes heritage precision.
+**Required action:** Either use the LRO-revised figures for both rovers (9.93 km and 39.16 km), citing both Karachevtseva papers, or retain the original telemetry figures for both (10.54 km and ~37 km) with a note that LRO revision exists. Do not mix LRO-revised Lunokhod 2 with pre-LRO Lunokhod 1. Add the Lunokhod 1 LRO cartography paper (companion to `lroc_lunokhod2_traverse`) to `corpus/references.bib` if the LRO-revised Lunokhod 1 figure is to be used.
 
 ---
 
-### HC-009 — MINOR — §01-01 — Multiple major citations absent from references.bib
+### HC-05 — Minor — §02-04 — Mir crew time maintenance percentage (30–40%) attributed to Kanas & Manzey but primary source is likely NASA Mir Mission Chronicle
 
-**Section:** All six section files; `corpus/references.bib`
 **Severity:** Minor
-**Claim:** Sections 01-01 through 01-06 collectively cite approximately 25 distinct BibTeX keys. The references.bib file contains only 3 entries added by the section agents: `heiken_lunar_sourcebook`, `ono2018msl`, and `nvidia2023jetson`.
-**Citation status:** Missing — incomplete BibTeX population
-**Issue:** The following frequently-used citation keys appear in text across multiple sections but have no BibTeX entries in `corpus/references.bib`: `radford2015valkyrie`, `paine2015valkyrieActuator`, `nasa2023valkyrieFactsheet`, `bostondynamics2024atlas`, `bostondynamics2024electricera`, `diftler2011r2`, `nasa2016r2factsheet`, `ntrs2010r2overview`, `huntress2011soviet`, `therobotreport2019skybot`, `spectrum2018r2broken`, `space2018r2return`, `unitree2023h1`, `unitree2024g1`, `apptronik2023apollo`, `tesla2023optimus2`, `figureai2024figure02`, `agility2024digit`, `bmw2024figuredeployment`, `schwadron2014radiation`, `mars2020thermal`, `exomars2020cameras`, `appelbaum1991solarmars`, `mir_wikipedia`, `zaconte2020lnd` (HC-002). The CLAUDE.md instructions state "all agents append" to `references.bib`; the section agents did not do this.
-**Required action:** Each agent that produced sections 01-01 through 01-06 must append BibTeX entries for all citations used. This is a systematic omission across all six files, not a single-section issue. A BibTeX population pass is required before any downstream agent attempts to compile or typeset the document.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2 (Mir Baseline)
+**Claim:** "The Mir Mission Chronicle establishes the baseline: across 28 long-duration expeditions (1986–2000), approximately 30–40% of crew time went to unscheduled maintenance and repair, 20–30% to scheduled science, 15% to mandatory exercise (two hours daily), and 25–35% to communications, documentation, housekeeping, and personal time. \cite{kanas2008space}"
+**Citation status:** Citation exists but may be a mis-attribution; primary source is more likely the NASA Mir Mission Chronicle
+**Issue:** The text explicitly names "Mir Mission Chronicle" as the source ("The Mir Mission Chronicle establishes the baseline") and then cites `kanas2008space` (Kanas & Manzey 2008, Space Psychology and Psychiatry). These are two different documents. The NASA Mir Mission Chronicle is NASA TP-98-207890 (Portree & Trevino, 1999), a primary institutional record of Mir operations. Kanas & Manzey is a textbook on space psychology. The 30–40% maintenance figure and the crew time breakdown given are more characteristic of an operational chronicle than a psychology textbook. Web search did not find the 30–40% figure attributed specifically to Kanas & Manzey in the space psychology literature. If the figure originates from the Mir Mission Chronicle (which seems likely given the text says "The Mir Mission Chronicle establishes the baseline"), then the citation should be to NASA TP-98-207890, not to Kanas & Manzey. The `kanas2008space` reference may be appropriate for the subsequent behavioral health discussion but is likely not the correct source for the crew time distribution figures.
+**Required action:** Clarify and correct the citation. If the 30–40% maintenance figure and crew time breakdown come from the NASA Mir Mission Chronicle (TP-98-207890), cite that document (and add it to `corpus/references.bib`). Kanas & Manzey can be retained as the citation for behavioral health observations and the cognitive load discussion but should not be the citation for operational time allocation statistics.
 
 ---
 
-### HC-010 — MINOR — §01-05 — `mir_wikipedia` cited as source for Mir sustainment philosophy
+### HC-06 — Minor — §02-02 — `lroc_lunokhod2_traverse` is a wrong-fit citation for the image update interval claim
 
-**Section:** `study/01-optimal-space-humanoid/03-actuation-structures.md` (Section 1, Hydraulic discussion)
 **Severity:** Minor
-**Claim:** "The Mir sustainment philosophy — 'no instrument inside the station that cannot be replaced in flight' \cite{mir_wikipedia} — argues directly against fluid-line architectures at a far side base."
-**Citation status:** Cited — Wikipedia as primary source for a key program commitment
-**Issue:** The CLAUDE.md working principle states "Heritage before invention" and the study emphasizes primary sources. The Yuri Semyonov quote "no instrument inside the station that cannot be replaced in flight" is correctly documented in `soviet-russian-heritage.md` Section 5, citing the NASA Mir Mission Chronicle (NASA TP-98-207890, 1998) as the primary/institutional source. The sections cite `mir_wikipedia` (a Wikipedia article) as the source for this quote, bypassing the verified primary source already identified in the heritage research notes. Wikipedia is used here as a first-order citation for a program-critical design principle.
-**Required action:** Replace `\cite{mir_wikipedia}` with a citation to the NASA Mir Mission Chronicle (NASA TP-98-207890) or a Yuri Semyonov primary statement, consistent with `soviet-russian-heritage.md`'s sourcing. Add the NASA TP-98-207890 document to `corpus/references.bib`.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1
+**Claim:** "The crew adapted to this delay with a distinctive operational technique: the driver would issue a move command, then wait for the next transmitted television frame (updated every 7–20 seconds)."
+**Citation status:** Cited to `lroc_lunokhod2_traverse` — a cartography paper, not an operations document
+**Issue:** The `lroc_lunokhod2_traverse` BibTeX entry is the Karachevtseva et al. (2013) cartography paper establishing Lunokhod 2's traverse distance from LRO photogrammetry. It is a mapping and distance-measurement paper, not an account of teleoperation operations, image update intervals, or operator technique. The 7–20 second image update interval is confirmed by other sources (Lunokhod 2 had cameras operating at 3.2, 5.7, 10.9, or 21.1 s/frame; the 7–20 second figure appears in Murphy 1998 CMU-RI-TR-98-10 "Panospheric Video for Robotic Telexploration" citing Lunokhod operational records). The claim is accurate; the citation is the wrong source for it. The cartography paper establishes traverse distances, not operator technique.
+**Required action:** Either add a more appropriate citation for the image update interval claim (e.g., Murphy 1998, or Huntress & Marov 2011 if that text covers operational technique) alongside `lroc_lunokhod2_traverse`, or replace `lroc_lunokhod2_traverse` with a more appropriate operations-focused source for this specific claim. Add the supplementary source to `corpus/references.bib`.
 
 ---
 
-### HC-011 — MINOR — §01-02 — R2 leg installation time attributed to `space2018r2return` without verifying the specific claim
+### HC-07 — Minor — §02-04 — NASA SMA Spektr citation URL format not verified as stable; document note may be inaccurate
 
-**Section:** `study/01-optimal-space-humanoid/02-form-factor-tradespace.md` (Candidate E, Modular)
 **Severity:** Minor
-**Claim:** "R2's leg installation on ISS took 40 hours (vs. 20 planned) under shirtsleeve conditions with full ground support \cite{space2018r2return}."
-**Citation status:** Claim is accurate; citation source is a 2018 article about R2's return, not about the 2014 leg installation
-**Issue:** The 40 vs. 20 hour claim is verified correct (the leg installation took place in July-August 2014, not 2018). The citation key `space2018r2return` refers to a 2018 Space.com article about R2 returning to Earth for repairs — not a 2014 article about the leg installation. A 2018 return article would mention the leg installation history in passing, but the primary source for the 40-hour installation figure should be a contemporaneous 2014 source. The description "under shirtsleeve conditions" is also potentially inaccurate — the leg installation was performed on-orbit inside the ISS (shirtsleeve environment, correct) but the phrasing could be mistaken as meaning on the ground. This is accurate.
-**Required action:** Supplement or replace `\cite{space2018r2return}` with a contemporaneous 2014 source documenting the leg installation timeline (e.g., the NASA NTRS paper "Robonaut 2 on the International Space Station," NTRS 20140000957, which covers on-orbit operations). The 2018 return article is a secondary reference for a 2014 event.
+**Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Pillar 2 (Situational Awareness)
+**Claim:** "The TORU manual docking failure (Spektr collision, 1997) resulted in part from cosmonaut Tsibliev's incomplete mental model of the Progress spacecraft's altered center of gravity response characteristics \cite{nasa_sma_spektr}."
+**Citation status:** Citation exists; factual claim is accurate; BibTeX note contains a URL that may be outdated
+**Issue:** The factual claim is accurate and consistent with multiple accounts of the Spektr collision. The `nasa_sma_spektr` BibTeX entry gives the URL `https://sma.nasa.gov/docs/default-source/safety-messages/safetymessage-2010-11-08-mirprogresscollision-vits.pdf` with note "To be confirmed against primary source before PDR." Web search confirms NASA SMA did publish such a document ("Spektr of Failure: Mir-Progress Collision"). The URL format is a common NASA SMA URL pattern and a direct URL from web search returned the document. The note "dated 8 November 2010" is confirmed.
+
+One minor inaccuracy: the BibTeX entry identifies the document as "Safety Message" dated 8 November 2010, but the text characterizes it as a "Significant Incident Analysis." The NASA SMA website calls these "Safety Messages." This is a formatting issue only.
+**Required action:** Confirm the URL resolves and update the BibTeX note from "To be confirmed against primary source before PDR" to "Confirmed accessible at URL as of [date]" when primary source access is achieved. Correct "Significant Incident Analysis" in the text (if the document is a Safety Message) or verify the NASA SMA document uses that title.
 
 ---
 
-### HC-012 — NIT — §01-04 — `ono2018msl` BibTeX key year is 2015 not 2018; inconsistency with key name
+### HC-08 — Nit — §02-03 — `ssrms2020ntrs` entry carries [VERIFY] flag and no confirmed NTRS document number
 
-**Section:** `corpus/references.bib` and `study/01-optimal-space-humanoid/04-sensing-autonomy.md`
 **Severity:** Nit
-**Claim:** BibTeX entry `ono2018msl` has `year = {2015}` in the entry body.
-**Citation status:** Formatting inconsistency
-**Issue:** The BibTeX key name `ono2018msl` implies year 2018, but the actual year in the entry is 2015, consistent with it being a 2015 IEEE Aerospace Conference paper. The key name is misleading but not incorrect — keys are arbitrary identifiers. It could cause confusion in future automated checks that extract year from key name.
-**Required action:** Consider renaming the key to `ono2015msl` for consistency with the actual publication year, and updating all in-text references accordingly. Low priority but should be addressed before final compilation.
+**Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`; `corpus/references.bib`
+**Claim:** "SSRMS (Canadarm2) has operated continuously on ISS since 2001. Seven joints using harmonic drive transmissions with brushless DC motors. TRL 8 for its defined task set."
+**Citation status:** Citation exists; BibTeX entry is self-flagged [VERIFY] with no NTRS accession number
+**Issue:** The `ssrms2020ntrs` BibTeX entry explicitly states "[VERIFY] — SSRMS operational heritage widely cited; primary NTRS reference number TBD before PDR." The citation is used in Section 02-03 without flagging the verification status to the reader. The SSRMS factual claims (7 joints, harmonic drives, TRL 8) are accurate per publicly available NASA and Canadian Space Agency documentation, but the specific NTRS document cited does not have a confirmed accession number. This is a low-severity issue because the facts are not in dispute — SSRMS is extensively documented — but the citation scaffolding is incomplete.
+**Required action:** Locate a specific NTRS document (or NASA/CSA technical publication) for SSRMS and add the accession number to the BibTeX entry. Remove the [VERIFY] flag once confirmed. Candidate documents include MDA Space publications and JSC Engineering Papers on Canadarm2. This does not affect the Section 02-03 argument but should be resolved before PDR per the citation discipline policy.
 
 ---
 
-### HC-013 — NIT — §01-01 — Robonaut 2 upper torso mass "~68 kg" labeled as estimated but no heritage source given
+### HC-09 — Nit — §02-03 — `unitree2024h1` BibTeX key year is 2023 in the entry body; key implies 2024
 
-**Section:** `study/01-optimal-space-humanoid/01-overview.md` (heritage table, R2 row)
 **Severity:** Nit
-**Claim:** R2 mass given as "~150 (full config with legs); upper torso ~68 (estimated from published torso-only config, **unverified**)."
-**Citation status:** Uncited; marked unverified
-**Issue:** The table correctly marks the ~68 kg torso figure as unverified. However, it also provides no path to verification — no note about where this figure might come from. The `diftler2011r2` citation (Diftler et al., ICRA 2011) is cited elsewhere for R2 design; the design paper might contain the mass breakdown. If it does, the heritage table should cite it rather than labeling the figure unverified. If it does not appear in the design paper, that should be noted explicitly.
-**Required action:** Check `diftler2011r2` and `nasa2016r2factsheet` for R2 subsystem mass breakdown. If the ~68 kg figure appears there, add the citation and remove the "unverified" flag. If not, note that the torso-only mass is not published in primary sources and flag for PDR.
+**Section:** `corpus/references.bib`
+**Claim:** No specific claim — formatting consistency issue in the BibTeX entry
+**Citation status:** BibTeX entry exists; year field inconsistent with key name
+**Issue:** The `unitree2024h1` entry in `corpus/references.bib` gives `year = {2023}` in the entry body, while the key name `unitree2024h1` implies 2024. (This mirrors the `ono2018msl`/year=2015 inconsistency flagged in Stage 6 as HC-12.) The Unitree H1 was announced/launched in 2023; the 2024 key name may refer to the product page access date. The inconsistency is minor but creates confusion.
+**Required action:** Align the BibTeX key with the year in the entry body. Either change the key to `unitree2023h1` (matching year = 2023) and update all in-text citations, or update year = 2024 if the product page was substantially updated in 2024. Low priority.
 
 ---
 
-### HC-014 — NIT — §01-05 — `appelbaum1991solarmars` misattributed: study is Solar Energy 1990, not 1991; used for a claim it does not support
+### HC-10 — Nit — §02-02 — Queqiao-2 RTLT derivation rounds relay path distance inconsistently
 
-**Section:** `study/01-optimal-space-humanoid/05-environments-hardening.md` (Section 4.2, Thermal Radiator Surfaces)
 **Severity:** Nit
-**Claim:** "Mars lander and rover data (MER Spirit, Phoenix) document emissivity degradation rates of 2–5% per month on horizontal solar panels from dust settling \cite{appelbaum1991solarmars} [VERIFY — this figure is for Mars dust under Mars conditions; lunar particle size and settling rate differ]."
-**Citation status:** Wrong reference — Appelbaum & Flood (1990/1991) is a solar radiation modeling study, not a dust degradation study; MER Spirit and Phoenix post-date it by over a decade
-**Issue:** The Appelbaum & Flood paper ("Solar radiation on Mars," Solar Energy, 1990) is a solar irradiance model for Mars surface operations — not a measurement of dust-induced emissivity or efficiency degradation. MER Spirit and Phoenix operated in 2004–2010, more than a decade after this paper. The specific claim about Spirit's solar panel degradation from dust would need to be sourced to MER mission reports or published Spirit power analysis papers, not to a 1990 irradiance model. The text itself flags [VERIFY] but the cited source is wrong for what is being claimed.
-**Required action:** Find and cite actual MER Spirit/Phoenix dust degradation data (likely from NASA/JPL mission publications or Colozza 2005-class power analysis papers for Mars surface) and replace the Appelbaum citation for the degradation rate claim. The Appelbaum paper could remain cited as background on Mars solar environment but not as the source for the degradation rate.
+**Section:** `study/02-human-in-the-loop/02-latency-tradespace.md`, Queqiao-2 Relay Geometry
+**Claim:** "Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900 km from Earth center."
+**Citation status:** N/A — arithmetic issue, not citation issue
+**Issue:** The derivation uses "16,500 km" as the midpoint representative of the "16,000–17,000 km" apoapsis range. This is internally consistent. However, the apoapsis altitude is measured above the lunar surface, not above the lunar center. The Moon's mean radius is 1,737 km, so the satellite at 16,500 km above the surface is approximately 16,500 + 1,737 = 18,237 km from the lunar center. The calculation "384,400 + 16,500 = ~400,900 km from Earth center" adds Earth-Moon center distance to the satellite altitude above the lunar surface, not the satellite distance from the lunar center. This understates the Earth-to-satellite distance by approximately 1,737 km (the lunar radius), producing a calculated OWLT of 1.337 s when the correct value would be approximately 400,900 + 1,737 = 402,637 km ÷ 299,792 = 1.343 s. The resulting RTLT would be 2.686 s rather than the stated 2.674 s — a difference of about 12 ms. This is below program significance but the derivation is arithmetically imprecise.
+**Required action:** Add the lunar radius (1,737 km) to the Earth-satellite path calculation, or note explicitly that the satellite altitude above the surface is being used as a proxy for the full geometric path (acceptable for back-of-envelope, not for a derivation that shows calculation steps). The 2.78 s minimum RTLT figure used throughout the study is already conservative enough to absorb this correction.
 
 ---
 
 ## Cross-Cutting Observations
 
-**1. BibTeX corpus is severely underpopulated.** The `references.bib` has only 3 entries added by section agents, against approximately 25+ citation keys used. This is a systemic failure to comply with the "all agents append" instruction in CLAUDE.md. No section can be properly reviewed for citation existence when the BibTeX entries do not exist for verification.
+**1. Section 02 BibTeX population is complete.** All citation keys used in Section 02 files are present in `corpus/references.bib`. This is a significant improvement over the Stage 6 state for Section 01, where approximately 20+ keys were missing.
 
-**2. Atlas Electric is misunderstood throughout.** The heritage table, actuation section, and power budget all use Atlas Electric as heritage for harmonic drive actuation. Atlas Electric does not use harmonic drives — it uses custom direct-drive actuators. This error propagates from §01-01 through §01-03 and §01-06 and affects the credibility of the actuation architecture position's primary heritage claim.
+**2. The Queqiao-2 orbital parameter issue (HC-02) is the most consequential finding.** The study's relay geometry analysis, availability estimates, and latency calculations all proceed from the planned 62.4° prograde orbit. The actual confirmed retrograde orbit at 119.25° has different coverage geometry for far-side receivers. The latency arithmetic is not materially affected (apoapsis altitude similar), but the coverage availability percentages are derived from a geometry that does not match the operational satellite.
 
-**3. The LND citation is both missing from the corpus and has the wrong lead author.** Given that the Chang'e-4 LND radiation figure is the primary empirical anchor for the radiation environment requirements, this is consequential beyond a formatting issue.
+**3. The Lunokhod 2 failure mechanism error (HC-03) propagates a wrong lesson.** The text argues from Lunokhod 2's terminal failure that "latency prevents the operator from seeing what the robot is doing." That lesson is correct. But the stated mechanism — "solar panels covered with dust" — is wrong; the failure was radiator contamination causing thermal overheating. If the study elsewhere uses Lunokhod 2 as heritage for solar panel dust protection design, it would be drawing the wrong design implication.
 
-**4. The study applies heritage citations responsibly in most other respects.** The Valkyrie mass/DOF figures are correct. The Lunokhod distance figures are approximately right with appropriate caveats. The R2 leg installation time is correct. The ISS battery energy density is close (155 vs. 160 Wh/kg) and appropriately self-flagged. The overall picture is a technically competent draft with two structural errors (Atlas actuator type, LND citation) that need correction before the document is defensible.
+**4. SUPVIS Justin date error (HC-01) is a credibility issue in front of expert reviewers.** Anyone familiar with the METERON program will immediately recognize that "2015–2016" is wrong for the ISS crew sessions. This is a verifiable fact, not an interpretation, and incorrect dates in a heritage-anchored study undermine confidence in the rest of the heritage claims.
+
+**5. The Mir maintenance percentage (HC-05) is likely correctly sourced to the Mir Mission Chronicle but wrongly cited to Kanas & Manzey.** The NASA TP-98-207890 is a primary institutional source; Kanas & Manzey is a secondary synthesis. The text even names "Mir Mission Chronicle" as the source while citing the textbook — this is an internal contradiction.
+
+---
+
+## Summary Count Table
+
+| Severity | Count |
+|---|---|
+| Blocker | 0 |
+| Major | 3 |
+| Minor | 4 |
+| Nit | 3 |
+| **Total** | **10** |
+
+**Key finding for Section 02:** No dangling citation keys (zero blockers on that criterion). Three major findings — two factual errors (Queqiao-2 inclination, Lunokhod 2 failure mechanism) and one date error (SUPVIS Justin dates). All are correctable without restructuring the arguments they support. The latency and supervisory control arguments are sound; the heritage claims that anchor them need targeted correction.

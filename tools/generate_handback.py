@@ -70,13 +70,30 @@ def collect_section_state():
     return sections
 
 
-def parse_findings_summary(path):
-    """Extract severity counts and findings list from a reviewer report."""
+def parse_findings_summary(path, stage_filter=None):
+    """Extract severity counts and findings list from a reviewer report.
+
+    If stage_filter is set (e.g. 8), only returns data if the file's frontmatter
+    stage: field matches. Files without a stage: field are treated as stage 0
+    (pre-stage-tracking era) and are excluded when stage_filter is set.
+    """
     if not path.exists():
-        return {"counts": {}, "findings": [], "exists": False}
+        return {"counts": {}, "findings": [], "exists": False, "stage_mismatch": False}
 
     text = path.read_text(encoding="utf-8")
-    _, body = parse_frontmatter(text)
+    meta, body = parse_frontmatter(text)
+
+    file_stage = meta.get("stage", None)
+
+    if stage_filter is not None:
+        if file_stage is None or int(file_stage) != int(stage_filter):
+            return {
+                "counts": {},
+                "findings": [],
+                "exists": True,
+                "stage_mismatch": True,
+                "file_stage": file_stage,
+            }
 
     counts = {}
     for sev in ["Blocker", "Major", "Minor", "Nit"]:
@@ -100,11 +117,11 @@ def parse_findings_summary(path):
         if finding:
             findings.append(finding)
 
-    return {"counts": counts, "findings": findings, "exists": True}
+    return {"counts": counts, "findings": findings, "exists": True, "stage_mismatch": False}
 
 
-def collect_all_findings():
-    """Read all review/*-findings.md files."""
+def collect_all_findings(stage_filter=None):
+    """Read all review/*-findings.md files, optionally filtered to a stage."""
     reviewers = [
         "aerospace-engineer",
         "heritage-citations",
@@ -116,7 +133,7 @@ def collect_all_findings():
     results = {}
     for r in reviewers:
         path = REVIEW_DIR / f"{r}-findings.md"
-        results[r] = parse_findings_summary(path)
+        results[r] = parse_findings_summary(path, stage_filter=stage_filter)
     return results
 
 
@@ -225,9 +242,33 @@ def get_critical_section_text(sections, max_chars=8000):
     return "\n".join(output)
 
 
+def check_word_count_gates():
+    """Hard gate: refuse handback generation if any section is >10% over its hard cap."""
+    caps = {
+        "study/02-human-in-the-loop/01-overview.md": 2400,
+        "study/02-human-in-the-loop/02-latency-tradespace.md": 3000,
+        "study/02-human-in-the-loop/03-autonomy-trl-tasking.md": 3000,
+        "study/02-human-in-the-loop/04-teaming-model.md": 4200,
+    }
+    violations = []
+    for path_str, hard_cap in caps.items():
+        path = ROOT / path_str
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        _, body = parse_frontmatter(text)
+        words = len(re.findall(r"\b\w+\b", body))
+        if words > hard_cap * 1.10:
+            violations.append(
+                f"{path_str}: {words} words "
+                f"(hard cap {hard_cap}, +10% tolerance {int(hard_cap * 1.10)})"
+            )
+    return violations
+
+
 def build_handback(stage_num):
     sections = collect_section_state()
-    all_findings = collect_all_findings()
+    all_findings = collect_all_findings(stage_filter=stage_num)
     cross_patterns = find_cross_reviewer_patterns(all_findings)
     sessions = parse_session_logs()
     coupling = parse_cross_coupling_log()
@@ -300,13 +341,29 @@ def build_handback(stage_num):
     out.append("## 3. Findings That Matter")
     out.append("")
     out.append(
-        "Blockers and majors only. Minors and nits omitted from handback "
-        "(they're in the repo)."
+        f"Blockers and majors only for stage {stage_num}. "
+        "Minors and nits omitted from handback (they're in the repo)."
     )
     out.append("")
 
+    any_stage_mismatch = any(
+        d.get("stage_mismatch") for d in all_findings.values()
+    )
+    if any_stage_mismatch:
+        stale = [r for r, d in all_findings.items() if d.get("stage_mismatch")]
+        out.append(
+            f"**NOTE:** Reviews not yet run for stage {stage_num}. "
+            f"The following files exist but belong to a different stage "
+            f"and are excluded: {', '.join(stale)}. "
+            "Findings counts below reflect only current-stage reviews."
+        )
+        out.append("")
+
     for reviewer, data in all_findings.items():
-        if not data.get("exists"):
+        if not data.get("exists") or data.get("stage_mismatch"):
+            if not data.get("exists"):
+                out.append(f"*{reviewer}: Reviews not yet run for stage {stage_num}.*")
+                out.append("")
             continue
         blockers = [f for f in data["findings"]
                     if f.get("severity", "").lower().startswith("blocker")]
@@ -555,6 +612,15 @@ def main():
     parser.add_argument("--stage", type=int, default=4)
     parser.add_argument("--out", default=None)
     args = parser.parse_args()
+
+    violations = check_word_count_gates()
+    if violations:
+        print("BLOCKER: word-count gate violations detected:")
+        for v in violations:
+            print(f"  - {v}")
+        print("\nHandback generation refused. Trim sections or re-dispatch agents.")
+        import sys
+        sys.exit(1)
 
     issues = check_breadcrumb_freshness()
     if issues:

@@ -3,19 +3,21 @@ title: Cross-Coupling Consistency Review Findings
 status: findings-complete
 owner: cross-coupling-reviewer
 last-updated: 2026-05-03
+stage: 8
 ---
 
-# Cross-Coupling Consistency Review Findings
+# Cross-Coupling Consistency Review — Stage 8 Findings
 
-Review of 13 locked decisions against six section files. Sections reviewed:
-- `01-overview.md` (heritage table; no numeric design commitments)
-- `02-form-factor-tradespace.md` (form factor position; mass/power baseline set)
-- `03-actuation-structures.md` (actuation, DOF, structure mass, dust strategy)
-- `04-sensing-autonomy.md` (sensor suite, compute architecture, autonomy TRL)
-- `05-environments-hardening.md` (thermal, radiation, dust system-level)
-- `06-mass-power-budget.md` (integration and closure)
+Review of the four Question (b) sections and the cross-coupling log. Sections reviewed:
 
-Cross-coupling log reviewed: 13 entries dated 2026-05-03.
+- `study/02-human-in-the-loop/01-overview.md`
+- `study/02-human-in-the-loop/02-latency-tradespace.md`
+- `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`
+- `study/02-human-in-the-loop/04-teaming-model.md`
+- `study/05-cross-cutting/cross-coupling-log.md`
+- `study/05-cross-cutting/margins-and-assumptions.md`
+
+Cross-coupling log entries reviewed: all 2026-05-03 entries, specifically the six new entries from the §02 work: forward-deployed supervisory latency target (§A17), latency-tier autonomy handoff, task allocation table, human value floor, supervisor ratio (§A18), and crew composition (§A19).
 
 ---
 
@@ -24,273 +26,171 @@ Cross-coupling log reviewed: 13 entries dated 2026-05-03.
 | Severity | Count |
 |----------|-------|
 | Blocker  | 1     |
-| Major    | 4     |
-| Minor    | 5     |
-| Nit      | 3     |
-
----
-
-## Reconciliation Results
-
-| Parameter | Source section / log value | Downstream section | Downstream value | Match? |
-|-----------|---------------------------|-------------------|-----------------|--------|
-| Mass design-to | 75 kg (cross-coupling log; §02 Section 6) | `06-mass-power-budget.md` table total | 75.0 kg | YES |
-| Mass design-to | 75 kg | `01-overview.md` open question 1 | "≤100 kg … preliminary working assumption" | NO — pre-lock placeholder not updated; see CC-006 |
-| Mass NTE | 97.5 kg (cross-coupling log) | `02-form-factor-tradespace.md` Section 6 | 97.5 kg | YES |
-| Mass NTE | 97.5 kg | `06-mass-power-budget.md` NTE row | 97.5 kg | YES |
-| Structure + actuation design-to | 30.0 kg (cross-coupling log) | `03-actuation-structures.md` Section 4 table total | 30.0 kg | YES |
-| Structure + actuation design-to | 30.0 kg | `06-mass-power-budget.md` (8.5 + 13.0 + 4.0 + 4.5 = 30.0) | 30.0 kg (sum) | YES |
-| Structure + actuation NTE | 39.0 kg (cross-coupling log) | `03-actuation-structures.md` Section 4 table | 39.0 kg | YES |
-| Structure + actuation NTE | 39.0 kg | `06-mass-power-budget.md` — no subsystem NTE subtotal row | Not stated | MINOR — see CC-008 |
-| Sensor suite mass | ~2.1 kg (cross-coupling log / §04 summary table) | `06-mass-power-budget.md` sensors row | 2.1 kg | YES |
-| Sensor suite power peak | 37–75 W peak (cross-coupling log) | `06-mass-power-budget.md` sensor rows sum to ~44 W peak | ~44 W stated; 75 W peak not acknowledged | MAJOR — see CC-003 |
-| Compute mass | ~1.8 kg (cross-coupling log / §04 table) | `06-mass-power-budget.md` compute row | 1.8 kg | YES |
-| Compute power range | 22–75 W peak (cross-coupling log) | `06-mass-power-budget.md` compute rows (Tier 1: 8 W + Tier 2: 50 W = 58 W) | 58 W point value; range not stated | MINOR — see CC-009 |
-| DOF nominal | 38 (cross-coupling log) | `03-actuation-structures.md` Section 2 table design-to | 38 nominal | YES |
-| DOF nominal | 38 (cross-coupling log) | `06-mass-power-budget.md` actuation row note | "38 joints × ~342 g mean" | YES |
-| Actuation type | HD-Electric primary (cross-coupling log) | `06-mass-power-budget.md` actuation row | "NdFeB motors + harmonic drives + QDD wrists" — HD-Electric confirmed | YES |
-| Actuation type | HD-Electric primary | `04-sensing-autonomy.md` power estimates | Actuation type not referenced; power figures are internally consistent with HD-Electric | MINOR — see CC-009 note |
-| Battery: 2.0 kWh / 160 Wh/kg / 12.5 kg cells | Cross-coupling log (§A13) | `06-mass-power-budget.md` battery derivation | 2.0 kWh, 160 Wh/kg, 12.5 kg cells | YES |
-| Lunar night power | 70–200 W total = 50–150 W electronics + 20–50 W joints (cross-coupling log / §05 Section 2) | `06-mass-power-budget.md` thermal rows | 85–175 W survival heaters + 20–50 W joint heaters = 105–225 W pre-margin | NO — BLOCKER; see CC-001 |
-| Autonomy TRL curve | TRL 6/2029, TRL 7+/2035, TRL 8/2038–2040 | `04-sensing-autonomy.md` top-of-section preamble | Correctly restated verbatim | YES |
-| Autonomy TRL curve — layer compatibility | TRL 6 by 2029 requires current space TRLs to advance | `04-sensing-autonomy.md` autonomy stack diagram | Reactive space TRL 3–4; Deliberative 2–3; Supervisory 2–3 — no forward projection to 2029 gate | MAJOR — see CC-004 |
-| Tradespace score bipedal | 3.65 (arithmetic in §02; cross-coupling log) | `02-form-factor-tradespace.md` matrix table "Weighted total" row | 3.60 | NO — MAJOR; see CC-002 |
-| Candidate A mass range | 75 kg design-to (cross-coupling log) | `02-form-factor-tradespace.md` Candidate A description | "60–130 kg" | MAJOR — see CC-005 |
-| Dust strategy descriptor | "Dual-stage labyrinth + single FFKM lip seal" | `05-environments-hardening.md` Section 4.4 reference | "joint labyrinth + FFKM lip seal" — "dual-stage" omitted | NIT — see CC-010 |
-| N₂ purge canister mass | 0.2–0.5 kg (cross-coupling log) | `06-mass-power-budget.md` consumables row | 0.3 kg (within range) | YES |
-| 7-year TID budget unshielded | 140–210 krad (cross-coupling log) | `05-environments-hardening.md` Section 3 | 140–210 krad | YES |
-| TID figure in §05 requirements table | — | `05-environments-hardening.md` Section 1 requirements table | "120–140 krad with shielding mitigation needed" — inconsistent with unshielded budget | NIT — see CC-012 |
+| Major    | 2     |
+| Minor    | 3     |
+| Nit      | 2     |
 
 ---
 
 ## Findings
 
-### CC-001 — BLOCKER — `05-environments-hardening.md` → `06-mass-power-budget.md` — Lunar night survival heater power range does not match source
+### CC-S8-001 — Blocker — §02-03 table + §02-04 text → §02-01, §02-03 summary, §02-04 summary, cross-coupling log — Task allocation count (12/6/2 stated vs. 11/7/2 actual)
 
-**Sections involved:** `05-environments-hardening.md` Section 2 (source) → `06-mass-power-budget.md` Section 2 power table (downstream)
 **Severity:** Blocker
-**Parameter:** Electronics/battery survival heater power during lunar night hibernation
+**Parameter:** Count of tasks in each allocation category at IOC (2035): autonomy-led / jointly-executed / human-led
+**Source value (§02-03 task allocation table, Section 3 narrative, and §02-04 periodic supervision list):** Counting tasks assigned at IOC: Autonomy-led: T01, T03, T04, T06, T07, T08, T10, T11, T15, T19, T20 = **11 tasks**. Jointly-executed: T02, T05, T09, T13, T14, T16, T17 = **7 tasks**. Human-led: T12, T18 = **2 tasks**. Total: 20. Count per actual tables: **11/7/2**.
+**Downstream value (§02-01 Section 2, §02-03 Section 4 last paragraph, §02-04 Section 1 opening, §02-04 Section 6 summary, §A18, §A19, and cross-coupling log task allocation entry):** All state **12 autonomy-led / 6 jointly-executed / 2 human-led**.
+**The problem:** The stated summary count 12/6/2 does not match the actual task tables. The discrepancy traces to T16 (radio telescope calibration). The §02-03 task allocation table marks T16 as "Jointly executed" at IOC with the note "shifts to Autonomy-led by 2040." The §02-04 periodic supervision list explicitly includes T16 among the seven jointly-executed tasks requiring periodic supervision. However, the cross-coupling log task allocation entry places T16 in the IOC autonomy-led list, using the phrase "radio telescope calibration (shifts to autonomy-led by 2040)" — which is internally contradictory within the cross-coupling log entry itself: a task that "shifts to autonomy-led by 2040" is not autonomy-led at IOC.
 
-**Source value (§05 Section 2 and cross-coupling log):**
-Electronics/battery survival heaters: **50–150 W**; joint heaters: **20–50 W**; total: **70–200 W**
+This error propagates broadly. Every downstream section and register entry that cites the 12/6/2 split — §02-01, §02-03 summary, §02-04 opening, §02-04 summary, §A18 Step 2 ("12 of 20 tasks are autonomy-led"), §A19 demand derivation, and the cross-coupling log task allocation entry — carries the wrong count. The cognitive load arithmetic in §02-04 Section 2 uses 6 jointly-executed tasks as a basis; if there are 7, the checkpoint count and periodic supervision demand calculation must be revisited.
 
-**Downstream value (§06 power table, lunar night survival column):**
-Survival heaters (electronics + battery): **85–175 W**; joint heaters: **20–50 W**; row total pre-margin: **114–234 W**; with 30% margin: **148–304 W**
+There is a path to resolution without changing the task tables: the §02-03 table note for T16 could be changed to read "Autonomy-led at IOC (scientist reviews logs, not execution)" — consistent with §02-03 Section 3 stating that T16 "shifts to autonomy-led by 2040" and the operational logic that the scientist can authorize via delayed relay at IOC makes T16 already close to autonomy-led with light oversight. But this requires a deliberate editorial decision, not a silent fix, because §02-04's periodic supervision section explicitly lists T16 as a jointly-executed task.
 
-**The problem:** The survival heater range in §06 (85–175 W) does not match the source value in §05 and the cross-coupling log (50–150 W). The lower bound has shifted from 50 W to 85 W (+70%) and the upper bound from 150 W to 175 W (+17%). No explanation for this change appears in §06.
-
-This mismatch is a Blocker because the budget closure assessment depends critically on which numbers are used. If the §05 values (50–150 W heaters + 20–50 W joints) are correct, the pre-margin hibernation total is approximately 79–209 W (adding ~9 W of non-thermal always-on loads), giving a with-margin total of approximately 103–272 W. The lower-bound closure is then 103 W vs. 150 W — comfortably inside the goal, not "barely closes at 148 W" as §06 states. Conversely, if §06's 85–175 W heater range is correct, the §05 and cross-coupling log entries are wrong and must be updated. The closure status — and the severity of the upper-bound non-closure — differs materially between the two number sets.
-
-**Required action:** One of the following three corrections is required, and only one:
-1. If §05's 50–150 W is authoritative: correct §06 survival heater row to 50–150 W; revise the with-margin total to ~103–272 W; update the closure narrative ("lower bound comfortably closes at 103 W vs. 150 W goal; upper bound does not close at 272 W").
-2. If §06's 85–175 W is authoritative: update §05 Section 2 electronic heater estimate to 85–175 W and update the cross-coupling log §A10 entry to match.
-3. If the revision represents a design change: log it in the cross-coupling log as a §A10 update, update §05, and note the basis for the increase.
+**Required action:** Either (a) change the §02-03 task allocation table for T16 from "Jointly executed" to "Autonomy-led" at IOC and remove T16 from §02-04's periodic supervision task list — which makes the 12/6/2 count correct; or (b) update every summary statement and the cross-coupling log to read 11/7/2 — which makes the count match the tables. Option (a) is probably the correct editorial call because T16 (scripted calibration procedure with scientist reviewing logs rather than authorizing execution gates) is operationally closer to autonomy-led than the time-critical jointly-executed tasks. But the choice must be explicit. The cross-coupling log task allocation entry must be updated to reflect whichever resolution is adopted. The §A18 and §A19 derivations must be reviewed to confirm whether the cognitive load arithmetic changes materially.
 
 ---
 
-### CC-002 — MAJOR — `02-form-factor-tradespace.md` — Evaluation matrix table scores do not match the step-by-step arithmetic in the same section
+### CC-S8-002 — Major — §A19 demand derivation → §02-04 Section 2 — Periodic supervision demand subtotals inconsistent in methodology and value
 
-**Sections involved:** `02-form-factor-tradespace.md` Section 3
 **Severity:** Major
-**Parameter:** Weighted tradespace scores for all five candidates
+**Parameter:** Supervisory demand attributed to jointly-executed / periodic supervision tasks, in person-hours per crew shift
+**Source value (§02-04 Section 2, periodic supervision demand):** 0.83 person-hours per humanoid (5 checkpoints × 10 minutes) × 3 humanoids × 0.6 concurrency factor = **~1.5 person-hours** for the periodic supervision category.
+**Downstream value (§A19 demand derivation):** 0.2 person-hr/robot-hr × 3 robots × 5 hr active window = **3.0 person-hours** for jointly-executed tasks.
+**The problem:** The two derivations use different methods and produce different subtotals for the same category: §02-04 gives 1.5 person-hours for periodic supervision; §A19 gives 3.0 person-hours for jointly-executed tasks. The totals coincide (§02-04: 2.0 + 1.5 + 0.75 = 4.25; §A19: 1.2 + 3.0 = 4.2, rounded to 4.25) because §A19 omits continuous supervision as a separate bucket while §02-04 treats it as a third category (0.75 person-hours). So §A19 is implicitly folding continuous supervision demand into the jointly-executed category, which inflates the jointly-executed subtotal to 3.0 person-hours but then correctly sums to roughly the same total. This is a methodological inconsistency between the section and the register, not a total inconsistency.
 
-**Table values (matrix "Weighted total" row):** A = 3.60, B = 3.35, C = 2.95, D = 2.55, E = 2.80
+The risk is that a reader using §A19's 3.0 person-hour figure for the jointly-executed category in isolation — as a downstream agent building the ConOps schedule would do — will believe periodic supervision consumes 3.0 person-hours, not 1.5 person-hours. The 1.5 person-hour figure from §02-04 is the more carefully derived value; §A19's 0.2 person-hr/robot-hr rate appears to be a round-number approximation that embeds continuous supervision overhead.
 
-**Calculated values (step-by-step arithmetic in the text immediately below the table):**
-- A: 1.25 + 0.60 + 0.30 + 0.45 + 0.40 + 0.40 + 0.25 = **3.65**
-- B: 1.00 + 0.80 + 0.60 + 0.45 + 0.20 + 0.30 + 0.20 = **3.55**
-- C: 0.50 + 1.00 + 0.30 + 0.60 + 0.40 + 0.30 + 0.15 = **3.25**
-- D: 0.75 + 0.20 + 0.45 + 0.60 + 0.30 + 0.40 + 0.20 = **2.90**
-- E: 1.00 + 0.60 + 0.30 + 0.30 + 0.30 + 0.20 + 0.15 = **2.85**
+The headroom factor of ~2× (8 person-hours capacity vs. 4.25 person-hours demand) is consistent and unchallenged. The issue is in how the demand is decomposed, not in the total.
 
-**Cross-coupling log:** Locked form factor entry states "bipedal form scores highest (3.65/5.00)" and "Centaur is the close second (3.55)" — matching the step-by-step arithmetic, not the table.
-
-**The problem:** The table is wrong. The step-by-step arithmetic and cross-coupling log are internally consistent and should be treated as authoritative. The margin between A (bipedal) and B (centaur) is 0.10 per the correct arithmetic (3.65 − 3.55), but appears to be 0.25 in the erroneous table (3.60 − 3.35). The study's narrative ("The gap is narrow, which is the honest result") is consistent with the arithmetic-calculated 0.10 margin. A reader using the table values would see a 0.25 margin and might characterize the result as more decisive than it is.
-
-**Required action:** Correct the "Weighted total" row in the evaluation matrix table to: A = 3.65, B = 3.55, C = 3.25, D = 2.90, E = 2.85. The step-by-step arithmetic and narrative text require no changes.
+**Required action:** Revise §A19's demand derivation to match §02-04's three-bucket structure. The §A19 entry should read: "(a) on-demand (12 autonomy-led tasks): 0.05 person-hr/robot-hr × 3 robots × 8 hr = 1.2 person-hr; (b) periodic (6 [or 7, per CC-S8-001 resolution] jointly-executed tasks): ~1.5 person-hr using the §02-04 checkpoint model; (c) continuous (human value floor events): ~0.75 person-hr. Total: ~3.45–3.75 person-hr/shift, rounded to 4.25 with scheduling overhead." Alternatively, if the 0.2 person-hr/robot-hr rate is used, add a note explaining it embeds continuous supervision overhead and is not additive with the continuous supervision category in §02-04 Section 2.
 
 ---
 
-### CC-003 — MAJOR — `04-sensing-autonomy.md` → `06-mass-power-budget.md` — Sensor peak power (75 W) not acknowledged in integration budget
+### CC-S8-003 — Major — §02-02 Section 3 → §02-04 Section 1 — Tier A latency tier boundary defined inconsistently (<100 ms in §02-02 vs. ≤50 ms in §02-04)
 
-**Sections involved:** `04-sensing-autonomy.md` Section 1 summary table (source) → `06-mass-power-budget.md` Section 2 power table (downstream)
 **Severity:** Major
-**Parameter:** Sensor suite peak power draw
+**Parameter:** The definition of the Tier A latency tier boundary
+**Source value (§02-02 Section 3 Tier A heading and opening sentence):** "Tier A — Cislunar-Supervised Lunar Surface (RTLT **<100 ms**)" — the tier is defined at the 100 ms boundary. The target is stated separately: "Target for this study: ≤50 ms RTLT from crew workstation to humanoid over the base network."
+**Downstream value (§02-04 Section 1 opening, §02-04 Section 6 summary table, and cross-coupling log latency entry):** All define Tier A as "**≤50 ms**" with no mention of a 100 ms tier boundary. §02-04's summary table reads "Tier A only (≤50 ms)" and the §A17 cross-coupling log entry states "≤50 ms RTLT" as the commitment.
+**The problem:** §02-02 uses <100 ms as the tier definition and ≤50 ms as the design target. §02-04 collapses both into ≤50 ms as the tier definition. The distinction matters for system design: if Tier A is defined as <100 ms, then a base network achieving 80 ms RTLT satisfies the tier definition even though it misses the design target. If Tier A is defined as ≤50 ms (per §02-04 and the cross-coupling log), then 80 ms is not Tier A. The cross-coupling log and §02-04 are consistent with each other and represent the locked architectural commitment. §02-02's use of <100 ms as the tier boundary is an inconsistency with the locked value.
 
-**Source value (§04 sensor suite summary table and cross-coupling log):** Total sensor suite: **37–75 W peak** (LIDAR at 20–30 W active + cameras/depth 15–25 W + wrist cameras 3–5 W + IMU 3–5 W + F/T 4–6 W + tactile 2–4 W = 37–75 W)
+The practical risk is that a designer reading §02-02 to derive the Tier A network latency requirement will size to <100 ms (which satisfies §02-02's tier definition) rather than to ≤50 ms (the locked architectural target). The on-base network topology requirement differs between these two values.
 
-**Downstream value (§06 power table, sensor rows):**
-- LIDAR (active during locomotion): 20 W
-- Cameras and F/T (full during manipulation): 25 W
-- IMU keep-alive: 4 W
-- Peak sensor contribution: ~49 W (full loco+manip mode) — 26 W below the §04-stated 75 W peak
-
-**The problem:** §06 presents point values for sensor power that are below the upper bound of the §04 range. The LIDAR is budgeted at 20 W in §06 but §04 specifies 20–30 W active. The cameras+F/T row at 25 W does not span the full §04 range (cameras 15–25 W + wrist cameras 3–5 W + F/T 4–6 W + tactile 2–4 W = 24–40 W). There is no note in §06 indicating that the 30% margin is the mechanism absorbing the difference between §06's point values and §04's peaks. A reviewer comparing §06 against §04 will see apparently inconsistent numbers with no bridge explanation.
-
-In practice, the 30% system margin (142 W for the full locomotion mode) would absorb the 26 W discrepancy without breaking closure. But this absorption is implicit rather than documented.
-
-**Required action:** Revise §06 sensor rows to state ranges matching §04 (e.g., "LIDAR 20–30 W active; cameras, depth, F/T, tactile 24–40 W combined") and confirm the with-margin totals still close against the 800 W cap. Alternatively, add an explicit note stating: "Sensor point values above represent design-to nominal conditions; §04 peak range (37–75 W) is accommodated within the 30% mode margin."
+**Required action:** Revise the §02-02 Tier A section heading and opening sentence to read "RTLT ≤50 ms" as both the tier definition and the design target. The <100 ms figure can be retained as context — as a parenthetical noting that the 200 ms teleoperation degradation threshold provides a natural 4× margin above the 50 ms target — but the tier boundary should be stated as ≤50 ms throughout to match the locked cross-coupling log value and §02-04.
 
 ---
 
-### CC-004 — MAJOR — `04-sensing-autonomy.md` — Autonomy layer TRLs as-stated (space TRL 2–4) are not shown to be compatible with the locked TRL 6 gate by 2029
+### CC-S8-004 — Minor — §02-02 Section 6, Item 1 → §A1 and cross-coupling log TRL gate entry — Reactive layer TRL gate target inconsistency (TRL 6 vs. TRL 7)
 
-**Sections involved:** `04-sensing-autonomy.md` Section 3 autonomy stack
-**Severity:** Major
-**Parameter:** Autonomy stack layer space TRL values vs. locked TRL curve (TRL 6 by 2029)
-
-**Locked value (cross-coupling log):** TRL 6 (space-relevant environments) by ~2029 → TRL 7+ by ~2035 → TRL 8 by ~2038–2040
-
-**Values in §04 autonomy stack diagram (current state as of 2026):**
-- Reactive layer: Space TRL **3–4**
-- Deliberative layer: Space TRL **2–3**
-- Supervisory layer: Space TRL **2–3**
-
-**The problem:** The locked TRL curve commits to TRL 6 in space-relevant environments by 2029 — three years from the document date. The autonomy stack as characterized in §04 is at space TRL 2–4 across all three layers. There is no table, note, or statement in §04 showing which layer(s) must reach TRL 6 by 2029 and what development milestones would achieve this. The section does state, in the reactive layer discussion, that "to reach TRL 6 in space-relevant environments by the 2029 gate, the reactive layer needs: (1) hardware testing in a lunar gravity offload facility … (2) validation … (3) demonstration …" — this is the only forward-looking reconciliation of the gap, and it applies only to the reactive layer.
-
-The cross-coupling log TRL curve entry appears to describe the whole-system autonomy TRL, but if the reactive layer needs to reach TRL 6 by 2029 while the deliberative layer is at TRL 2–3 with a 9-year runway to TRL 7+ by 2035, the section should state this explicitly to avoid the interpretation that the entire three-layer stack must reach TRL 6 by 2029.
-
-**Required action:** §04 Section 3 should add a reconciliation note, preferably as a table column "Required TRL at 2029 gate / 2035 gate" alongside the current-state TRL values, showing which layer must advance to what level to satisfy the locked curve. At minimum, the section should explicitly state that the locked TRL 6 by 2029 gate applies specifically to the reactive layer (the safety-critical, most-mature layer), that the deliberative layer targets TRL 5 by 2029 and TRL 7 by 2035, and that the supervisory layer follows the same 2035 timeline. Without this clarification, downstream agents (autonomy-trl-tasking, human-factors-teaming) will receive inconsistent inputs: the cross-coupling log says TRL 6 by 2029, and §04 shows all layers at TRL 2–4, with no bridge.
-
----
-
-### CC-005 — MAJOR — `02-form-factor-tradespace.md` — Candidate A description states 60–130 kg, contradicting the locked 75 kg design-to
-
-**Sections involved:** `02-form-factor-tradespace.md` Section 1, Candidate A description
-**Severity:** Major
-**Parameter:** Mass characterization of Candidate A (Full Bipedal Humanoid) in the candidate description
-
-**Locked value (cross-coupling log):** "design-to mass 75 kg, not-to-exceed mass 97.5 kg (30% margin)"
-
-**Value in §02 Section 1, Candidate A:** "A bilateral, two-legged anthropomorphic robot of human scale (1.5–1.9 m standing height, **60–130 kg**)"
-
-**The problem:** The "60–130 kg" figure is the heritage survey range from §01. It was the correct characterization before the tradespace analysis selected and locked the 75 kg design-to. The Section 1 candidate description has not been updated to reflect the locked commitment that appears later in the same document (Section 4: "75 kg design-to, 97.5 kg NTE"; Section 6: "Total system mass target: 75 kg (design-to), 97.5 kg (not-to-exceed)"). The contradiction is internal to §02.
-
-A reader extracting the Candidate A description from Section 1 (as a downstream agent might) will conclude the form factor commitment allows anything from 60 to 130 kg, when the locked decision constrains it to 75 kg / 97.5 kg NTE.
-
-**Required action:** Update the Candidate A description in §02 Section 1 to: "1.5–1.9 m standing height; heritage mass range 57–89 kg for commercial platforms, 75 kg design-to per this study's commitment (Section 4)." This removes the false 60–130 kg range from the candidate description while preserving the heritage context.
-
----
-
-### CC-006 — MINOR — `01-overview.md` — Open question 1 retains a pre-lock placeholder mass value
-
-**Sections involved:** `01-overview.md` Open Questions section, item 1
 **Severity:** Minor
-**Parameter:** Design-to mass target stated as "preliminary working assumption: ≤100 kg"
+**Parameter:** Reactive layer TRL target at 2029 gate and at 2035 IOC
+**Source value (§A1 and cross-coupling log TRL 6/2029 gate entry):** Reactive layer: TRL 6 by 2029; TRL 7 by 2035. The cross-coupling log TRL gate entry states: "TRL 6 for this layer by 2029 is the gate requirement; TRL 7 by 2035 is the deployment requirement."
+**Downstream value (§02-02 Section 6, Item 1):** "TRL 6 for this layer by 2029 is the gate requirement; TRL 7 by 2035 is the deployment requirement." — consistent. However, §02-02 Section 3 Tier B discussion states: "the humanoid's reactive layer must be capable of independent fall recovery, collision avoidance, and graceful degradation to safe-mode without any crew input. The deliberative layer must be capable of completing a queued task sequence or aborting cleanly if an obstacle condition exceeds its confidence threshold. These capabilities must be TRL 6 (reactive) and TRL 5 (deliberative) by the 2029 gate and **TRL 7+ by the 2035 IOC**."
+**The problem:** §02-02 Section 3 Tier B says "TRL 7+ by the 2035 IOC" without distinguishing layers. This reads as both reactive and deliberative must reach TRL 7+ by 2035. The §A1 and cross-coupling log TRL gate entry are more precise: deliberative layer targets TRL 7 by 2035, supervisory layer targets TRL 6–7 by 2035. The "TRL 7+" in §02-02 is consistent with the deliberative layer but ambiguous about the supervisory layer, which §02-03 Section 3 characterizes as advancing to TRL 6–7 by 2035 (not necessarily 7+). This is a minor inconsistency in precision, not a factual conflict, but it introduces ambiguity for the autonomy-trl-tasking agent.
 
-**Locked value:** 75 kg design-to / 97.5 kg NTE (cross-coupling log; §02 Sections 4 and 6)
-
-**Value in §01 Open Questions item 1:**
-> "Preliminary working assumption: ≤100 kg in surface configuration, with margin. This assumption must be reconciled with the destinations-trajectories agent."
-
-**The problem:** The working assumption used in §01 (≤100 kg) predates the form factor position decision and has been superseded by the locked 75 kg / 97.5 kg commitment. The open question text implies this constraint is still unresolved, which is incorrect. A reader of §01 who does not proceed to §02 will believe the mass target is ≤100 kg, not 75 kg — a difference of 25 kg that materially affects lander manifest planning.
-
-**Required action:** Update §01 Open Questions item 1 to note resolution: "Resolved in Section 01-02 and locked in the cross-coupling log: 75 kg design-to / 97.5 kg NTE per NASA-STD-5001 30% margin. The ≤100 kg figure used here as a working assumption was superseded."
+**Required action:** Revise §02-02 Section 3 Tier B to specify per-layer targets: "TRL 7 (reactive), TRL 7 (deliberative), TRL 6–7 (supervisory) by the 2035 IOC — consistent with §A1." This eliminates the ambiguity introduced by the undifferentiated "TRL 7+" formulation.
 
 ---
 
-### CC-007 — MINOR — `06-mass-power-budget.md` — Lunar night survival power "goal" of ≤150 W has no traceable locked source
+### CC-S8-005 — Minor — §02-04 Section 2 → §02-04 Section 3 Step 2 — Autonomy-led task count used in cognitive load derivation vs. in supervisor ratio derivation
 
-**Sections involved:** `06-mass-power-budget.md` Section 2
 **Severity:** Minor
-**Parameter:** Stated power goal for lunar night survival mode
+**Parameter:** Count of autonomy-led tasks used to calculate supervisory benefit in the supervisor ratio derivation
+**Source value (§02-04 Section 2, cognitive load arithmetic):** Uses "12 autonomy-led tasks" as basis for the on-demand supervision demand calculation.
+**Downstream value (§02-04 Section 3 Step 2):** "At TRL 7 deliberative layer (2035 IOC), 12 of 20 mission tasks are autonomy-led. Each autonomy-led task reduces active supervision demand from the NIP-10 continuous-control requirement to the on-demand monitoring posture (0.05 person-hours per robot-hour vs. effectively 1.0+ for NIP-10-style operation). The factor-of-20 reduction in per-task supervision demand directly translates to a factor-of-20 improvement in supervisor ratio for those tasks."
+**The problem:** This is internally consistent within §02-04. However, if CC-S8-001 resolves to 11/7/2, then both locations in §02-04 that use 12 autonomy-led tasks must be updated. This finding is a dependent of CC-S8-001: it is listed separately here because §02-04 Section 3's "factor-of-20 improvement in supervisor ratio" claim is load-bearing in the justification chain for §A18, and the factor changes if the count changes. 11 autonomy-led tasks vs. 12 shifts the factor from 20× to approximately 18× — not program-changing, but should be stated accurately.
 
-**The issue:** §06 Section 2 states: "Lunar night survival must close within 150 W with margin (≤115 W design-to at the lower bound of the 70–200 W thermal range)." The "150 W goal" is referenced multiple times in §06 as the applicable target for the hibernation mode. However, the cross-coupling log does not contain an entry locking 150 W as the lunar night power goal. The 70–200 W range from §A10 is locked; the 150 W figure appears to derive from §A3 (Section 01-02's "≤500 W steady-state" formulation), but §A3 does not explicitly address lunar night power.
-
-The 150 W figure is not wrong — it represents the FSP lower bound that would comfortably accommodate the hibernation load without over-provisioning the power plant. But it is presented as a locked goal when it is actually an assumption that has not been formally committed.
-
-**Required action:** Either (a) add a cross-coupling log entry explicitly locking the lunar night power goal as "≤150 W per humanoid unit (goal, not hard cap; hard cap is FSP allocation per far-side-base-architect's sizing)," or (b) revise §06's framing to "lower bound of the §A10 range: 70–200 W; current budget closes against the lower end of this range, meaning FSP allocation at the lower bound is adequate; upper bound requires FSP over-provisioning per the far-side-base-architect guidance in §06 Section 6."
-
----
-
-### CC-008 — MINOR — `06-mass-power-budget.md` — Structure+actuation NTE (39.0 kg) not shown in integration table
-
-**Sections involved:** `03-actuation-structures.md` (source) → `06-mass-power-budget.md` (downstream)
-**Severity:** Minor
-**Parameter:** Subsystem-level NTE for the structure + actuation block
-
-**Source value (§03 Section 4 and cross-coupling log):** Structure + actuation total NTE = 39.0 kg
-
-**Downstream value (§06 mass budget table):** Four constituent rows (primary structure 8.5, actuation 13.0, joints/sealing 4.0, end-effectors 4.5) show design-to values only; no NTE column and no subsystem-level NTE subtotal.
-
-**The problem:** The locked 39.0 kg NTE for this block is not visible in §06. A reader of §06 cannot verify the subsystem constraint is met without summing rows and applying margin mentally. If a future design change causes any of the four rows to grow, it is not immediately apparent when the 39.0 kg subsystem NTE is breached, even before the overall 97.5 kg system NTE is reached.
-
-**Required action:** Add a subtotal row to the §06 mass budget table between the end-effectors row and the sensor suite row: "Structure + actuation block subtotal | 30.0 | 39.0 (30% margin per §A5) | Locked in cross-coupling log; four line-items above." This makes the §A5 constraint traceable within the integration table.
+**Required action:** Conditional on CC-S8-001 resolution. If the count resolves to 11/7/2, update both §02-04 Section 2 on-demand calculation (changes monitoring person-hours subtotal marginally) and §02-04 Section 3 Step 2 (changes the stated factor from 20× to 18×). If the count resolves to 12/6/2, no change needed here.
 
 ---
 
-### CC-009 — MINOR — `06-mass-power-budget.md` — Compute power point values not cross-referenced to §04 range
+### CC-S8-006 — Nit — §02-03 Section 6 heading → §02-03 Section 3 subsection text — §A1 TRL curve described at two levels of specificity in the same document
 
-**Sections involved:** `04-sensing-autonomy.md` (source) → `06-mass-power-budget.md` (downstream)
-**Severity:** Minor
-**Parameter:** Compute power values in §06 vs. cross-coupling log range of 22–75 W
-
-**Source value (§04 compute table and cross-coupling log):** Compute total: ~22–75 W (Tier 1: 5–10 W; Tier 2: 15–60 W; Memory: 2–5 W)
-
-**Downstream value (§06 power table):**
-- Tier 1 RH supervisor: 8 W (full operation modes)
-- Tier 2 AI accelerator: 50 W (full locomotion + manipulation), 45 W (stationary manipulation), 0 W (hibernation)
-- Combined compute: 58 W at peak operation
-
-**The problem:** §06 uses point values (8 W, 50 W) drawn from within the §04 ranges. The values are defensible selections (Tier 1 mid-range; Tier 2 high-end for peak mode), but §06 does not state that these are design-to selections from the §04 range, nor does it explain why 50 W was selected for Tier 2 rather than the high-end 60 W. A reader comparing §04 (22–75 W range) to §06 (58 W point value) cannot determine whether the §06 figure is conservative or optimistic within the range.
-
-**Required action:** Add a note to the §06 power table compute rows: "Tier 1: 8 W selected as design-to mid-point of §04 5–10 W range. Tier 2: 50 W selected as high-performance-mode design-to within §04 15–60 W range; peak instantaneous draw of 60 W is absorbed by the 30% mode margin."
-
----
-
-### CC-010 — NIT — `05-environments-hardening.md` — "Dual-stage" descriptor omitted in §05 cross-reference to joint seal strategy
-
-**Sections involved:** `05-environments-hardening.md` Section 4.4
 **Severity:** Nit
-**Parameter:** Descriptor of joint seal architecture in cross-reference
+**Parameter:** Per-layer TRL targets at the 2029 gate
+**Source value (§02-03 Section 3 heading):** "2029 First-Article Gate (TRL 6 reactive, TRL 5 deliberative/supervisory)" — states per-layer breakdown.
+**Downstream value (§02-03 Section 6 "Reconciliation with §A1 and §A9" opening):** "The TRL table in Section 1 supports the §A1 curve for the reactive and navigation layers: locomotion on prepared paths reaching TRL 6 by 2029 is consistent..." — discusses the reactive layer only, without restating the deliberative/supervisory TRL 5 target from the heading. The §A1 curve is described only partially in §02-03 Section 6.
+**The problem:** A reader of §02-03 Section 6 alone would not see the deliberative and supervisory layer targets confirmed against §A1 in the reconciliation. The heading is correct; the reconciliation section is incomplete. Not a value conflict, but a completeness gap in the §A1 reconciliation.
 
-**Cross-coupling log value:** "Dual-stage labyrinth + single elastomeric lip seal (perfluoroelastomer, FFKM-class)"
-
-**§03 Section 3 value:** "dual-stage labyrinth path followed by a single elastomeric lip seal" — correct and consistent with log.
-
-**§05 Section 4.4 value:** "The joint labyrinth + FFKM lip seal strategy from Section 01-03" — "dual-stage" omitted.
-
-**Required action:** Change "The joint labyrinth" to "The dual-stage labyrinth" in §05 Section 4.4.
+**Required action:** Add one sentence to §02-03 Section 6 after the reactive layer discussion: "The deliberative layer's path to TRL 5 by 2029 is achievable if the lunar-analog task demonstration dataset construction begins by 2027 (§02-03 Section 6 already states this) — this also covers the supervisory layer TRL 5 target, since supervisory layer capability in 2029 depends on the same dataset construction milestone. Both targets are consistent with §A1."
 
 ---
 
-### CC-011 — NIT — `06-mass-power-budget.md` — Power table lists 26 manipulation joints; inconsistent with §03 DOF table
+### CC-S8-007 — Nit — §02-01 Section 4 → §02-04 Section 4 — Forward-deployment argument in overview section omits Pillar 3 (symbolic/operational continuity) without noting the omission
 
-**Sections involved:** `06-mass-power-budget.md` Section 2 power table; `03-actuation-structures.md` Section 2 DOF table
 **Severity:** Nit
-**Parameter:** Manipulation joint count used in power budget table row heading
-
-**§06 power table row label:** "Actuation — manipulation joints (shoulders, elbows, wrists, torso, neck, **26 joints**)"
-**Arithmetic check:** 12 locomotion DOF (6 hip + 2 knee + 4 ankle) + 26 manipulation = 38 total — consistent with locked 38 DOF only if hands are counted as 0 individual DOF in this breakdown.
-
-**§03 DOF table:** Neck 3, torso 2, arms 4×2=8, wrists 3×2=6, hands 10–12×2=20–24, hips 6, knees 2, ankles 4 — totaling 56–60 DOF at the element level, reduced to 38 nominal by treating hand finger groups as compound actuator assemblies.
-
-**The problem:** "26 manipulation joints" only works if each hand is counted as one actuator group (not 10–12 finger DOF), reducing manipulation DOF to: neck 3 + torso 2 + arms 8 + wrists 6 + 2 hand assemblies + 0 hips/knees/ankles already in locomotion = 23 or similar. The counting convention is not stated, creating potential confusion for anyone trying to reconcile §06's "26" against §03's element-by-element table.
-
-**Required action:** Add a parenthetical note to the §06 power table row: "26 manipulation joint actuator groups (excludes individual finger DOF; each hand counted as one multi-motor assembly in this power allocation)." This prevents apparent discrepancy with §03 without requiring any numbers to change.
+**Parameter:** Number of pillars in the forward-deployment justification stated in §02-01 vs. developed in §02-04
+**Source value (§02-04 Section 4):** Three independent pillars: (1) Latency, (2) Situational Awareness, (3) Symbolic and Operational Continuity.
+**Downstream value (§02-01 Section 4):** The section makes the forward-deployment argument on two bases: physics/latency and task-profile requirement for real-time oversight of jointly-executed tasks. Pillar 3 is not mentioned. §02-01 Section 5 (preview) does correctly state "it states the three-pillar case" for §02-04 — so §02-01 signals that three pillars exist.
+**The problem:** §02-01 Section 4 reads as a self-contained argument for forward deployment supported by two rationales. A reader who stops at §02-01 and does not proceed to §02-04 has an incomplete picture of the justification, without being told it is incomplete. The preview note in Section 5 partially addresses this, but Sections 4 and 5 are separated by substantive content, and the signal in Section 5 is easy to miss. Pillar 3 is explicitly named in §02-04 as not a technical-performance argument — it carries independent weight and "would survive revision of the latency numbers." Omitting it from §02-01's summary understates the robustness of the forward-deployment commitment.
+**Required action:** Add a single sentence to §02-01 Section 4, after the medical emergency case argument: "A third pillar — symbolic and operational continuity, discussed in §02-04 Section 4 — carries independent weight and would survive revision of the latency numbers; it is not developed here but is part of the full justification." This prevents any reader from believing §02-01 presents the complete case.
 
 ---
 
-### CC-012 — NIT — `05-environments-hardening.md` — Section 1 requirements table states "120–140 krad with shielding" inconsistently with Section 3's unshielded budget
+## Reconciliation Table
 
-**Sections involved:** `05-environments-hardening.md` Section 1 requirements table vs. Section 3 TID budget
-**Severity:** Nit
-**Parameter:** 7-year TID budget value
+All parameters checked, with source, downstream, and match status.
 
-**§05 Section 3 (authoritative):** "7-year TID budget: **140–210 krad** (silicon) without shielding" — consistent with cross-coupling log.
-
-**§05 Section 1 requirements table, radiation row (COTS compute challenge column):** "7-year design life budget = **120–140 krad** with shielding mitigation needed."
-
-**The problem:** The two values within the same section are inconsistent. The Section 3 value (140–210 krad unshielded) and the Section 1 table value (120–140 krad "with shielding mitigation needed") overlap at only the single point of 140 krad. The Section 1 phrasing "with shielding mitigation needed" is ambiguous — it could mean "this is the unshielded budget and shielding is required," not "this is the shielded budget." If it means the unshielded budget is 120–140 krad, it contradicts Section 3's 140–210 krad. The cross-coupling log is unambiguous: 140–210 krad unshielded, 7-year.
-
-**Required action:** Revise the Section 1 requirements table radiation cell to read: "GCR TID unshielded: 140–210 krad over 7-year design life (Section 3); COTS electronics tolerance ~3–30 krad unshielded — shielding and/or ORU replacement required." Remove the "120–140 krad" figure from Section 1 or clearly attribute it to a specific calculation.
+| Parameter | Source (log / section) | Downstream section(s) | Match? | Finding |
+|-----------|----------------------|-----------------------|--------|---------|
+| New log entry §A15 (boot cover interval) | Margins register §A15; cross-coupling log dust strategy entry (references §A15) | All dependents: far-side-base-architect, space-environments | YES — present in both log and register | None |
+| New log entry §A16 (gait factor) | Margins register §A16; mass/power budget closure entry | No separate cross-coupling log entry; referenced implicitly in budget closure narrative | MINOR GAP — §A16 is not separately logged in cross-coupling log; it lives only in the margins register | Not a finding — §A16 is correctly scoped as an internal subsystem assumption; cross-coupling log entry not required if no downstream agent directly depends on the gait factor value |
+| New log entry §A17 (relay availability) | Margins register §A17; cross-coupling log "forward-deployed supervisory latency" entry | §02-02, §02-04, far-side-base-architect, autonomy-trl-tasking | YES — consistent across margins register, log, and §02-02 text | None |
+| New log entry §A18 (supervisor ratio) | Margins register §A18; cross-coupling log "supervisor ratio" entry | §02-04 Section 3, §02-03 Section 4 (partial) | YES — consistent. §02-03 only cites 1:3 nominal (within the range); §02-04 and log state full 1:2–3 range | None (§02-03 correctly calls it a first-order estimate to be refined by §02-04) |
+| New log entry §A19 (crew composition) | Margins register §A19; cross-coupling log "crew composition" entry | §02-04 Section 2 | PARTIAL — totals match (~4.25 person-hr/shift), subtotals differ in methodology | CC-S8-002 |
+| Latency tier handoff entry in log | Cross-coupling log "latency-tier autonomy handoff" | §02-02, §02-03, §02-04 | YES — tier definitions consistent. Tier A target stated as ≤50 ms in log and §02-04; stated as <100 ms tier boundary in §02-02 | CC-S8-003 |
+| Task allocation table entry in log | Cross-coupling log "task allocation" entry | §02-01, §02-03, §02-04 | NO — log places T16 in IOC autonomy-led list contradicting §02-03 table and §02-04 text which both place T16 in jointly-executed at IOC | CC-S8-001 (Blocker) |
+| Autonomy TRL: reactive TRL 6 by 2029 | §A1; cross-coupling log TRL gate entry | §02-02 Section 6 Item 1, §02-03 Section 3 heading | YES — all consistent | None |
+| Autonomy TRL: deliberative TRL 5 by 2029 | §A1; cross-coupling log TRL gate entry | §02-02 Section 3 Tier B, §02-03 Section 3 heading | YES — consistent | None |
+| Autonomy TRL: supervisory TRL 5 by 2029 | §A1; cross-coupling log TRL gate entry | §02-03 Section 3 heading | YES — heading states "TRL 6 reactive, TRL 5 deliberative/supervisory" | None |
+| Autonomy TRL: TRL 7+ by 2035 (overall) | §A1; cross-coupling log TRL gate entry | §02-02 Section 3 Tier B ("TRL 7+" undifferentiated), §02-03 Section 3 (deliberative TRL 7, supervisory TRL 6–7) | MINOR — §02-02 uses undifferentiated "TRL 7+" while §02-03 correctly differentiates by layer | CC-S8-004 |
+| Supervisor ratio 1:2–3 at IOC | §A18; cross-coupling log supervisor ratio entry | §02-04 Section 3 position statement; §02-04 Section 6 summary | YES — consistent | None |
+| Supervisor ratio 1:4–5 at full ops | §A18; cross-coupling log supervisor ratio entry | §02-04 Section 3 step 4; §02-04 Section 6 summary | YES — consistent | None |
+| Supervisor ratio hard ceiling ~1:8–10 | §A18; cross-coupling log supervisor ratio entry | §02-04 Section 3 step 5 | YES — consistent | None |
+| Task allocation count 12 autonomy-led | §02-01 Section 2 summary; §02-03 Section 4 summary; cross-coupling log | §02-04 Section 1, §02-04 Section 3 Step 2, §A18, §A19 | NO — count stated as 12 everywhere but actual §02-03 table shows 11; discrepancy is T16 classification | CC-S8-001 (Blocker) |
+| Task allocation count 6 jointly-executed | §02-01 Section 2 summary; §02-03 Section 4 summary; cross-coupling log | §02-04 Section 1, periodic supervision list (lists 7), §A19 | NO — §02-04 periodic supervision list has 7 tasks; stated count is 6 | CC-S8-001 (Blocker) |
+| Task allocation count 2 human-led | All sections and log | All dependents | YES — T12 and T18; consistent throughout | None |
+| Latency Tier A: ≤50 ms target | Cross-coupling log latency entry; §02-02 Section 3 design target | §02-04 Section 1, §02-04 summary table | YES — ≤50 ms consistent in log, §02-04, and §02-02 design target | None |
+| Latency Tier A: boundary definition | §02-02 Section 3 heading (<100 ms) | §02-04 Section 1 (≤50 ms), cross-coupling log (≤50 ms) | NO — boundary stated as <100 ms in §02-02 but ≤50 ms in §02-04 and log | CC-S8-003 (Major) |
+| Latency Tier B: ~2.8 s RTLT | Cross-coupling log; §02-02 Section 1 relay calculation | §02-04 Section 1, §02-04 summary table, §02-01 Section 2 | YES — all use 2.78–2.92 s or "~2.8 s" consistently | None |
+| Latency Tier C: 8.7–42 min | §02-02 Section 1 Mars calculation | §02-04 Section 1 opening | YES — consistent | None |
+| Forward-deployment commitment | §02-01 Section 4 (2-basis argument); §02-04 Section 4 (3-pillar argument) | §02-04 Section 4 Pillars 1–3 | PARTIAL — §02-01 omits Pillar 3 without noting the omission | CC-S8-007 (Nit) |
+| Three-pillar case preview in §02-01 | §02-01 Section 5 preview | §02-04 Section 4 | YES — Section 5 correctly signals "three-pillar case" to be developed in §02-04 | None |
+| Human value floor: 7 categories | Cross-coupling log "human value floor" entry; §02-03 Section 3 | §02-01 Section 2 ("7-category human value floor"), §02-04 Section 1 continuous supervision | YES — 7 categories consistent across all sections | None |
+| §02-03 Section 6 §A1 reconciliation completeness | §A1 per-layer targets | §02-03 Section 6 text | PARTIAL — reactive layer confirmed; deliberative/supervisory TRL 5 targets not explicitly confirmed in reconciliation | CC-S8-006 (Nit) |
+| Cognitive load total: ~4.25 person-hr/shift | §02-04 Section 2 (detailed derivation) | §A19 (simplified derivation); §02-04 Section 6 summary | YES for totals; NO for subtotals — methodology inconsistency in §A19 periodic supervision bucket | CC-S8-002 (Major) |
+| Crew composition: 4 crew, 3 humanoids | Cross-coupling log crew composition entry; §02-04 Section 2 | §A19; §02-04 Section 6 summary | YES — consistent | None |
+| Supervisory capacity: ~8 person-hr/shift | §02-04 Section 2 (Mir baseline derivation) | §A19 capacity derivation | YES — both derive ~8 person-hr/shift available. Note: §A19 uses 4 × 2 hours = 8; §02-04 uses 4 crew × 8-hr shift × 0.25–0.30 available fraction ≈ 8–10 person-hr; the specific derivation methods differ slightly but both land at 8 person-hr as the conservative estimate | None |
+| Relay availability floor ≥95% | §A17; cross-coupling log latency entry | §02-02 Section 2 relay availability discussion | YES — §02-02 Section 2 derives 75–85% for single Queqiao-2 and states two-satellite needed for >95%; consistent with §A17 | None |
 
 ---
 
-## Additional Observations
+## Priority Order for Resolution
 
-**Budget closure assessment under reconciled numbers (CC-001):** If CC-001 resolves in favor of §05's 50–150 W heater figure, the hibernation mode pre-margin total becomes approximately 79–209 W (heaters 70–200 W + non-thermal always-on loads ~9 W), and the with-margin total approximately 103–272 W. At the lower bound, the budget closes comfortably at 103 W vs. 150 W goal — materially different from §06's narrative of "barely closes at 148 W vs. 150 W." The upper bound still does not close (272 W), but the risk picture changes: the lower bound is no longer a near-miss, only the upper bound is a concern. Downstream agents (far-side-base-architect for FSP sizing, conops-integrator for operational constraints) should be informed that the closure confidence depends on which heater estimate is treated as authoritative.
+1. **CC-S8-001 (Blocker)** — Resolve T16 classification first; all other findings that reference the 12/6/2 count (CC-S8-002, CC-S8-005) cannot be fully resolved until CC-S8-001 is settled.
+2. **CC-S8-003 (Major)** — Fix Tier A boundary definition in §02-02; this drives the on-base network topology requirement and affects the far-side-base-architect's design.
+3. **CC-S8-002 (Major)** — Reconcile §A19 demand derivation methodology with §02-04 Section 2; the subtotal inconsistency is the downstream-visible part of this finding, and the ConOps agent needs reliable per-bucket numbers.
+4. **CC-S8-004 (Minor)** — Clarify per-layer TRL targets in §02-02 Tier B section; low risk but prevents ambiguity for autonomy-trl-tasking.
+5. **CC-S8-005 (Minor)** — Update count-dependent arithmetic in §02-04 Section 3 once CC-S8-001 is resolved.
+6. **CC-S8-006 (Nit)** — §A1 reconciliation completeness in §02-03 Section 6; cosmetic but should be done in the same edit pass as CC-S8-001.
+7. **CC-S8-007 (Nit)** — Pillar 3 signal in §02-01 Section 4; one-sentence addition.
 
-**Actuation type consistency in §04:** The sensing/autonomy section does not explicitly reference HD-Electric as the actuation type, but its power figures and compute architecture assumptions are internally consistent with HD-Electric. No inconsistency was found; this is a transparency observation only.
+---
 
-**Form factor scoring for Candidates C–E (CC-002 extension):** Correcting the table per CC-002 widens the bipedal margin over other candidates. Candidate B (Centaur) moves from 3.35 (table) to 3.55 (arithmetic), narrowing the A-vs-B gap from 0.25 to 0.10. The study's narrative judgment that "the gap is narrow" is correct and would be undermined by the erroneous table values showing a 0.25 spread. Fixing the table makes the position more honest, not less defensible.
+## Confirmed Consistent Entries (No Action Required)
+
+The following parameters were checked and found fully consistent across all referenced sections and the log:
+
+- All six new cross-coupling entries (§A15–§A19, plus latency tier handoff and task allocation table) are present in both the cross-coupling log and margins register with matching values.
+- §A17 relay availability ≥95% floor: consistent across §02-02, log, and register.
+- §A18 supervisor ratio 1:2–3 IOC / 1:4–5 full ops: consistent across §02-04 Section 3 and Section 6, log, and register.
+- Human value floor 7 categories: consistent across §02-01, §02-03, log, and register.
+- Latency Tier B ~2.8 s RTLT: consistent across §02-01, §02-02, §02-04, and log.
+- Latency Tier C 8.7–42 min: consistent across §02-02 and §02-04.
+- Crew composition 4 crew / 3 humanoids: consistent across §02-04 and log.
+- Reactive layer TRL 6 by 2029: consistent across §A1, log, §02-02 Section 6, §02-03 Section 3 heading.
+- Deliberative layer TRL 5 by 2029: consistent across §A1, log, §02-03 Section 3 heading.
+- Supervisory layer TRL 5 by 2029: consistent across §A1, log, §02-03 Section 3 heading.
+- 2 human-led tasks (T12, T18): consistent across all sections.
+- §A9 constraint (foundation models at supervisory layer only): consistent across §02-03 Section 5, §02-04 Section 5, and register.
+- §A8 two-tier compute as enabler of on-demand supervision: §02-04 Section 5 correctly references §A8 and is consistent with the register.
