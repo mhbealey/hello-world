@@ -46,3 +46,9 @@ Append one entry per work session. Format: `## YYYY-MM-DD — description`. Each
 **Got stuck:** (update as stage 5 proceeds)
 
 **Notes:** (update as stage 5 proceeds)
+
+---
+
+## 2026-05-03 — humanoid-systems-architect: form factor tradespace
+
+Produced `study/01-optimal-space-humanoid/02-form-factor-tradespace.md` as a draft-complete concept-paper section. The section evaluates five form factor candidates (full bipedal humanoid, centaur, quadrupedal with manipulator arms, fixed platform with dexterous arms, modular/reconfigurable) against seven weighted criteria (human tool and environment compatibility 0.25, surface locomotion 0.20, microgravity cabin mobility 0.15, crew serviceability 0.15, mass 0.10, autonomy scalability 0.10, training overhead 0.05). The bipedal form scores 3.65/5.00, edging the centaur at 3.55; position taken is full bipedal humanoid as the primary form factor at 75 kg design-to mass (97.5 kg not-to-exceed with 30% margin). The FEDOR/Skybot F-850 microgravity failure is treated as a controller requirement rather than a form factor disqualifier, and the Lunokhod/Soviet purpose-built counterargument is engaged directly and resolved on program economics grounds: the lunar far side base is built for humans and the cost of dual tool and infrastructure standards over 20 years exceeds the bipedal form's locomotion and mass penalties. Cross-coupling log updated with the form factor position decision; margins/assumptions register updated with two new parametric assumptions (bipedal target mass and peak power); constraints to downstream sections (actuation, sensing/autonomy, environments, budget) are explicit in section 6.
