@@ -12,7 +12,7 @@ This file tracks all margins applied and assumptions made across the study, in o
 ## How to add an assumption
 
 Short assumptions (one sentence, fits in a table row): add directly to the Assumptions table.
-Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A16).
+Long assumptions (multi-sentence, with go/no-go gates or cascading consequences): add a one-line summary pointer in the table and a numbered subsection `### AN. Title` below, containing the full text. Use the next available number (current highest: A17).
 
 Before adding: search this file for contradicting entries. If a contradiction exists, resolve it before adding — do not leave two rows with incompatible values for the same quantity.
 
@@ -48,6 +48,7 @@ Before adding: search this file for contradicting entries. If a contradiction ex
 |Actuator mass weighted mean 342 g/joint (budget) vs. 385 g/joint (derived); 1.6 kg overrun risk if Class A not gravity-optimized|See §A14 below|robotics-actuation-structures|Medium — 5% structure+actuation overrun in stressed case; must confirm in Phase A|
 |Boot cover replacement interval: 500 surface-hours (parametric, no heritage)|See §A15 below|robotics-actuation-structures / far-side-base-architect|Low-medium — ~7 pairs/year/humanoid consumables; accelerated abrasion test required before ConOps interval treated as credible|
 |Locomotion power gait factor: 0.55 (normal gait vs. vigorous locomotion); no direct heritage validation|See §A16 below|humanoid-systems-architect / robotics-actuation-structures|Medium — 800 W cap holds unless gait factor ≥0.84; current margin erodes if factor is 0.75|
+|Relay constellation availability ≥95% by IOC; two-satellite minimum architecture assumed|See §A17 below|far-side-base-architect / teleoperation-latency|Medium — single Queqiao-2 provides only 75–85% availability; second satellite is required for supervisory ops|
 
 ### A1. Humanoid autonomy maturity curve
 
@@ -127,7 +128,7 @@ Owner: robotics-sensing-autonomy. Risk if wrong: low-medium — sensors are not 
 
 The sensing/autonomy section establishes a **two-tier compute architecture**: Tier 1 is a radiation-hardened supervisor processor (RAD750-class, 5–10 W, always-on) running safety-critical deterministic control loops; Tier 2 is a commercial AI inference accelerator (Jetson AGX Orin-class, 15–60 W) running perception pipelines and VLA model inference under Tier 1 watchdog supervision. Total compute mass ~1.8 kg including spot shielding.
 
-This architecture is required because no radiation-hardened AI inference processor equivalent to commercial AI accelerators (Jetson AGX Orin: 275 TOPS INT8 / ~137 TOPS FP16, 15–60 W) exists at TRL > 4 as of 2026. The Tier 2 watchdog approach accepts commercial component SEU/latchup susceptibility as a managed risk: Tier 1 monitors Tier 2 output validity and issues power-cycle resets on detected anomalies. Spot shielding (5–10 mm Al/Ta laminate, ~0.8 kg) reduces latchup rate by 2–3 orders of magnitude for SPE proton events; GCR HZE ion shielding effectiveness is more limited at the relevant energies.
+This architecture is required because no radiation-hardened AI inference processor equivalent to commercial AI accelerators (Jetson AGX Orin: 275 TOPS INT8 / ~137 TOPS FP16, 15–60 W) exists at TRL > 4 as of 2026. The Tier 2 watchdog approach accepts commercial component SEU/latchup susceptibility as a managed risk: Tier 1 monitors Tier 2 output validity and issues power-cycle resets on detected anomalies. Spot-shielding (5–10 mm Al/Ta laminate, ~0.8 kg) reduces latchup rate by 2–3 orders of magnitude for SPE proton events; GCR HZE ion shielding effectiveness is more limited at the relevant energies.
 
 **Technology gate:** If a radiation-hardened AI accelerator at TRL 6 becomes available by the 2029 gate (through DARPA HPSC or similar programs), the Tier 2 watchdog architecture may be simplified or replaced. If not — assessed as the more likely outcome — the two-tier watchdog architecture remains through the 2035 first deployment.
 
@@ -221,5 +222,19 @@ The locomotion actuation power budget (260 W design-to) is derived from the Valk
 **Technology gate:** The task-level gait power simulation referenced in §03 Section 5, item 3, must validate or revise this factor before the 2032 hardware definition review. If the factor is 0.75 rather than 0.55, locomotion power grows to ~350 W; the full locomotion+manipulation mode total grows from 474 W to ~564 W (pre-margin), yielding ~733 W with 30% margin — still within the 800 W cap but with reduced margin (67 W vs. 184 W currently). The 800 W cap is not broken until the gait factor reaches ~0.84, so there is headroom, but the budget's 184 W current margin would erode substantially at a factor of 0.75.
 
 Owner: humanoid-systems-architect (locomotion power), with input from robotics-actuation-structures (gait simulation). Risk if wrong: medium — the 800 W cap is not broken until the gait factor reaches ~0.84, so there is headroom, but the budget's 184 W current margin would erode substantially.
+
+### A17. Relay constellation availability: ≥95% by IOC; two-satellite minimum required
+
+**Added 2026-05-03 by teleoperation-latency.**
+
+The latency tradespace analysis establishes that **>95% simultaneous Earth and far-side line-of-sight coverage** is required for relay-supported supervisory operations from Earth to be an effective mission oversight mechanism. This availability floor is derived from the operational requirement that relay outages must be rare enough that they do not dominate mission planning — if outages are frequent, ConOps must be designed around autonomous operations rather than Earth oversight, which is a different and more demanding TRL requirement for the autonomy stack.
+
+**Single-asset shortfall.** Queqiao-2 provides approximately 75–85% availability of simultaneous dual-line-of-sight coverage for a receiver at the equatorial far side (based on its 24-hour elliptical frozen orbit geometry). This is insufficient for the ≥95% requirement. A two-satellite constellation phased 180° apart in the same orbital family would provide >95% availability. The far-side-base-architect must carry this as an infrastructure prerequisite for the IOC milestone, not a growth option.
+
+**Outage behavior.** During relay outages under the single-asset scenario, the humanoid must autonomously detect link loss, complete or safely halt current operations, and hold a recoverable posture until link restoration. This is a concrete functional requirement on the autonomy stack with TRL 5 required at 2029 and TRL 7 required at 2035 IOC. It feeds directly to autonomy-trl-tasking.
+
+**Path dependency.** If the relay constellation reaches ≥95% availability before IOC, the study's Earth-oversight model for scheduled operations is validated. If it does not, the ConOps must be revised to treat Earth oversight as advisory-only, with the forward-deployed crew carrying full supervisory authority for all time-critical operations.
+
+Owner: far-side-base-architect (relay infrastructure), teleoperation-latency (availability requirement definition), autonomy-trl-tasking (outage autonomous behavior TRL). Risk if wrong: medium — if the relay constellation is not at ≥95% by IOC, the autonomous safe-mode behavior must cover a higher fraction of operations, increasing the TRL pressure on the autonomy stack at the 2035 gate.
 
 [Each agent appends to this register as work progresses. Orchestrator reviews at major checkpoints.]

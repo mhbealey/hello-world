@@ -134,9 +134,82 @@ note = {The canonical reference},
 
 % — Humanoid robotics —
 
-% [Add: Atlas Electric papers/announcements, Apollo from Apptronik,
-%  Figure 02, Optimus, NASA Valkyrie/R5 papers, Robonaut 2 lessons learned,
-%  GITAI publications, foundation model robotics (RT-2, OpenVLA, π0)]
+@inproceedings{diftler2011r2,
+  author       = {Diftler, M. A. and Mehling, J. S. and Abdallah, M. E. and Radford, N. A. and Bridgwater, L. B. and Sanders, A. M. and others},
+  title        = {Robonaut 2 --- The First Humanoid Robot in Space},
+  booktitle    = {Proceedings of the IEEE International Conference on Robotics and Automation (ICRA)},
+  year         = {2011},
+  doi          = {10.1109/ICRA.2011.5979830},
+  note         = {Peer-reviewed. Foundational design paper for R2. Confirms ISS deployment (STS-133, February 2011), torso-only initial configuration, and design intent for EVA tool compatibility. Used in this study as primary heritage for structured manipulation in space and dexterous grasp design. Full entry also in corpus/heritage-notes/humanoid-specs.bib.}
+}
+
+@misc{ssrms2020ntrs,
+  author       = {{NASA Johnson Space Center}},
+  title        = {{SSRMS} Space Station Remote Manipulator System — Heritage Reference},
+  year         = {2020},
+  howpublished = {NASA Technical Reports Server / JSC heritage documentation},
+  note         = {[VERIFY] — SSRMS operational heritage widely cited; primary NTRS reference number TBD before PDR. SSRMS (Canadarm2) has operated continuously on ISS since 2001. Seven joints using harmonic drive transmissions with brushless DC motors. TRL 8 for its defined task set. Used in this study as primary space heritage for structured-environment manipulation with space-qualified harmonic drive joints.}
+}
+
+@misc{bmw2024figuredeployment,
+  author       = {{BMW Group}},
+  title        = {Humanoid Robots for BMW Group Plant Spartanburg},
+  year         = {2024},
+  howpublished = {Corporate press release. \url{https://www.bmwgroup.com/en/news/general/2024/humanoid-robots.html}},
+  note         = {Confirms production deployment of Figure 02 at BMW Spartanburg manufacturing plant. Used in this study as the primary reference for structured-environment autonomous task execution TRL baseline (terrestrial TRL 6--7 for pre-taught manipulation). Full entry in corpus/heritage-notes/humanoid-specs.bib.}
+}
+
+@misc{agility2024digit,
+  author       = {{Agility Robotics}},
+  title        = {Digit Humanoid Robot},
+  year         = {2024},
+  howpublished = {Manufacturer product page / spec sheet. \url{https://www.agilityrobotics.com/}},
+  note         = {Primary source for mass (65 kg), DOF (30 in v4), sensors (lidar, 4x Intel RealSense depth cameras, MEMS IMU). Amazon fulfillment center deployment confirms multi-step scripted manipulation at TRL 6 terrestrial. Full entry in corpus/heritage-notes/humanoid-specs.bib.}
+}
+
+@book{huntress2011soviet,
+  author    = {Huntress, Wesley T. and Marov, Mikhail Ya.},
+  title     = {Soviet Robots in the Solar System: Mission Technologies and Discoveries},
+  publisher = {Springer Praxis},
+  year      = {2011},
+  series    = {Springer Praxis Books / Space Exploration},
+  isbn      = {9781441978974},
+  note      = {Primary reference for Soviet lunar and planetary robotic programs. Used in this study for Lunokhod traverse totals, teleoperation crew structure (five-person crews, real-time operation), and the philosophical lineage of ground-in-the-loop robotic operations. Full entry in corpus/heritage-notes/soviet-heritage.bib.}
+}
+
+@misc{unitree2024h1,
+  author       = {{Unitree Robotics}},
+  title        = {Unitree H1 --- Universal Humanoid Robot},
+  year         = {2023},
+  howpublished = {Manufacturer product page. \url{https://www.unitree.com/h1/}},
+  note         = {[UNVERIFIED] — H1 cited for bipedal locomotion capability on prepared surfaces. H1 walking speed 3.3 m/s on prepared terrain; long-tail performance on loose granular surfaces not published by manufacturer. Used in this study as part of the terrestrial TRL 6 locomotion baseline for prepared-path walking. Treat as unverified until confirmed against published locomotion test data on representative terrain types. Full entry in corpus/heritage-notes/humanoid-specs.bib (key: unitree2023h1).}
+}
+
+@misc{bdatlaselectric2024,
+  author       = {{Boston Dynamics}},
+  title        = {Atlas Humanoid Robot --- Electric},
+  year         = {2024},
+  howpublished = {Manufacturer product page. \url{https://bostondynamics.com/products/atlas/}},
+  note         = {[UNVERIFIED] — Atlas Electric cited for bipedal locomotion capability and long-tail failure characteristics on granular surfaces. Published data on Atlas failure rates on sand/gravel terrain is not in the public domain; this claim is based on general knowledge of bipedal robot limitations on loose substrates. Treat as unverified. Full entry in corpus/heritage-notes/humanoid-specs.bib (key: bostondynamics2024atlas).}
+}
+
+@inproceedings{zhao2023aloha,
+  author    = {Zhao, Tony Z. and Kumar, Vikash and Levine, Sergey and Finn, Chelsea},
+  title     = {Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware},
+  booktitle = {Proceedings of Robotics: Science and Systems (RSS)},
+  year      = {2023},
+  note      = {[VERIFY] — ALOHA platform and ACT (Action Chunking with Transformers) policy. Used in this study as a reference for dexterous manipulation TRL at training distribution boundary: demonstrates capable bimanual manipulation in trained scenarios with performance degradation on out-of-distribution objects. Relevant to the mission requirement for unstructured novel-object manipulation at the lunar far-side base.}
+}
+
+@misc{black2024pi0,
+  author    = {Black, Kevin and Brown, Noah and Driess, Danny and Esmail, Adnan and Hejna, Michael and Herrmann, Charles and others},
+  title     = {$\pi_0$: A Vision-Language-Action Flow Model for General Robot Control},
+  year      = {2024},
+  howpublished = {arXiv preprint arXiv:2410.24164},
+  note      = {[UNVERIFIED] — pi-0 (pi-zero) VLA model from Physical Intelligence. Used in this study as a reference for current state of cross-task generalization in foundation model robotics and as a baseline for supervisory layer capability. Not yet validated in space-relevant or highly OOD environments. Treat as current state of the art pending formal publication review.}
+}
+
+% [Add: Apollo from Apptronik, NASA Valkyrie/R5 papers, GITAI publications]
 
 % — Lunar far side science —
 
@@ -168,7 +241,7 @@ note = {The canonical reference},
 
 @misc{nvidia2023jetson,
   author       = {{NVIDIA Corporation}},
-  title        = {Jetson {AGX} Orin Series — Product Brief},
+  title        = {Jetson {AGX} Orin Series --- Product Brief},
   year         = {2023},
   howpublished = {Manufacturer product brief. \url{https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/}},
   note         = {Primary source for Jetson AGX Orin performance (275 TOPS INT8) and power modes (15 W / 30 W / 60 W configurable). 64 GB unified memory option confirmed. Used in this study as the Tier 2 commercial AI accelerator reference for onboard inference architecture. Not radiation-hardened; susceptible to single-event latchup under lunar radiation environment.}
