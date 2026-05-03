@@ -193,3 +193,25 @@ Wrote stage 6 entries for all four retro files:
 **Next session:** Task 7 (update agent prompts based on retro findings) and Task 8 (generate handback-stage6.md).
 
 ---
+
+## 2026-05-03 — humanoid-systems-architect (§06 + §01): stage 6 Batch 2 finding remediation
+
+Addressed seven findings across `study/01-optimal-space-humanoid/06-mass-power-budget.md` and `study/01-optimal-space-humanoid/01-overview.md`.
+
+**§06 changes:**
+- P1-B (Blocker): corrected survival heater row from 85–175 W to 50–150 W, matching §05 confirmed value. Recalculated survival mode totals: pre-margin 79–209 W, with 30% margin 103–272 W. Removed the circular ≤150 W design goal; replaced with "FSP provision: 300 W (worst-case margin, pending thermal model)". Status updated: both bounds close against the FSP provision.
+- P2-2 (Blocker): flagged thermal radiator sizing as OPEN in the thermal management notes cell. Required rejection area for 300 W at ε=0.70, T_panel=50°C, T_sink~243 K is 0.7–1.5 m² per Stefan-Boltzmann — the prior 0.3 m² was insufficient by ~3×. Thermal management design-to mass reduced from 3.0 kg to 2.5 kg with 0.5–3.0 kg radiator mass as open risk provision in growth allowance. Allocated subtotal revised 58.2 → 57.7 kg; growth allowance revised 16.8 → 17.3 kg. Total design-to and NTE unchanged at 75.0 kg / 97.5 kg.
+- CC-003 (Major): added note to power table — §04 sensor peak of 75 W applies to full simultaneous active configuration; the 44 W locomotion column represents the more common operational draw; 75 W peak should be used for thermal analysis.
+- P2-5 (Blocker): added sentence logging the 0.55 gait factor as §A16. Added third qualification to Budget Closure section covering gait factor sensitivity.
+- AE-008 (Major): added depth-of-discharge note to battery derivation; quantified the 20% DoD reserve consequence (15.6 kg cells, ~19% of growth allowance); tracked under §A13.
+- HC-006 (Major): added citations and clarification to the efficiency improvement factor derivation, citing Paine et al. 2015 for SEA efficiency at 65–75% and Harmonic Drive AG catalog for HD efficiency at 78–83%.
+
+**§01 changes:**
+- AE-005 / P2-3 (Blocker): corrected Atlas Electric DOF from 56 to 28 (Boston Dynamics, 2024). Updated actuation type column to "custom fully-rotational direct-drive motors, high-density NdFeB motors; no harmonic drives, no roller screws". Updated Key lessons column to note the 56-DOF figure in earlier drafts was incorrect.
+
+**Breadcrumbs:**
+- Appended §A16 (locomotion gait factor 0.55) to margins register with full derivation, technology gate, and owner; updated header to current highest A16.
+- Appended cross-coupling log entry for §06 survival heater correction and radiator sizing open flag.
+- Updated both files to review-status: findings-addressed, last-updated: 2026-05-03.
+
+---
