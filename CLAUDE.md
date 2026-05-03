@@ -4,6 +4,10 @@
 
 A concept study examining humanoid-forward architecture for space exploration, with the lunar far side permanent base as the testbed. Output is a publishable concept paper of 80-150 pages, not a design document.
 
+## Document purpose
+
+This study is the core bones of a program, not an academic paper. Agents optimize for: decomposability into work packages with clear scope and deliverables; forward-carrying assumptions as program commitments with explicit go/no-go gates; real program structure with phases, milestones, and decision authority; identification of the minimum first article that proves the architecture; and traceability for handoff to teams that pick up the work. When in doubt between interesting analysis and actionable program input, choose actionable.
+
 ## The thesis
 
 A humanoid-forward architecture is the unlock for three things current architectures cannot deliver:
