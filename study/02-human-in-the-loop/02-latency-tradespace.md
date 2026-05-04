@@ -73,7 +73,7 @@ Upper bound (2.92 s) corresponds to maximum Earth-satellite path length when the
 | Mars surface (full range) | 261 | 1,261 | 8.7 min | 42 min | None needed | No — rover model |
 | Jupiter system (full range) | 2,097 | 3,096 | 70 min | 103 min | None needed | No — fully autonomous |
 
-**Key architectural read from this table:** The gap between the cislunar-supervised case (RTLT <100 ms) and the Earth-supervised-via-relay case (RTLT ~2.8 s) is approximately two orders of magnitude in latency. As Section 2 shows, these two cases produce qualitatively different operating modes, not merely quantitatively different ones.
+**Key architectural read from this table:** The gap between the cislunar-supervised case (RTLT ≤50 ms, Tier A) and the Earth-supervised-via-relay case (RTLT ~2.8 s) is approximately two orders of magnitude in latency. As Section 2 shows, these two cases produce qualitatively different operating modes, not merely quantitatively different ones.
 
 ---
 
