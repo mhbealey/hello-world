@@ -1,77 +1,50 @@
-# Humanoid-Forward Space Exploration Study
+# Private Space Program
 
-A concept study examining humanoid-forward architecture for space exploration, with the lunar far side permanent base as the testbed. Output: a publishable concept paper of 80–150 pages. Developed by a multi-agent AI engineering team.
+Analytical infrastructure for a private space program. Studies are produced outputs. The agent system, tooling, and gates are the persistent product.
 
-## The Thesis
+## First study
 
-A humanoid-forward architecture is the unlock for three things current architectures cannot deliver:
+**Lunar Humanoid Pathfinder** — `studies/archive/lunar-humanoid-pathfinder/`
 
-1. **Economically sustainable presence** across the inner and middle solar system
-2. **The in-space industrial base** that enables future deep space and eventual interstellar capability
-3. **Persistent scientific operations** at destinations beyond credible crewed reach
+Concept study examining humanoid-forward architecture for space exploration, with a lunar far side permanent base as the testbed. Eight stages, completed 2026-05-04.
 
-The lunar far side base proves the human-humanoid teaming model before it extends outward.
+## Repo structure
 
-## The Four Questions
+| Directory | Purpose |
+|-----------|---------|
+| `system/` | Agents, orchestration, tools, retro, state |
+| `studies/active/` | Studies in progress |
+| `studies/archive/` | Completed studies (read-only) |
+| `program/` | Roadmap, milestones, work packages |
+| `team/` | Roles, onboarding |
+| `business/` | Legal, pitch materials |
+| `ops/` | Audits, architecture decision records |
 
-The study is structured around four questions, ordered by dependency:
+## System v1.0
 
-| # | Question | Status |
-|---|----------|--------|
-| (a) | **Optimal Space Humanoid** — What does the machine actually look like? | Draft complete |
-| (b) | **Human-in-the-Loop Value** — Where does human supervision add value, where is it overhead? | Not started |
-| (c) | **Workflow / ConOps** — How does a mission actually run, end to end? | Not started |
-| (d) | **Build and Deploy** — Technology roadmap, destinations, program structure | Not started |
+Restructured from a single-study repo to a program-level infrastructure on 2026-05-04. Key changes:
 
-## Current State
+- Study content moved to `studies/archive/lunar-humanoid-pathfinder/`
+- Agents generified and split into base/domain/meta/reviewer layers
+- Six reviewer types promoted to first-class agent files
+- CLAUDE.md rewritten to describe the system, not the study
+- AlphaEdge application code deleted (88 files)
 
-- **12 sections written**, 37,000+ words
-- **Question (a) draft-complete**: 6-section analysis of the space humanoid covering heritage, form factor, actuation, sensing/autonomy, environments, and mass/power budget
-- **Mass budget closes**: 75 kg design-to / 97.5 kg not-to-exceed; 487 W steady-state / 782 W peak
-- **Form factor position**: Full bipedal humanoid, defended on program economics grounds
-- **23 open questions** logged with owners and milestone gates
+See `ops/audits/audit-v1.0-2026-05-04.md` for the full restructure audit.
 
-## Agent System
+## Running the system
 
-This study is developed by 17 specialized AI agents, each owning specific artifacts:
-
-- **Subsystem agents**: humanoid-systems-architect, robotics-actuation-structures, robotics-sensing-autonomy, space-environments, teleoperation-latency, autonomy-trl-tasking, human-factors-teaming, conops-integrator, fault-management-sustainment, destinations-trajectories, far-side-base-architect, technology-roadmap-trl, cost-program
-- **Cross-cutting agents**: soviet-russian-heritage, far-side-base-architect
-- **System agents**: visualization-agent, executive-summary-agent, meta-supervisor
-
-The orchestrator dispatches agents in parallel by default, reconciles cross-coupling decisions, enforces breadcrumb discipline, and generates handback documents for planning continuity.
-
-## Dashboard
-
-```bash
-pip install -r tools/requirements.txt
-python tools/build_site.py
-open site/index.html
+Build the study site:
+```
+python system/tools/build_site.py --study lunar-humanoid-pathfinder
 ```
 
-## Handback Loop
-
-This project runs as a loop between Claude Code (executor) and a planning conversation (designer). At the end of each stage:
-
-```bash
-python tools/generate_handback.py --stage N
+Generate a handback:
+```
+python system/orchestration/handback.py --stage N --study <study-id>
 ```
 
-The handback is a self-contained document pasted into a new planning conversation, which returns the scaffolding for the next stage.
-
-## Key Assumptions
-
-- **Autonomy TRL curve**: TRL 6 (space-relevant) by ~2029 → TRL 7+ by ~2035 → TRL 8 by ~2038-2040
-- **Fission surface power** available by 2030s
-- **Starship HLS or equivalent** operational for lunar manifest
-- **Bipedal form factor**: 75 kg design-to, 500 W steady-state / 800 W peak power
-
-## Repository Structure
-
+Start a new study:
 ```
-study/           — concept paper sections (markdown)
-corpus/          — BibTeX references
-tools/           — build scripts and generators
-retro/           — session logs, agent performance, system observations
-.claude/agents/  — agent definitions
+python system/orchestration/new_study.py --id <id> --title "<title>" --domain <domain>
 ```

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cross-Coupling Log — Humanoid-Forward Study</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Humanoid-Forward Study</a>
+      <div class="build-time">Built 2026-05-03 05:10</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-dashboard">Dashboard</a>
+      <a href="agents.html" class="nav-dashboard">Agents (18)</a>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">0. Front Matter</div>
+        
+        <a href="00-front-matter__abstract.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Abstract
+        </a>
+        
+        <a href="00-front-matter__executive-summary.html" class="nav-item" title="auto-generated">
+          <span class="status-dot" style="background: #9ca3af"></span>
+          Executive Summary
+        </a>
+        
+        <a href="00-front-matter__why-this-why-now.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Why This Study, Why Now
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">1. Optimal Space Humanoid</div>
+        
+        <a href="01-optimal-space-humanoid__01-overview.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Overview and Heritage Table
+        </a>
+        
+        <a href="01-optimal-space-humanoid__02-form-factor-tradespace.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Form Factor Tradespace
+        </a>
+        
+        <a href="01-optimal-space-humanoid__03-actuation-structures.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Actuation and Structures
+        </a>
+        
+        <a href="01-optimal-space-humanoid__04-sensing-autonomy.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Sensing and Autonomy
+        </a>
+        
+        <a href="01-optimal-space-humanoid__05-environments-hardening.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Environments and Hardening
+        </a>
+        
+        <a href="01-optimal-space-humanoid__06-mass-power-budget.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Mass and Power Budget
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">5. Cross Cutting</div>
+        
+        <a href="05-cross-cutting__charts-index.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Charts Index
+        </a>
+        
+        <a href="05-cross-cutting__cross-coupling-log.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Cross-Coupling Log
+        </a>
+        
+        <a href="05-cross-cutting__dispatch-graph.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Dispatch Dependency Graph
+        </a>
+        
+        <a href="05-cross-cutting__margins-and-assumptions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Margins and Assumptions Register
+        </a>
+        
+        <a href="05-cross-cutting__open-questions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Open Questions
+        </a>
+        
+        <a href="05-cross-cutting__soviet-russian-heritage.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Soviet Russian Heritage
+        </a>
+        
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="content">
+    
+
+<header class="page-header">
+  <div class="breadcrumb">5. Cross Cutting</div>
+  <h1>Cross-Coupling Log</h1>
+  <div class="meta-row">
+    <span class="status-badge" style="background: #f59e0b">in-progress</span>
+    <span class="meta-item">Owner: <strong>orchestrator</strong></span>
+    <span class="meta-item">Updated: 2026-05-03</span>
+    <span class="meta-item">2956 words</span>
+    <span class="meta-item muted">05-cross-cutting/cross-coupling-log.md</span>
+  </div>
+</header>
+
+<article class="prose">
+  <h1 id="cross-coupling-log">Cross-Coupling Log</h1>
+<p>This file records architectural decisions, parameter values, and positions that downstream agents depend on. When a number or position is set here, all agents listed under "Affects" must be notified and must update their artifacts if the decision changes their scope.</p>
+<h2 id="format">Format</h2>
+<pre><code>## YYYY-MM-DD — Parameter name
+**Parameter:** what was decided
+**Value:** the specific value, range, or position
+**Set by:** which agent or process set it
+**Affects:** list of agents whose work depends on this
+**Basis:** why this value was chosen
+</code></pre>
+<hr>
+<h2 id="2026-05-03-autonomy-trl-curve">2026-05-03 — Autonomy TRL curve</h2>
+<p><strong>Parameter:</strong> Humanoid autonomy TRL trajectory (study assumption)
+<strong>Value:</strong> TRL 6 (space-relevant environments) by ~2029 → TRL 7+ (space-relevant) by ~2035 → TRL 8 (qualified, operational environment) by ~2038-2040
+<strong>Set by:</strong> orchestrator (resolution of stage 4 contradiction between two incompatible registry entries)
+<strong>Affects:</strong> autonomy-trl-tasking, human-factors-teaming, conops-integrator, technology-roadmap-trl, cost-program, far-side-base-architect (deployment timeline)
+<strong>Basis:</strong> Study assumption with explicit go/no-go gates at each milestone. Not a forecast. See §A1 in <code>study/05-cross-cutting/margins-and-assumptions.md</code> for full text. If the 2029 gate is missed, the deployment timeline slips proportionally; if the 2035 gate is missed, the teaming model defaults to higher human-in-the-loop ratios.</p>
+<hr>
+<h2 id="2026-05-03-form-factor-position">2026-05-03 — Form factor position</h2>
+<p><strong>Parameter:</strong> Space humanoid primary form factor
+<strong>Value:</strong> Full bipedal humanoid — two legs, two arms, two dexterous hands, anthropomorphic geometry, standing height 1.5–1.9 m, design-to mass 75 kg, not-to-exceed mass 97.5 kg (30% margin)
+<strong>Set by:</strong> humanoid-systems-architect
+<strong>Affects:</strong> robotics-actuation-structures, robotics-sensing-autonomy, space-environments, humanoid-systems-architect (budget), conops-integrator
+<strong>Basis:</strong> Tradespace of five candidates weighted against seven criteria; bipedal form scores highest (3.65/5.00) driven by human tool and environment compatibility (C1, weight 0.25) — the lunar far side base is built for humans, and maintaining dual tool and infrastructure standards for a non-human-geometry robot over a 20-year permanent base lifetime is more costly than the locomotion and mass penalties of the bipedal form. Centaur is the close second (3.55); it becomes the correct answer if the base infrastructure is designed for robots before crew arrival, which the current program timeline does not support. Four end-effectors (feet and hands) must support both bipedal surface locomotion and handrail-grasp zero-g mobility as first-class modes — this requirement flows directly from the FEDOR/Skybot F-850 negative lesson.</p>
+<hr>
+<h2 id="2026-05-03-actuation-architecture">2026-05-03 — Actuation architecture</h2>
+<p><strong>Parameter:</strong> Primary joint actuation type for the space humanoid
+<strong>Value:</strong> High-ratio harmonic drive electric (HD-Electric) for load-bearing joints (hips, knees, ankles, shoulders, elbows); hybrid QDD-class for low-torque fine-control joints (wrists, fingers, ankle fine-axis). Hydraulic actuation eliminated. SEA retained as fallback if harmonic flexspline cryogenic validation fails by 2029 gate.
+<strong>Set by:</strong> robotics-actuation-structures
+<strong>Affects:</strong> space-environments (thermal architecture for joint heaters; seal material development), humanoid-systems-architect (mass-power budget — actuator mass fraction and peak power validation), technology-roadmap-trl (harmonic flexspline cryogenic TRL gap must close by 2029), fault-management-sustainment (ORU replacement strategy for actuator modules), cost-program (actuator unit cost heritage)
+<strong>Basis:</strong> HD-Electric offers best mass efficiency (Atlas Electric: 89 kg, 56 DOF, 85–90% efficiency) at required torque levels. SEA mass penalty is prohibitive at 75 kg target (Valkyrie: 129 kg, 44 DOF). QDD joint-resident motor mass creates unfavorable distribution for full-body humanoid. Hydraulic eliminated for outgassing risk in vacuum and non-serviceability in EVA context. See <code>study/01-optimal-space-humanoid/03-actuation-structures.md</code> Section 1.</p>
+<hr>
+<h2 id="2026-05-03-joint-count-and-dof-architecture">2026-05-03 — Joint count and DOF architecture</h2>
+<p><strong>Parameter:</strong> Nominal joint count and DOF allocation for the space humanoid
+<strong>Value:</strong> 38 DOF nominal (range 36–40), distributed: neck 3, torso 2, arms 4 DOF each (shoulder 3 + elbow 1), wrists 3 DOF each, hands 10–12 DOF each, hips 3 DOF each, knees 1 DOF each, ankles 2 DOF each
+<strong>Set by:</strong> robotics-actuation-structures
+<strong>Affects:</strong> robotics-sensing-autonomy (joint state sensing requirements, control loop count), humanoid-systems-architect (mass-power budget — 38-joint allocation feeds actuator mass table), conops-integrator (task capability envelope), fault-management-sustainment (joint failure mode catalog)
+<strong>Basis:</strong> Calibrated against R2 42-DOF torso+arm+hand heritage (ISS-deployed task set) and Valkyrie 44-DOF space-intent design. Reduction to 38 by cutting torso DOF from 3 to 2 and reducing hand DOF to minimum sufficient for EVA tool grasp per R2 design intent. See <code>study/01-optimal-space-humanoid/03-actuation-structures.md</code> Section 2.</p>
+<hr>
+<h2 id="2026-05-03-structure-actuation-mass-allocation">2026-05-03 — Structure + actuation mass allocation</h2>
+<p><strong>Parameter:</strong> Structure and actuation mass design-to target
+<strong>Value:</strong> 30.0 kg design-to / 39.0 kg NTE (30% margin) for primary structure + actuation + joints/sealing + end-effectors combined. This is 40% of the 75 kg total system design-to mass.
+<strong>Set by:</strong> robotics-actuation-structures
+<strong>Affects:</strong> humanoid-systems-architect (mass-power budget section must close remaining 45 kg design-to across sensors, compute, power, thermal, consumables, fluid lines), destinations-trajectories (lander manifest assumes 75 kg / 97.5 kg NTE total system), cost-program
+<strong>Basis:</strong> Parametric breakdown: primary structure 8.5 kg (CFRP + Al hybrid), actuation 13.0 kg (38 joints × ~340 g mean), joints/seals 4.0 kg, end-effectors 4.5 kg = 30.0 kg total. See <code>study/01-optimal-space-humanoid/03-actuation-structures.md</code> Section 4.</p>
+<hr>
+<h2 id="2026-05-03-dust-mitigation-primary-strategy">2026-05-03 — Dust mitigation primary strategy</h2>
+<p><strong>Parameter:</strong> Primary dust mitigation approach for joint architecture
+<strong>Value:</strong> Dual-stage labyrinth + single elastomeric lip seal (perfluoroelastomer, FFKM-class) for all load-bearing joints; disposable Vectran/Zylon boot covers for foot/ankle assemblies at 500-hour parametric replacement interval
+<strong>Set by:</strong> robotics-actuation-structures
+<strong>Affects:</strong> space-environments (FFKM cryogenic validation program; TRL 3 → TRL 5 required by 2029 gate), fault-management-sustainment (boot cover consumables manifest and replacement procedure), far-side-base-architect (consumables resupply manifest for boot covers), technology-roadmap-trl (seal material development on critical path)
+<strong>Basis:</strong> Labyrinth seals have TRL 7–8 in terrestrial contaminated industrial environments. FFKM elastomers have ISS heritage in fluid line connectors at −60°C to +200°C; extension to −180°C is a development item at TRL 4. Active gas purge rejected (continuous supply dependency). Graceful degradation rejected (permanent base multi-year horizon). See <code>study/01-optimal-space-humanoid/03-actuation-structures.md</code> Section 3.</p>
+<hr>
+<h2 id="2026-05-03-sensor-suite-mass-and-power-allocation">2026-05-03 — Sensor suite mass and power allocation</h2>
+<p><strong>Parameter:</strong> Sensor suite mass and power envelope for the space humanoid
+<strong>Value:</strong> ~2.1 kg design-to mass, 37–75 W peak power (10–30 W average accounting for LIDAR duty cycling). Includes: stereo HDR camera + ToF depth (head), wrist cameras, IMU (3-unit redundant), wrist F/T sensors, fingertip tactile arrays, solid-state LIDAR.
+<strong>Set by:</strong> robotics-sensing-autonomy
+<strong>Affects:</strong> humanoid-systems-architect (mass-power budget section 01-06 must close sensors + compute at ~3.9 kg and ~60–150 W peak against the 45 kg / 800 W envelopes remaining after structure+actuation), space-environments (radiation qualification program for LIDAR SPAD arrays and MEMS IMUs), technology-roadmap-trl (HDR camera outdoor qualification, tactile flexible substrate TRL gap are on critical path to 2029 gate)
+<strong>Basis:</strong> Parametric sizing from commercial humanoid sensor suite heritage (Digit: 4× Intel RealSense + LIDAR + MEMS IMU; Valkyrie: MultiSense SL stereo head + F/T sensors; R2: 350+ sensors including wrist-mounted F/T and fingertip tactile). Space-specific modifications: HDR cameras for extreme contrast outdoor conditions; spot-shielded MEMS IMUs for radiation TID; solid-state LIDAR with duty cycling for power management. See <code>study/01-optimal-space-humanoid/04-sensing-autonomy.md</code> Section 1.</p>
+<hr>
+<h2 id="2026-05-03-onboard-compute-architecture-two-tier">2026-05-03 — Onboard compute architecture (two-tier)</h2>
+<p><strong>Parameter:</strong> Compute architecture for onboard autonomy inference
+<strong>Value:</strong> Two-tier: (1) radiation-hardened supervisor processor (RAD750-class, 5–10 W, always-on, runs safety-critical control loops only) + (2) commercial AI inference accelerator (Jetson AGX Orin-class, 15–60 W, watchdog-managed, runs perception pipeline and VLA model). Total compute mass ~1.8 kg including spot shielding. Cloud-connected inference architecturally excluded.
+<strong>Set by:</strong> robotics-sensing-autonomy
+<strong>Affects:</strong> humanoid-systems-architect (compute power 22–75 W peak must be carried in mass-power budget 01-06), technology-roadmap-trl (no rad-hard AI-inference equivalent of Jetson AGX Orin exists at TRL &gt; 4; DARPA HPSC and similar programs are on the critical path if watchdog architecture is to be simplified before 2035), space-environments (Tier 2 single-event latchup rate under lunar radiation environment; spot-shielding mass allocation), fault-management-sustainment (Tier 2 power-cycle reset procedure as nominal fault response)
+<strong>Basis:</strong> Two-tier architecture precedented by Mars Science Laboratory compute hierarchy (RAD750 flight computer + instrument-local processors). No rad-hard equivalent of commercial AI-inference hardware exists at TRL &gt; 4 as of 2026; watchdog architecture is the operational solution through 2035 deployment window. See <code>study/01-optimal-space-humanoid/04-sensing-autonomy.md</code> Section 2.</p>
+<hr>
+<h2 id="2026-05-03-autonomyteleoperation-boundary-provisional">2026-05-03 — Autonomy/teleoperation boundary (provisional)</h2>
+<p><strong>Parameter:</strong> Provisional allocation of tasks between fully autonomous, human-supervised, and human-controlled operation (by 2035 deployment baseline)
+<strong>Value:</strong> Fully autonomous by 2035: routine locomotion on prepared paths, sensor data collection, pre-scripted maintenance, health monitoring, safe-mode transitions. Human-supervised: novel manipulation, EVA tool handoff with crew, PSR operations, emergency response, pressurized interface operations. Human-controlled always: life-safety decisions, irreversible actions beyond robot, crew-override of any autonomous execution.
+<strong>Set by:</strong> robotics-sensing-autonomy (provisional; to be refined by autonomy-trl-tasking and human-factors-teaming)
+<strong>Affects:</strong> autonomy-trl-tasking (must validate boundary against TRL curve and task catalog), human-factors-teaming (crew workload model depends on fraction of tasks requiring supervision), teleoperation-latency (must quantify whether relay latency permits ground-in-the-loop supervision for the human-supervised task categories), conops-integrator (mission timeline must allocate crew time for supervision gates), fault-management-sustainment (safe-mode transition procedures and crew override hardware design)
+<strong>Basis:</strong> Boundary calibrated against §A1 autonomy TRL curve (TRL 7+ in space-relevant environments by 2035) and Mars rover AutoNav heritage (flight-qualified autonomous traverse planning and execution at TRL 8 since 2014). Life-safety and irreversible-action categories are program/ethical constraints, not TRL-dependent. Avatar-mode teleoperation (FEDOR heritage) is retained as the anomaly fallback for any task where autonomous execution fails. See <code>study/01-optimal-space-humanoid/04-sensing-autonomy.md</code> Section 5.</p>
+<hr>
+<h2 id="2026-05-03-lunar-night-thermal-power-reservation-and-survival-mode">2026-05-03 — Lunar night thermal power reservation and survival mode</h2>
+<p><strong>Parameter:</strong> FSP power reservation for humanoid thermal survival during lunar night; survival mode definition
+<strong>Value:</strong> 70–200 W continuous draw from Fission Surface Power during lunar night hibernation per humanoid unit (50–150 W electronics/battery survival heaters + 20–50 W joint heaters for 12 primary HD-Electric joints). Survival mode: Tier 1 RH supervisor processor only powered; Tier 2 AI accelerator off; locomotion off; battery maintained at ~30% SOC. Estimated warm-up time to partial operability: 15–30 minutes from crew wake command; full operability: 45–90 minutes.
+<strong>Set by:</strong> space-environments
+<strong>Affects:</strong> humanoid-systems-architect (mass-power budget §01-06 must carry 70–200 W lunar night power reservation); far-side-base-architect (FSP power allocation must reserve humanoid thermal load across full lunar night; with 3 humanoids deployed simultaneously, reservation grows to 210–600 W); conops-integrator (mission timeline must reflect ~45–90 min warm-up period; humanoid is not immediately available at start of lunar day without pre-warming); fault-management-sustainment (survival mode transition triggers and recovery procedures; Tier 1 RH supervisor as sole active process during hibernation)
+<strong>Basis:</strong> Parametric estimate anchored to Mars rover WEB survival heater heritage (~100 W-hr/night cold case, Curiosity/Perseverance); scaled for the 14-day lunar night and humanoid electronics volume. Joint heater estimate from HD-Electric lubrication floor (PFPE grease) at −60°C minimum. Range is wide because no detailed thermal model of the bipedal form factor exists; this is flagged as TRL 2 (parametric only) requiring detailed model by 2031 and test validation before PDR. See Section 01-05 §2.</p>
+<hr>
+<h2 id="2026-05-03-radiation-hardening-strategy-hybrid">2026-05-03 — Radiation hardening strategy (hybrid)</h2>
+<p><strong>Parameter:</strong> Electronics radiation hardening approach for space humanoid
+<strong>Value:</strong> Hybrid strategy: (1) RHBD parts (RAD750-class) for Tier 1 safety-critical processor; (2) RHBD for critical motor controller and safety-monitor ICs where available; (3) COTS + spot shielding (5–10 mm Al, 0.5–1.5 kg per board) for Tier 2 AI accelerator and non-critical sensing electronics, with 3-year ORU replacement plan for Tier 2 boards; (4) torso structural walls at 2–4 mm Al equivalent for passive bulk shielding. 7-year TID budget at surface: 140–210 krad (silicon) without shielding. SPE survival requirement: humanoid returns to pressurized habitat on SPE warning — body electronics not required to survive direct Carrington-class SPE exposure.
+<strong>Set by:</strong> space-environments
+<strong>Affects:</strong> humanoid-systems-architect (mass-power budget §01-06 must carry 0.5–1.5 kg for electronics compartment shielding walls; Tier 2 board mass must account for ORU replacement in spares manifest); fault-management-sustainment (Tier 2 board replacement as a scheduled 3-year ORU; SPE shelter mode as a nominal fault response procedure; procedure must be executable without ground contact — Tier 1 can autonomously initiate shelter return on radiation monitor threshold); conops-integrator (SPE shelter return within 15–30 minutes of warning must be explicit in ConOps; Section 03 must define the shelter procedure); far-side-base-architect (pressurized habitat or dedicated shielded location must provide ~20 g/cm² Al-equivalent shielding for SPE survival; must confirm this shielding depth in habitat wall + regolith berm design); technology-roadmap-trl (Tier 2 ORU replacement cadence is a program logistics commitment from 2035 onward; spares cost must be in cost-program estimates)
+<strong>Basis:</strong> 7-year design life at ~20–30 krad/yr surface (Chang'e-4 LND measurement, silicon TID estimate) = 140–210 krad budget. COTS compute TID tolerance ~10 krad without shielding — requires shielding mitigation. 5–10 mm Al spot shielding reduces dose rate by 3–5× for GCR. Combined with 3-year ORU replacement, COTS Tier 2 is viable through 7-year design life. SPE survival by habitat retreat eliminates need to harden body-mounted electronics to Carrington-class fluences. See Section 01-05 §3.</p>
+<hr>
+<h2 id="2026-05-03-system-level-dust-mitigation-optical-thermal-connectors">2026-05-03 — System-level dust mitigation (optical, thermal, connectors)</h2>
+<p><strong>Parameter:</strong> System-level dust mitigation beyond joint seals
+<strong>Value:</strong> (1) Optical sensors: spring-loaded passive covers (ExoMars heritage TRL 7) + scheduled pre-task brushing; EDD (electrostatic dust deflection) as growth option at TRL 4 only. (2) Thermal radiators: smooth high-emissivity coatings (ε ≥ 0.85 BOL), design to ε = 0.70 EOL (18–24% emissivity margin); smooth hard coatings resistant to dust adhesion; manual cleaning by crew. (3) Connectors: spring-loaded dust caps + N₂ purge at mate/demate; N₂ canister (~0.2–0.5 kg) in consumables manifest. All caps and covers must be EVA-glove operable.
+<strong>Set by:</strong> space-environments
+<strong>Affects:</strong> humanoid-systems-architect (mass-power budget §01-06 must carry optical cover masses ~15–60 g per aperture; N₂ purge canister ~0.2–0.5 kg in consumables line); far-side-base-architect (consumables resupply manifest for N₂ purge canisters; base workshop must support optical cover replacement and radiator cleaning procedures); fault-management-sustainment (pre-task optical cleaning as nominal procedure; cover actuator failure mode and manual override requirement); conops-integrator (pre-task sensor cleaning adds ~5 minutes to EVA preparation procedure; must appear in mission timeline)
+<strong>Basis:</strong> ExoMars camera cover TRL 7 heritage. Mars solar panel dust degradation rates (2–5%/month, MER heritage) used as conservative proxy for lunar radiator emissivity degradation; actual lunar dust adhesion rate may differ significantly (electrostatic mechanism vs. gravitational settling on Mars) and must be measured. See Section 01-05 §4.</p>
+<hr>
+<h2 id="2026-05-03-mass-and-power-budget-closure-question-a-integration">2026-05-03 — Mass and power budget closure (Question a integration)</h2>
+<p><strong>Parameter:</strong> Closed mass and power budget for the space humanoid — key output numbers for all downstream agents
+<strong>Value:</strong> Total dry mass design-to: <strong>75.0 kg</strong> (allocated subsystems: 58.2 kg + system growth allowance: 16.8 kg). Not-to-exceed: <strong>97.5 kg</strong> (30% margin per NASA-STD-5001). Power: full locomotion + manipulation <strong>616 W with margin</strong> (vs. 800 W cap); stationary manipulation <strong>432 W with margin</strong> (vs. 500 W goal); lunar night hibernation <strong>148–304 W with margin</strong> (lower bound closes vs. 150 W goal; upper bound does not close — thermal model required). Battery: <strong>2.0 kWh</strong> at <strong>160 Wh/kg</strong> space-qualified Li-ion = <strong>12.5 kg cells</strong> + 2.5 kg BMS/housing + 1.9 kg harness = <strong>16.9 kg power system total</strong>. Largest mass line item is the power system (22% of design-to). Primary unresolved risk is the lunar night thermal power draw (70–200 W parametric range, TRL 2).
+<strong>Set by:</strong> humanoid-systems-architect
+<strong>Affects:</strong> destinations-trajectories (lander manifest: use 75 kg design-to / 97.5 kg NTE as the per-unit manifest number); cost-program (unit mass drives parametric cost; 2.0 kWh space-qualified battery and 3-year Tier 2 ORU replacement cadence are recurring cost drivers); conops-integrator (sortie battery life 4 hours; recharge time ~8 hours; hibernation warm-up 15–30 min partial / 45–90 min full operability); far-side-base-architect (peak FSP demand per humanoid 616 W; average operational demand ~450 W; lunar night FSP reservation 300 W with margin per unit until thermal model closes — three humanoids require ~900 W FSP reservation through each lunar night)
+<strong>Basis:</strong> Budget integrates §03 (structure + actuation 30.0 kg), §04 (sensors 2.1 kg + compute 1.8 kg), §05 (electronics shielding 1.0 kg, thermal 3.0 kg, consumables 0.9 kg), and battery derivation in §06 (16.9 kg). Growth allowance 16.8 kg = 29% of allocated subsystems, consistent with concept-phase MGA practice for hardware primarily below TRL 5. See <code>study/01-optimal-space-humanoid/06-mass-power-budget.md</code>.</p>
+</article>
+
+
+<aside class="cross-refs">
+  <h3>Referenced sections</h3>
+  <ul>
+    
+    <li><a href="01-optimal-space-humanoid__03-actuation-structures.html">Optimal Space Humanoid: Actuation and Structures</a> <span class="muted">(01-optimal-space-humanoid/03-actuation-structures.md)</span></li>
+    
+    <li><a href="01-optimal-space-humanoid__04-sensing-autonomy.html">Optimal Space Humanoid: Sensing and Autonomy</a> <span class="muted">(01-optimal-space-humanoid/04-sensing-autonomy.md)</span></li>
+    
+    <li><a href="01-optimal-space-humanoid__06-mass-power-budget.html">Optimal Space Humanoid: Mass and Power Budget</a> <span class="muted">(01-optimal-space-humanoid/06-mass-power-budget.md)</span></li>
+    
+    <li><a href="05-cross-cutting__margins-and-assumptions.html">Margins and Assumptions Register</a> <span class="muted">(05-cross-cutting/margins-and-assumptions.md)</span></li>
+    
+  </ul>
+</aside>
+
+
+
+  </main>
+</div>
+</body>
+</html>

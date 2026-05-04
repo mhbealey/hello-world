@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Open Questions — Humanoid-Forward Study</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Humanoid-Forward Study</a>
+      <div class="build-time">Built 2026-05-03 05:10</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-dashboard">Dashboard</a>
+      <a href="agents.html" class="nav-dashboard">Agents (18)</a>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">0. Front Matter</div>
+        
+        <a href="00-front-matter__abstract.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Abstract
+        </a>
+        
+        <a href="00-front-matter__executive-summary.html" class="nav-item" title="auto-generated">
+          <span class="status-dot" style="background: #9ca3af"></span>
+          Executive Summary
+        </a>
+        
+        <a href="00-front-matter__why-this-why-now.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Why This Study, Why Now
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">1. Optimal Space Humanoid</div>
+        
+        <a href="01-optimal-space-humanoid__01-overview.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Overview and Heritage Table
+        </a>
+        
+        <a href="01-optimal-space-humanoid__02-form-factor-tradespace.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Form Factor Tradespace
+        </a>
+        
+        <a href="01-optimal-space-humanoid__03-actuation-structures.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Actuation and Structures
+        </a>
+        
+        <a href="01-optimal-space-humanoid__04-sensing-autonomy.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Sensing and Autonomy
+        </a>
+        
+        <a href="01-optimal-space-humanoid__05-environments-hardening.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Environments and Hardening
+        </a>
+        
+        <a href="01-optimal-space-humanoid__06-mass-power-budget.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Mass and Power Budget
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">5. Cross Cutting</div>
+        
+        <a href="05-cross-cutting__charts-index.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Charts Index
+        </a>
+        
+        <a href="05-cross-cutting__cross-coupling-log.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Cross-Coupling Log
+        </a>
+        
+        <a href="05-cross-cutting__dispatch-graph.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Dispatch Dependency Graph
+        </a>
+        
+        <a href="05-cross-cutting__margins-and-assumptions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Margins and Assumptions Register
+        </a>
+        
+        <a href="05-cross-cutting__open-questions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Open Questions
+        </a>
+        
+        <a href="05-cross-cutting__soviet-russian-heritage.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Soviet Russian Heritage
+        </a>
+        
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="content">
+    
+
+<header class="page-header">
+  <div class="breadcrumb">5. Cross Cutting</div>
+  <h1>Open Questions</h1>
+  <div class="meta-row">
+    <span class="status-badge" style="background: #f59e0b">in-progress</span>
+    <span class="meta-item">Owner: <strong>orchestrator</strong></span>
+    <span class="meta-item">Updated: 2026-05-03</span>
+    <span class="meta-item">1469 words</span>
+    <span class="meta-item muted">05-cross-cutting/open-questions.md</span>
+  </div>
+</header>
+
+<article class="prose">
+  <h1 id="open-questions">Open Questions</h1>
+<p>This file tracks open questions across the study. Each agent appends questions in their domain that need resolution. The orchestrator reviews and prioritizes.</p>
+<h2 id="format-convention">Format convention</h2>
+<p>Each entry goes under <code>## Active Open Questions</code> using this format:</p>
+<pre><code>- [domain] question — context — who needs to resolve — by when
+</code></pre>
+<p>The <code>domain</code> tag must be a real domain label (e.g. <code>autonomy</code>, <code>power</code>, <code>form factor</code>). Do not use <code>domain</code> as the literal domain tag — that's a placeholder. Entries with <code>domain</code> as the literal tag are treated as format documentation, not real questions, and will be filtered from the handback.</p>
+<h2 id="active-open-questions">Active Open Questions</h2>
+<ul>
+<li>[scope] Does the study cover Mars surface humanoid ops in detail or treat it as architecture-paper-fidelity extension? — Affects scope of conops-integrator and destinations-trajectories — orchestrator — early</li>
+<li>[autonomy] What's the autonomy TRL we assume by 2035 deployment? — Drives the entire teaming model — autonomy-trl-tasking with human-factors-teaming — early</li>
+<li>[power] Fission surface power as baseline, or hedge? — Drives space-environments and conops-integrator — far-side-base-architect with cost-program — early</li>
+<li>[form factor] Do we commit to humanoid bipedal, or hedge to centaur/modular? — Drives all of section 01 — humanoid-systems-architect — after first heritage pass</li>
+<li>[ISRU] Does the study assume ISRU works, or design for full Earth-supply? — Drives sustainment and cost — far-side-base-architect with cost-program — mid</li>
+<li>[framing] How do we handle the "manned mission with no humans" rhetorical question? — Affects abstract and why-this-why-now — orchestrator — late</li>
+<li>[actuation/thermal] Harmonic drive flexspline fatigue life at cryogenic temperatures (−180°C) under representative cyclic joint loads — no published heritage data; TRL gap in HD-Electric architecture; if validation fails by 2029 gate, fallback is selective SEA with mass budget renegotiation — technology-roadmap-trl with space-environments — must close before 2029 program gate</li>
+<li>[sealing/dust] Perfluoroelastomer (FFKM) lip seal performance at −180°C under vacuum and cyclic load — standard FFKM qualified to −60°C only; cryogenic extension is a development item at TRL 3–4; fallback is all-labyrinth sealing with reduced particle rejection — space-environments — must reach TRL 5 by 2029 gate</li>
+<li>[actuation/power] Per-joint peak power draw validation against 800 W system peak — 38 HD-Electric joints simultaneously at full effort exceeds 800 W; task-level simulation needed to validate that simultaneous full-effort loading does not occur in operational profiles — humanoid-systems-architect (mass-power budget section) — before Section 01-06 is baselined</li>
+<li>[serviceability/dust] Boot cover replacement interval: 500-hour figure is parametric with no heritage — accelerated abrasion testing in lunar regolith simulant (JSC-1A or NU-LHT-2M) under vacuum and thermal cycling required; no identified test facility combines all three conditions — space-environments and far-side-base-architect (consumables manifest) — pre-PDR</li>
+<li>[compute/radiation] Tier 2 (commercial AI accelerator) single-event latchup rate under actual lunar far side radiation environment — parametrically estimated at 1–10 events/day without shielding based on Perseverance data; spot shielding assumed to reduce rate by 2–3 orders of magnitude, but this has not been validated for Jetson AGX Orin-class silicon geometry — space-environments with technology-roadmap-trl — must be characterized before first article compute architecture is finalized; target by 2029 gate</li>
+<li>[compute/TRL] No radiation-hardened AI inference processor equivalent to commercial AI accelerators exists at TRL &gt; 4 — DARPA HPSC and similar programs are working toward this gap; if a rad-hard AI accelerator at TRL 6 emerges before 2029, the two-tier watchdog architecture can be simplified; if not, watchdog architecture persists through 2035 deployment — technology-roadmap-trl — monitor through 2029 gate; decision point at PDR</li>
+<li>[sensing/illumination] HDR camera performance in outdoor lunar illumination — extreme contrast (full sun to total shadow within single camera FOV), no heritage test data for humanoid stereo vision under representative lunar photometric conditions; structured-light depth disabled in direct sun — space-environments with robotics-sensing-autonomy — required for locomotion stack validation; must reach TRL 5 by 2029 gate</li>
+<li>[sensing/tactile] Flexible tactile sensor substrate qualification for vacuum and thermal cycling — current commercial tactile arrays (SynTouch BioTac-class, Xela Robotics) are at TRL 4–5 terrestrially; flexible PCB and elastomeric substrate materials are not characterized for lunar thermal extremes; this gap directly affects manipulation safety margin (without tactile feedback, robot cannot detect inadvertent contact with crew limbs) — space-environments — must reach TRL 5 by 2029 gate</li>
+<li>[autonomy/locomotion] Bipedal locomotion controller validation in 1/6 g with lunar regolith simulant — reactive layer TRL in space-relevant environment is 3–4; no hardware test has been performed in representative gravity + dust conditions; parabolic flight or gravity offload facility testing required to advance to TRL 5–6; this is on the critical path for the 2029 autonomy gate — technology-roadmap-trl with robotics-sensing-autonomy — define test campaign by 2028 for data ahead of 2029 gate</li>
+<li>[autonomy/OOD] Foundation model generalization to lunar-analog task environments — no lunar-surface training dataset exists for VLA fine-tuning; construction of a demonstration dataset using lunar-analog hardware is a pre-requisite for validating deliberative layer TRL advancement toward the 2035 gate; program must initiate this dataset construction no later than 2028 to enable hardware-in-the-loop validation before first article availability — autonomy-trl-tasking with conops-integrator — dataset construction program should be defined at PDR</li>
+<li>[latency/supervision] Minimum relay latency achievable on lunar far side relay architecture for supervisory control interactions — the autonomy/teleoperation boundary in Section 01-04 depends on this value; Section 02-02 (teleoperation-latency agent) must quantify whether crew-habitat-to-robot supervisory interactions are near-real-time and whether ground supervisory control is feasible within relay latency — teleoperation-latency — required input to human-factors-teaming and conops-integrator before Section 02 is baselined</li>
+<li>[thermal/humanoid] Detailed thermal model of bipedal humanoid body — parametric survival heater estimate of 70–200 W is too wide for FSP load planning; bipedal form's large surface-area-to-volume ratio and segmented limb geometry requires a subsystem-level thermal model with MLI layout, joint heater placement, and radiator sizing before the mass-power budget in Section 01-06 can close the thermal subsystem line item — humanoid-systems-architect with space-environments — required TRL 5 model by 2031; validates against Section 01-06 budget; drives FSP allocation conversation with far-side-base-architect</li>
+<li>[radiation/silicon-TID] Silicon TID measurement at the lunar surface — current estimate of 20–30 krad(Si)/yr is derived from LND dose-equivalent measurement plus a spectrum-dependent conversion factor that has not been independently validated; Tier 2 ORU replacement interval and spares cost estimates depend directly on the actual silicon TID rate — space-environments with technology-roadmap-trl — confirm against Artemis surface operations data or a future dedicated dosimeter on a CLPS lander; required before PDR Tier 2 replacement cadence is baselined</li>
+<li>[thermal/NdFeB] NdFeB motor magnet performance at cryogenic temperatures (−100°C to −180°C) — NdFeB coercivity increases and remanence slightly decreases at cryogenic temperatures; operational data at −180°C is not publicly documented for the motor sizes used in humanoid actuation (50–300 N·m class); magnet derating at cryogenic temps affects peak torque and must be carried in the actuation power model — robotics-actuation-structures with space-environments — required for HD-Electric thermal validation program by 2028</li>
+<li>[thermal/connector] N2 purge canister sizing and resupply interval for electrical connector dust mitigation — 0.2–0.5 kg canister mass is estimated for a 200-shot purge; actual shot frequency depends on EVA cycle rate and number of connector mate/demate operations per EVA; resupply manifest depends on this rate — far-side-base-architect with space-environments — define as part of consumables manifest when ConOps section establishes EVA cycle rate</li>
+<li>[dust/radiator] Lunar dust adhesion rate to thermal radiator surfaces — Mars solar panel degradation data used as proxy; lunar dust adhesion mechanism (primarily electrostatic) differs fundamentally from Mars dust (primarily gravitational settling); no direct measurement of dust accumulation rate on vertical or angled surfaces at the lunar surface exists; the radiator emissivity margin (design to ε = 0.70 EOL vs. ε = 0.85 BOL) is conservative but its adequacy over a multi-year service life is unvalidated — space-environments with technology-roadmap-trl — required test data from a CLPS lander or Artemis surface experiment; pre-PDR</li>
+<li>[conops/SPE] SPE shelter return procedure execution without ground contact — the humanoid must autonomously return to pressurized habitat or dedicated shielded location on Tier 1 radiation monitor threshold crossing, without requiring ground command; the procedure must complete within 15–30 minutes of threshold crossing; the base layout must provide a shelter within that locomotion range; this is a ConOps constraint that must be validated against the base site plan — conops-integrator with far-side-base-architect and fault-management-sustainment — required for Section 03 ConOps baseline and Section 04-03 far side base design</li>
+</ul>
+</article>
+
+
+
+
+  </main>
+</div>
+</body>
+</html>

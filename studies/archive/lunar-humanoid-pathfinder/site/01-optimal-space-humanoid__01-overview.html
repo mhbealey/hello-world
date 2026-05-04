@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Optimal Space Humanoid: Overview and Heritage Table — Humanoid-Forward Study</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Humanoid-Forward Study</a>
+      <div class="build-time">Built 2026-05-03 05:10</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-dashboard">Dashboard</a>
+      <a href="agents.html" class="nav-dashboard">Agents (18)</a>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">0. Front Matter</div>
+        
+        <a href="00-front-matter__abstract.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Abstract
+        </a>
+        
+        <a href="00-front-matter__executive-summary.html" class="nav-item" title="auto-generated">
+          <span class="status-dot" style="background: #9ca3af"></span>
+          Executive Summary
+        </a>
+        
+        <a href="00-front-matter__why-this-why-now.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Why This Study, Why Now
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">1. Optimal Space Humanoid</div>
+        
+        <a href="01-optimal-space-humanoid__01-overview.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Overview and Heritage Table
+        </a>
+        
+        <a href="01-optimal-space-humanoid__02-form-factor-tradespace.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Form Factor Tradespace
+        </a>
+        
+        <a href="01-optimal-space-humanoid__03-actuation-structures.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Actuation and Structures
+        </a>
+        
+        <a href="01-optimal-space-humanoid__04-sensing-autonomy.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Sensing and Autonomy
+        </a>
+        
+        <a href="01-optimal-space-humanoid__05-environments-hardening.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Environments and Hardening
+        </a>
+        
+        <a href="01-optimal-space-humanoid__06-mass-power-budget.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Mass and Power Budget
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">5. Cross Cutting</div>
+        
+        <a href="05-cross-cutting__charts-index.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Charts Index
+        </a>
+        
+        <a href="05-cross-cutting__cross-coupling-log.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Cross-Coupling Log
+        </a>
+        
+        <a href="05-cross-cutting__dispatch-graph.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Dispatch Dependency Graph
+        </a>
+        
+        <a href="05-cross-cutting__margins-and-assumptions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Margins and Assumptions Register
+        </a>
+        
+        <a href="05-cross-cutting__open-questions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Open Questions
+        </a>
+        
+        <a href="05-cross-cutting__soviet-russian-heritage.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Soviet Russian Heritage
+        </a>
+        
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="content">
+    
+
+<header class="page-header">
+  <div class="breadcrumb">1. Optimal Space Humanoid</div>
+  <h1>Optimal Space Humanoid: Overview and Heritage Table</h1>
+  <div class="meta-row">
+    <span class="status-badge" style="background: #3b82f6">draft</span>
+    <span class="meta-item">Owner: <strong>humanoid-systems-architect</strong></span>
+    <span class="meta-item">Updated: 2026-05-03</span>
+    <span class="meta-item">1895 words</span>
+    <span class="meta-item muted">01-optimal-space-humanoid/01-overview.md</span>
+  </div>
+</header>
+
+<article class="prose">
+  <h1 id="section-01-optimal-space-humanoid-overview">Section 01 — Optimal Space Humanoid: Overview</h1>
+<p>This section establishes the heritage baseline for the optimal space humanoid design. It documents what has been built, flown, or operationally demonstrated, identifies where existing designs fall short for space applications, and frames the questions that subsequent sections must answer.</p>
+<h2 id="heritage-table-current-humanoid-robots">Heritage Table: Current Humanoid Robots</h2>
+<p>Specifications are drawn from manufacturer data sheets, peer-reviewed publications, and NASA technical reports as of the research date (2026-05-03). Where a specification could not be verified against a primary source, the cell is marked <strong>unverified</strong>. Mass and height figures are for the standard production or research configuration; configurations with optional add-ons (e.g., Robonaut 2 legs) are noted separately.</p>
+<table>
+<thead>
+<tr>
+<th>Robot</th>
+<th>Org</th>
+<th>Year (latest config)</th>
+<th>Mass (kg)</th>
+<th>Height (m)</th>
+<th>DOF (total)</th>
+<th>Actuation type</th>
+<th>Rated power (W)</th>
+<th>Autonomy maturity</th>
+<th>Space-qual status</th>
+<th>Key lessons</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Atlas Electric</td>
+<td>Boston Dynamics</td>
+<td>2024</td>
+<td>89</td>
+<td>1.50</td>
+<td>56</td>
+<td>Electric (planetary roller-screw linear actuators, high-density NdFeB motors)</td>
+<td>unverified</td>
+<td>Mixed teleoperation + autonomy; fleet-level task transfer demonstrated</td>
+<td>None</td>
+<td>Fully rotational joints and 56 DOF enable superhuman workspace access, but 89 kg mass and battery-swap dependency create significant lander manifest pressure. Efficiency figure of 85–90% electrical-to-mechanical is best-in-class but total rated draw is unpublished.</td>
+</tr>
+<tr>
+<td>Apollo</td>
+<td>Apptronik</td>
+<td>2023</td>
+<td>72.5</td>
+<td>1.73</td>
+<td>71</td>
+<td>Electric (proprietary linear and rotary actuators)</td>
+<td>unverified</td>
+<td>Structured env. only; pilot deployments at Mercedes-Benz and GXO (2024–2025)</td>
+<td>None</td>
+<td>Highest published DOF count in this survey (71); hot-swap 4-hr battery pack is a relevant operational model for base logistics. Developed directly from Apptronik's Valkyrie heritage, making it a credible bridge between research and commercial.</td>
+</tr>
+<tr>
+<td>Figure 02</td>
+<td>Figure AI</td>
+<td>2024</td>
+<td>70</td>
+<td>1.68</td>
+<td>35 (16 in hands alone)</td>
+<td>Electric (unverified motor type)</td>
+<td>unverified</td>
+<td>Mixed teleoperation + autonomy; VLA-based task learning from voice/visual cues; deployed at BMW Spartanburg</td>
+<td>None</td>
+<td>Relatively low whole-body DOF (35) but hand dexterity is high (16 DOF/hand). On-board VLA trained with OpenAI demonstrates the fastest path to natural-language task assignment; relevant for crew interface design. 2.25 kWh battery with 20+ hr runtime is an outlier requiring verification.</td>
+</tr>
+<tr>
+<td>Optimus Gen 2</td>
+<td>Tesla</td>
+<td>2023</td>
+<td>57</td>
+<td>1.73</td>
+<td>28 (11 DOF/hand; Gen 3 hands: 22 DOF/hand)</td>
+<td>Electric (tendon-driven hands, rotary joints in body)</td>
+<td>~300 (2.3 kWh battery, ~8 hr runtime, <strong>unverified</strong> avg draw)</td>
+<td>Structured env. only; ~1,000 units deployed internally at Tesla Fremont (2025)</td>
+<td>None</td>
+<td>Lowest mass in the commercial survey (57 kg) — favorable for launch mass budget. Large internal deployment fleet provides reliability data unavailable for competitors. Hand upgrade path (Gen 3: 22 DOF, 50 actuators, tactile fingertip sensing) is the most evolved manipulation heritage in the survey.</td>
+</tr>
+<tr>
+<td>Digit</td>
+<td>Agility Robotics</td>
+<td>2024 (v4)</td>
+<td>65</td>
+<td>1.75</td>
+<td>30</td>
+<td>Electric (brushless DC, custom transmissions)</td>
+<td>unverified</td>
+<td>Structured env. only; production-deployed at Amazon fulfillment centers (2024)</td>
+<td>None</td>
+<td>Only robot in this survey with a verified paid-customer production deployment at scale. Non-anthropomorphic leg geometry (reverse-knee) is optimized for narrow-aisle locomotion but diverges from human tool/environment compatibility — important negative heritage for EVA design.</td>
+</tr>
+<tr>
+<td>Unitree H1</td>
+<td>Unitree Robotics</td>
+<td>2023</td>
+<td>47</td>
+<td>1.80</td>
+<td>19</td>
+<td>Electric (quasi-direct-drive, M107 motors; peak torque density ~189 N·m/kg)</td>
+<td>unverified (864 Wh battery)</td>
+<td>Research prototype; teleoperated + RL locomotion</td>
+<td>None</td>
+<td>Lowest mass of the full-size bipeds (47 kg) with highest demonstrated locomotion speed (3.3 m/s). Very low DOF count (19) limits manipulation. Quasi-direct-drive architecture sacrifices force bandwidth for backdrivability — relevant for safe human-robot contact in confined spaces.</td>
+</tr>
+<tr>
+<td>Unitree G1</td>
+<td>Unitree Robotics</td>
+<td>2024</td>
+<td>35</td>
+<td>1.32</td>
+<td>23 base / up to 43 (EDU)</td>
+<td>Electric (PMSM, high-torque; 90–120 N·m knee peak)</td>
+<td>unverified (421 Wh battery)</td>
+<td>Research prototype; open SDK, RL locomotion</td>
+<td>None</td>
+<td>At 35 kg the G1 is the lightest full humanoid in this survey — relevant for secondary crew-member role on landers with tight mass margins. The base/EDU DOF modularity (23 vs. 43) illustrates how commercial platforms can be reconfigured for mission-specific dexterity without bespoke development.</td>
+</tr>
+<tr>
+<td>NASA Valkyrie / R5</td>
+<td>NASA JSC</td>
+<td>2015 (last hardware rev.)</td>
+<td>129</td>
+<td>1.87</td>
+<td>44</td>
+<td>Electric, series elastic actuators (SEA) throughout</td>
+<td>~1,800 (estimated from 1.8 kWh battery, ~1 hr runtime; <strong>unverified</strong> rated figure)</td>
+<td>Research prototype; human-supervised autonomy research at MIT, UT Austin, Edinburgh</td>
+<td>None</td>
+<td>The only robot in this survey explicitly designed for a space-relevant application (planetary surface ops). SEA architecture provides force control and impact tolerance aligned with EVA requirements. 129 kg mass was already identified by NASA researchers as a major constraint for lander manifesting; this number anchors the upper bound for the space humanoid mass budget.</td>
+</tr>
+<tr>
+<td>Robonaut 2 (R2)</td>
+<td>NASA / GM</td>
+<td>2011 (ISS deploy); 2018 (returned)</td>
+<td>~150 (full config with legs); upper torso ~68 (estimated from published torso-only config, <strong>unverified</strong>)</td>
+<td>~1.0 (torso on stanchion, ISS config)</td>
+<td>42 (torso+arms+hands; 54 with legs)</td>
+<td>Electric (brushless DC; 350+ sensors, 38 PowerPC processors)</td>
+<td>unverified</td>
+<td>Teleoperated primary; limited supervised autonomy demonstrated on ISS</td>
+<td>ISS-deployed (heritage)</td>
+<td>First and only US humanoid robot operated on the ISS. Critical negative lesson: R2 was "not designed to be serviceable by astronauts" — a missing-ground fault in the computer chassis caused cascading electrical shorts that disabled the robot for years. On-orbit serviceability is a hard requirement, not an option.</td>
+</tr>
+<tr>
+<td>FEDOR / Skybot F-850</td>
+<td>Android Technics / Roscosmos</td>
+<td>2019 (ISS mission)</td>
+<td>106</td>
+<td>1.82</td>
+<td>48 (brushless motor count used as DOF proxy; actual articulated DOF unverified)</td>
+<td>Electric (brushless synchronous, permanent magnet; avatar teleoperation suit)</td>
+<td>unverified</td>
+<td>Teleoperated primary (avatar mode); limited autonomous grasp and walk</td>
+<td>ISS-deployed (heritage)</td>
+<td>Only humanoid launched to ISS under teleop with a human-form mission profile (Soyuz commander's seat). Critical negative lesson: bipedal legs were immediately disabled by cosmonauts on arrival — the robot had not been programmed for microgravity locomotion via handrails. Reinforces that bipedal locomotion, while necessary for surface ops, is a liability in microgravity transit and ISS-type environments without dedicated zero-g mobility mode.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Table notes:</strong>
+- "Year (latest config)" refers to the most recent significant hardware or software revision, not the founding date.
+- Rated power figures for commercial robots are generally not published by manufacturers; estimates derived from battery capacity and runtime are marked as unverified.
+- Robonaut 2 DOF count of 42 is for the torso+arm+hand configuration as deployed to ISS; the later leg upgrade added 14 DOF (7 per leg) for a total of 56 DOF in the full configuration. The legs were never functional on orbit.
+- FEDOR's "48" figure from primary sources refers to motor count, not independently verified articulated DOF; treat as approximate.</p>
+<hr>
+<h3 id="heritage-gaps">Heritage Gaps</h3>
+<p>The following capabilities are required for the space humanoid mission profile but are absent or undemonstrated in the heritage base reviewed above:</p>
+<ul>
+<li><strong>Microgravity mobility mode.</strong> No heritage robot has a validated locomotion controller for handrail-based movement in zero-g or low-g environments. FEDOR's failure on ISS is the only data point, and it is a negative one. Surface bipedal locomotion and microgravity mobility are distinct unsolved problems that must both be addressed.</li>
+<li><strong>Vacuum and radiation hardening.</strong> No commercial robot (Atlas, Figure 02, Optimus, Apollo, Digit, Unitree) has been qualified for vacuum operation, wide thermal cycling (−180 °C to +130 °C lunar surface), or the total ionizing dose (TID) environment of the lunar far side. R2 and FEDOR were qualified only for the pressurized ISS cabin environment, not open-space or surface conditions.</li>
+<li><strong>On-orbit / surface self-serviceability.</strong> R2's grounding failure established that serviceability by crewmates must be a design requirement. No current commercial humanoid is designed with crew-accessible modular fault isolation in mind. All commercial platforms are designed for depot-level servicing on Earth.</li>
+<li><strong>Long-duration autonomous operation under communication latency.</strong> No heritage robot has demonstrated sustained autonomous task execution under representative deep-space latency (&gt;1.3 s one-way for lunar far side relay; up to 20 min for Mars). Current commercial autonomy is tuned for near-real-time or cloud-connected operation.</li>
+<li><strong>Dust tolerance and contamination control.</strong> Lunar regolith (particle size 0.1–100 µm, electrostatically charged, abrasive) will penetrate seals and degrade actuators. No heritage robot has operated in a high-dust, fine-abrasive environment; R2 and FEDOR operated in filtered ISS air. This is an entirely open heritage gap.</li>
+<li><strong>Power budget compatibility with off-grid surface operations.</strong> Robotic power budgets on the heritage robots range from ~300 W (estimated, Optimus) to ~1,800 W (estimated, Valkyrie). A lunar far side base power plant will have hard per-asset power allocations. No heritage robot has been operated within the constraints of a fixed renewable energy budget shared with life support.</li>
+<li><strong>Human-robot dexterous tool compatibility in EVA suit.</strong> R2's hands were designed to use ISS crew tools without modification — the deepest heritage for EVA tool compatibility. No commercial robot replicates this design requirement. The EVA-gloved human hand is the relevant grasp-geometry target, and no current commercial platform has been tested against it.</li>
+</ul>
+<hr>
+<h2 id="open-questions-to-be-resolved-in-subsequent-sections">Open Questions (to be resolved in subsequent sections)</h2>
+<p>These questions are raised directly by the heritage review and must be resolved before the form-factor tradespace analysis (Section 01-02) can take positions:</p>
+<ol>
+<li>
+<p><strong>What is the binding mass constraint for the space humanoid?</strong> The survey spans 35 kg (Unitree G1) to 150 kg (Robonaut 2 full config). Valkyrie's 129 kg was identified by NASA designers as a problem. The lander manifest calculus (Section 04-02) will set a hard ceiling; the form-factor tradespace must design to it. Preliminary working assumption: ≤100 kg in surface configuration, with margin. This assumption must be reconciled with the destinations-trajectories agent.</p>
+</li>
+<li>
+<p><strong>What DOF count is actually required for the target task set?</strong> The heritage survey shows no correlation between DOF count and deployment success. Digit (30 DOF) is the only production-deployed robot; Robonaut 2 (42 DOF) was the only ISS-deployed US robot and was disabled by an electrical fault unrelated to kinematics. The form-factor tradespace must define a minimum-sufficient DOF architecture against the specific task list from the ConOps section (03-02).</p>
+</li>
+<li>
+<p><strong>Is series elastic actuation (Valkyrie heritage) or quasi-direct-drive (Unitree heritage) the right architecture for the primary joints?</strong> SEA provides force control and impact tolerance; QDD provides backdrivability and simplicity. Both have terrestrial research heritage but neither has been operated in vacuum or under radiation. The answer has cascading implications for power draw, mass, and thermal management.</p>
+</li>
+<li>
+<p><strong>What autonomy level is achievable and required under lunar far side latency?</strong> Current commercial autonomy (Figure 02, Optimus) is tuned for near-zero latency AI inference with cloud connectivity. Lunar far side relay latency (Section 02-02 will quantify) makes cloud-dependent autonomy architecturally infeasible. The latency tradespace must specify an autonomy level achievable with fully on-board compute — this drives the sensing and computing subsystem mass and power allocations.</p>
+</li>
+<li>
+<p><strong>Can a single form factor serve both surface EVA-support roles and microgravity transit roles, or does the mission require two distinct configurations?</strong> FEDOR's failed microgravity adaptation and R2's stanchion-limited design suggest these may be incompatible in a single fixed architecture. The ConOps section must define whether the humanoid needs a zero-g mobility mode, and the form-factor tradespace must evaluate whether that can be achieved through software/controller adaptation alone or requires structural reconfiguration (e.g., foot-end-effectors for handrail grasp).</p>
+</li>
+</ol>
+</article>
+
+
+
+
+  </main>
+</div>
+</body>
+</html>

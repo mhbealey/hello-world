@@ -49,11 +49,18 @@ next-env.d.ts
 # local database
 prisma/dev.db
 
-# generated study site (rebuild with: python tools/build_site.py)
+# generated study site (rebuild with: python system/tools/build_site.py)
 /site/
+/studies/archive/*/site/
+/studies/active/*/site/
 
-# generated handback documents (regenerate with: python tools/generate_handback.py)
+# generated handback documents (regenerate with: python system/orchestration/handback.py)
+# root-level leftovers from pre-restructure (safe to ignore)
 handback-stage*.md
 
-# generated CAD output (regenerate with: python cad/humanoid_model.py)
-/cad/output/
+# generated CAD output (regenerate with: python system/tools/build_site.py)
+/studies/archive/*/cad/output/
+/studies/active/*/cad/output/
+
+# archived study handbacks are tracked (override the handback-stage*.md pattern above)
+!studies/archive/*/handbacks/*.md

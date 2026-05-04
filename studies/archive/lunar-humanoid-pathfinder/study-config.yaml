@@ -1,0 +1,73 @@
+study_id: lunar-humanoid-pathfinder
+version: "1.0.0"
+status: archived
+archived_date: "2026-05-04"
+final_stage: 8
+
+title: "Humanoid-Forward Space Exploration: Lunar Far Side Base as Testbed"
+thesis: >
+  A humanoid-forward architecture is the unlock for economically sustainable presence
+  across the inner and middle solar system, an in-space industrial base, and persistent
+  scientific operations at destinations beyond credible crewed reach.
+
+sections:
+  - id: "00-front-matter"
+    title: "Front Matter"
+    files:
+      - abstract.md
+      - why-this-why-now.md
+      - executive-summary.md
+  - id: "01-optimal-space-humanoid"
+    title: "Optimal Space Humanoid"
+    owner_agents:
+      - humanoid-systems-architect
+      - robotics-actuation-structures
+      - robotics-sensing-autonomy
+      - space-environments
+  - id: "02-human-in-the-loop"
+    title: "Human-in-the-Loop Value"
+    owner_agents:
+      - human-factors-teaming
+      - teleoperation-latency
+      - autonomy-trl-tasking
+  - id: "03-workflow-conops"
+    title: "Workflow / ConOps"
+    owner_agents:
+      - conops-integrator
+      - fault-management-sustainment
+  - id: "04-build-and-deploy"
+    title: "Build and Deploy"
+    owner_agents:
+      - technology-roadmap-trl
+      - destinations-trajectories
+      - far-side-base-architect
+      - cost-program
+  - id: "05-cross-cutting"
+    title: "Cross-Cutting"
+    owner_agents:
+      - orchestrator
+
+target_word_count: 80000
+actual_word_count_estimate: 95000
+
+word_count_gates:
+  per_section_max: 12000
+  per_file_max: 4000
+
+key_parameters:
+  humanoid_mass_kg: 120
+  humanoid_power_w: 300
+  latency_earth_moon_s: 1.3
+  trl_target_launch: 6
+  program_first_launch_year: 2032
+
+domain: lunar-surface
+destination_sequence:
+  - lunar-far-side-base
+  - eventual: [mars, asteroids]
+
+heritage_basis:
+  - Robonaut-2
+  - JAXA-HRP-5P
+  - Boston-Dynamics-Atlas
+  - Soviet-Lunokhod

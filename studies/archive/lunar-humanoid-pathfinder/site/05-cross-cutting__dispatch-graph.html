@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dispatch Dependency Graph — Humanoid-Forward Study</title>
+  <link rel="stylesheet" href="static/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="brand">Humanoid-Forward Study</a>
+      <div class="build-time">Built 2026-05-03 05:10</div>
+    </div>
+    <nav class="nav">
+      <a href="index.html" class="nav-dashboard">Dashboard</a>
+      <a href="agents.html" class="nav-dashboard">Agents (18)</a>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">0. Front Matter</div>
+        
+        <a href="00-front-matter__abstract.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Abstract
+        </a>
+        
+        <a href="00-front-matter__executive-summary.html" class="nav-item" title="auto-generated">
+          <span class="status-dot" style="background: #9ca3af"></span>
+          Executive Summary
+        </a>
+        
+        <a href="00-front-matter__why-this-why-now.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Why This Study, Why Now
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">1. Optimal Space Humanoid</div>
+        
+        <a href="01-optimal-space-humanoid__01-overview.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Overview and Heritage Table
+        </a>
+        
+        <a href="01-optimal-space-humanoid__02-form-factor-tradespace.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Form Factor Tradespace
+        </a>
+        
+        <a href="01-optimal-space-humanoid__03-actuation-structures.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Actuation and Structures
+        </a>
+        
+        <a href="01-optimal-space-humanoid__04-sensing-autonomy.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Sensing and Autonomy
+        </a>
+        
+        <a href="01-optimal-space-humanoid__05-environments-hardening.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Environments and Hardening
+        </a>
+        
+        <a href="01-optimal-space-humanoid__06-mass-power-budget.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Optimal Space Humanoid: Mass and Power Budget
+        </a>
+        
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">5. Cross Cutting</div>
+        
+        <a href="05-cross-cutting__charts-index.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Charts Index
+        </a>
+        
+        <a href="05-cross-cutting__cross-coupling-log.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Cross-Coupling Log
+        </a>
+        
+        <a href="05-cross-cutting__dispatch-graph.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Dispatch Dependency Graph
+        </a>
+        
+        <a href="05-cross-cutting__margins-and-assumptions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Margins and Assumptions Register
+        </a>
+        
+        <a href="05-cross-cutting__open-questions.html" class="nav-item" title="in-progress">
+          <span class="status-dot" style="background: #f59e0b"></span>
+          Open Questions
+        </a>
+        
+        <a href="05-cross-cutting__soviet-russian-heritage.html" class="nav-item" title="draft">
+          <span class="status-dot" style="background: #3b82f6"></span>
+          Soviet Russian Heritage
+        </a>
+        
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="content">
+    
+
+<header class="page-header">
+  <div class="breadcrumb">5. Cross Cutting</div>
+  <h1>Dispatch Dependency Graph</h1>
+  <div class="meta-row">
+    <span class="status-badge" style="background: #f59e0b">in-progress</span>
+    <span class="meta-item">Owner: <strong>orchestrator</strong></span>
+    <span class="meta-item">Updated: 2026-05-03</span>
+    <span class="meta-item">382 words</span>
+    <span class="meta-item muted">05-cross-cutting/dispatch-graph.md</span>
+  </div>
+</header>
+
+<article class="prose">
+  <h1 id="dispatch-dependency-graph">Dispatch Dependency Graph</h1>
+<p>Which agents depend on which others' outputs. Used by the orchestrator to plan parallel dispatch. Update this file when new dependency relationships are identified.</p>
+<h2 id="question-a-optimal-space-humanoid">Question (a) — Optimal Space Humanoid</h2>
+<p><strong>Parallel-safe (no inter-dependencies, can run simultaneously):</strong>
+- <code>robotics-actuation-structures</code> (03-actuation-structures.md)
+- <code>robotics-sensing-autonomy</code> (04-sensing-autonomy.md)
+- <code>space-environments</code> (05-environments-hardening.md)
+- <code>soviet-russian-heritage</code> (consultant, no owned section in §01)</p>
+<p><strong>Sequential after those three:</strong>
+- <code>humanoid-systems-architect</code> (06-mass-power-budget.md) — integrates outputs from actuation, sensing, and environments into the mass/power closure</p>
+<h2 id="question-b-human-in-the-loop-value">Question (b) — Human-in-the-Loop Value</h2>
+<p><strong>Parallel-safe:</strong>
+- <code>teleoperation-latency</code> (02-latency-tradespace.md) — latency curves are independent of teaming model
+- <code>autonomy-trl-tasking</code> (03-autonomy-trl-tasking.md) — TRL analysis is independent of teaming model</p>
+<p><strong>Sequential after those two:</strong>
+- <code>human-factors-teaming</code> (01-overview.md, 04-teaming-model.md) — integrator; depends on latency numbers from teleoperation-latency and TRL positions from autonomy-trl-tasking</p>
+<h2 id="question-c-workflow-conops">Question (c) — Workflow / ConOps</h2>
+<p><strong>Sequential (depends on all of Question (a) and (b)):</strong>
+- <code>conops-integrator</code> (01-overview.md, 02-mission-timeline.md) — timeline depends on humanoid capability profile from (a) and teaming model from (b)
+- <code>fault-management-sustainment</code> (03-fault-sustainment.md) — depends on ConOps baseline from conops-integrator</p>
+<h2 id="question-d-build-and-deploy">Question (d) — Build and Deploy</h2>
+<p><strong>Parallel-safe:</strong>
+- <code>destinations-trajectories</code> (02-destinations.md) — trajectory analysis and lander manifest; depends on humanoid mass from (a) but not on (b) or (c)
+- <code>far-side-base-architect</code> (03-far-side-testbed.md) — base architecture; depends on humanoid profile from (a) and power budget</p>
+<p><strong>Sequential after those two:</strong>
+- <code>technology-roadmap-trl</code> (01-technology-roadmap.md) — roadmap depends on TRL gaps identified across all prior sections
+- <code>cost-program</code> (04-cost-program.md) — depends on everything: humanoid mass/power, destinations manifest, base architecture, roadmap</p>
+<h2 id="reviewers">Reviewers</h2>
+<p>All six reviewers (<code>aerospace-engineer</code>, <code>heritage-citations</code>, <code>reliability-margins</code>, <code>scope-discipline</code>, <code>cross-coupling</code>, <code>devils-advocate</code>) run in <strong>parallel</strong> on any draft-complete section. Reviews are independent — no inter-reviewer dependencies.</p>
+<h2 id="cross-cutting-agents">Cross-cutting agents</h2>
+<ul>
+<li><code>soviet-russian-heritage</code> — parallel consultant for any section; no owned sections in Questions (a)-(d)</li>
+<li><code>visualization-agent</code> — parallel-safe at any time; reads section files, produces PNGs</li>
+<li><code>executive-summary-agent</code> — parallel-safe after any major content update</li>
+<li><code>meta-supervisor</code> — runs at end of each work session; reads but does not write study content</li>
+</ul>
+</article>
+
+
+
+
+  </main>
+</div>
+</body>
+</html>
