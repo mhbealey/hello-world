@@ -223,3 +223,15 @@ One entry per agent, per stage. Format: agent name, what worked, what didn't, pr
 **No prompt change required** (orchestrator-side issue on assumption numbering).
 
 ---
+
+## Stage 8 agent assessment
+
+**autonomy-trl-tasking:** Two stream idle timeouts. The T16 decision paragraph, two-tier autonomy floor, and task-redesign content were completed on the second run; table compression required direct orchestrator intervention. Rating: partial — content good, delivery unreliable for large files.
+
+**teleoperation-latency:** One stream idle timeout. All §02-02 edits (HC corrections, geometry fix, Tier A boundary) completed before the timeout and captured in a hook-compliance commit. Rating: effective despite timeout.
+
+**human-factors-teaming:** One stream idle timeout; only minor §02-01 and §A17 changes completed in the dispatched run. §02-04 arithmetic repairs came from a prior session pass; §A19 blocker fixed directly by orchestrator. Rating: unreliable for large multi-part tasks — the 24-step prompt was the root cause.
+
+**Wave 1 reviewers (all six):** Completed successfully; Stage 8 findings written to all files. Wave 2 targeted reviewers (CC/AE/RM, DA): completed in under 40 seconds each with focused 3-question prompts. Rating: excellent when scoped tightly. The contrast between Wave 1 (22+ tool uses, 10+ minutes) and Wave 2 (6 tool uses, 40 seconds) is the clearest efficiency signal of the stage.
+
+---

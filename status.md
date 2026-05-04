@@ -37,3 +37,4 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:15:00Z | WAVE2-PASS | CC/AE/RM re-review: AE-S8-06 RESOLVED, CC-S8-001 RESOLVED, CC-S8-003 RESOLVED — all three blockers cleared
 2026-05-04T00:16:00Z | WAVE2-PASS | DA re-review: DA-5/DA-8 RESOLVED, DA-6 RESOLVED, DA-7 RESOLVED — overall PASS
 2026-05-04T00:17:00Z | FILE-WRITTEN | handback-stage8.md generated — 150,951 chars, gate passed
+2026-05-04T00:20:00Z | AGENT-DONE | Task 8 retro updates complete — agent-performance, orchestrator-performance, process-lessons all updated

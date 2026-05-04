@@ -111,3 +111,15 @@ The robotics-actuation-structures agent (Batch 1) added §A14 (actuator mass sen
 **Why it happened:** The orchestrator issued assumption number assignments by counting the highest existing entry (§A13 at the time of Batch 2 briefing) without accounting for the fact that Batch 1 agents were simultaneously writing §A14 and §A15.
 
 **Corrective action (applied in stage 7):** The orchestrator must query the assumption register for its highest numbered entry immediately before issuing any instruction that includes a specific §A_N number. The query happens in the same message turn as the dispatch prompt, not at prompt-writing time. Alternatively, agent prompts should say "add this assumption as the next sequential entry after the current highest §A_N — do not use a specific number assigned in this prompt."
+
+---
+
+## Lesson 10: Stream idle timeout is the dominant failure mode for large-file agent tasks
+
+**From stage 8.**
+
+Stream idle timeout caused partial completion in three of four content agents dispatched to large files. The 24-step human-factors-teaming prompt was too large by a factor of approximately four; the agent timed out mid-task and the remaining work required direct orchestrator intervention. **Fix:** Break large-file tasks into sections of fewer than 500 words of target output each. Maximum prompt complexity is 5–6 steps covering one file. When a task requires more than that, dispatch sequentially in multiple calls rather than combining into one prompt.
+
+**Direct orchestrator edits beat re-dispatch for targeted fixes.** When the remaining work after a timeout is a single sentence or a known paragraph, doing it in the main session is faster and more reliable than composing a new agent prompt, waiting for dispatch, and verifying the result.
+
+**Focused Wave 2 reviewers beat comprehensive Wave 1 reviewers.** Six tool uses and 40 seconds per reviewer (3 specific questions, one file) outperformed 22+ tool uses and 10+ minutes per reviewer (broad mandate, all files). Scope the review prompt to 3 specific questions, not 20.
