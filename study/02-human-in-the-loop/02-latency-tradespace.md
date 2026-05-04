@@ -3,7 +3,7 @@ title: "Human-in-the-Loop Value: Latency Tradespace"
 status: draft
 review-status: stage-8-enforcement-pass
 owner: teleoperation-latency
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 ---
 
 # Section 02-02 — Latency Tradespace

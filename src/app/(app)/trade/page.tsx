@@ -409,5 +409,4 @@ function TradeField({ label, value }: { label: string; value: string }) {
   );
 }
 
-// Need Badge import
 import { Badge } from "@/components/ui/badge";

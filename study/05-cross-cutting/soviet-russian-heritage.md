@@ -1,4 +1,5 @@
 ---
+title: Soviet/Russian Heritage Research Notes
 status: draft
 owner: soviet-russian-heritage
 last-updated: 2026-05-03

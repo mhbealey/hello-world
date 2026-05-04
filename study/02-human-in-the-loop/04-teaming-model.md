@@ -3,7 +3,7 @@ title: "Human-in-the-Loop Value: Teaming Model"
 status: draft
 review-status: stage-8-enforcement-pass
 owner: human-factors-teaming
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 ---
 
 # Section 02-04 — Teaming Model

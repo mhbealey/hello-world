@@ -22,6 +22,8 @@ import re
 import sys
 from pathlib import Path
 
+import yaml
+
 ROOT = Path(__file__).resolve().parent.parent
 STUDY_DIR = ROOT / "study"
 
@@ -61,7 +63,6 @@ def parse_frontmatter(text):
     if len(parts) < 3:
         return {}, text
     try:
-        import yaml
         meta = yaml.safe_load(parts[1]) or {}
     except Exception:
         meta = {}

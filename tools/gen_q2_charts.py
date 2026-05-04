@@ -1,8 +1,14 @@
+#!/usr/bin/env python3
 """
-Generate Q(b) Stage 7 charts:
+Generate Q(b) charts:
   1. q2_latency_effectiveness.png  — Operator effectiveness vs. RTLT latency
   2. q2_supervisor_ratio.png       — Humanoid supervisor ratio 2026–2045
 """
+
+from pathlib import Path
+
+OUTPUT_DIR = Path(__file__).resolve().parent.parent / "site" / "charts"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 import numpy as np
 import matplotlib
@@ -158,7 +164,7 @@ ax1.set_xlim(0.01, 100)
 ax1.set_ylim(0, 105)
 ax1.set_xlabel("RTLT Latency (seconds, log scale)", fontsize=11)
 ax1.set_ylabel("Normalized Operator Effectiveness (%)", fontsize=11)
-ax1.set_title("Operator Effectiveness vs. RTLT Latency — Q(b) Stage 7",
+ax1.set_title("Operator Effectiveness vs. RTLT Latency — Q(b)",
               fontsize=13, fontweight="bold", pad=14)
 
 # Custom x-tick labels
@@ -179,7 +185,7 @@ fig1.text(0.5, 0.01, WATERMARK, ha="center", va="bottom",
           fontsize=7.5, color=COLOR_MUTED, style="italic")
 
 fig1.tight_layout(rect=[0, 0.03, 1, 1])
-out1 = "/home/user/hello-world/site/charts/q2_latency_effectiveness.png"
+out1 = OUTPUT_DIR / "q2_latency_effectiveness.png"
 fig1.savefig(out1, dpi=150, bbox_inches="tight", facecolor=COLOR_BG)
 print(f"Saved: {out1}")
 plt.close(fig1)
@@ -262,7 +268,7 @@ ax2.set_xlim(2025.5, 2046.5)
 ax2.set_ylim(0.1, 25)
 ax2.set_xlabel("Year", fontsize=11)
 ax2.set_ylabel("Humanoids per Active Supervisor (log scale)", fontsize=11)
-ax2.set_title("Humanoid Supervisor Ratio Projection — Q(b) Stage 7",
+ax2.set_title("Humanoid Supervisor Ratio Projection — Q(b)",
               fontsize=13, fontweight="bold", pad=14)
 
 ax2.set_xticks([2026, 2029, 2032, 2035, 2038, 2040, 2042, 2045])
@@ -292,7 +298,7 @@ fig2.text(0.5, 0.01, WATERMARK, ha="center", va="bottom",
           fontsize=7.5, color=COLOR_MUTED, style="italic")
 
 fig2.tight_layout(rect=[0, 0.03, 1, 1])
-out2 = "/home/user/hello-world/site/charts/q2_supervisor_ratio.png"
+out2 = OUTPUT_DIR / "q2_supervisor_ratio.png"
 fig2.savefig(out2, dpi=150, bbox_inches="tight", facecolor=COLOR_BG)
 print(f"Saved: {out2}")
 plt.close(fig2)

@@ -38,3 +38,4 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:16:00Z | WAVE2-PASS | DA re-review: DA-5/DA-8 RESOLVED, DA-6 RESOLVED, DA-7 RESOLVED — overall PASS
 2026-05-04T00:17:00Z | FILE-WRITTEN | handback-stage8.md generated — 150,951 chars, gate passed
 2026-05-04T00:20:00Z | AGENT-DONE | Task 8 retro updates complete — agent-performance, orchestrator-performance, process-lessons all updated
+2026-05-04T00:30:00Z | CLEANUP | Mechanical cleanup pass complete — 6 changes, 9 flags, cleanup-report.md written

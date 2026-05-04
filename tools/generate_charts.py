@@ -9,6 +9,7 @@ Output: site/charts/autonomy-trl-curve.png
 import os
 import sys
 from pathlib import Path
+from datetime import date
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -19,7 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 OUTPUT_DIR = REPO_ROOT / "site" / "charts"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
-FOOTER = "Humanoid-Forward Space Study — Auto-generated 2026-05-03"
+FOOTER = f"Humanoid-Forward Space Study — Auto-generated {date.today()}"
 
 
 # ---------------------------------------------------------------------------
