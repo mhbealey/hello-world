@@ -2,7 +2,7 @@
 title: System Observations
 status: in-progress
 owner: meta-supervisor
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 ---
 
 # System Observations
@@ -156,3 +156,17 @@ The priority fix list (from P2-8): Valkyrie R5 fact sheet, Harmonic Drive AG cat
 **Recommendation:** The cross-coupling log entry format should be codified as a template in the log file's header section, replacing the current minimalist format description. The template should explicitly require: (a) the specific numerical value or position being set, (b) for each affected agent, the specific parameter value that agent will consume, and (c) a pointer to the assumption register entry if one was created. Stage 7's implicit prompt practice should become explicit in the file format, so it applies to all future entries regardless of whether the dispatch prompt enforces it.
 
 **Severity:** informational (positive observation)
+
+---
+
+## 2026-05-04 — Stage 8 Observations
+
+**Mandatory rule compliance (Stage 6 rules assessed for Stage 8):** The word-count gate (Rule 5) did not prevent draft-time overruns — §02-02 was written at ~4,277 words and §02-03 at ~4,470 words against a 3,000-word hard cap, both failing the 3,300-word gate threshold. The gate functioned correctly as a handback blocker: handback generation was held until the scope-discipline re-review cleared both sections. The gate's correct behavior is confirmed, but the overrun pattern is now in its third consecutive stage (Q(a) Stages 6–7, Q(b) Stage 8), indicating the pre-write estimation step recommended in the prior observation remains unimplemented. Citation discipline is the single clean pass: the heritage-citations reviewer found zero dangling keys in Q(b) — all 22 `\cite{key}` occurrences resolve to bib entries. This is a genuine structural improvement over Q(a)'s ~22/25 dangling-key rate and confirms the bib-completion work in Stage 7 took hold. Arithmetic discipline showed partial compliance: agents derived relay geometry and cognitive load math, but the triage identified five undetermined or internally inconsistent constants in the §02-04 cognitive load model (0.6 concurrency factor asserted without derivation; OOD alert rate of 1 per sortie with no heritage anchor; §A19 showing 3.0 person-hours/shift while §02-04 shows 1.5 person-hours/shift). Cross-coupling discipline failed on T16: the task classification inconsistency appeared in §02-03 task table, §02-04 summary, §A18, §A19, and the cross-coupling log simultaneously — six locations with contradictory values — confirming that the adjacent-section check before publishing is not being reliably executed.
+
+**Stream idle timeout pattern:** Stage 8 experienced 5 stream idle timeouts on agents working large files. The pattern is consistent: agent reads a large file, begins generating a comprehensive rewrite, times out before the Write tool is invoked. The fix that succeeded was direct orchestrator editing of targeted sections rather than re-dispatching the full agent. This is an evolution of the direct-authorship recovery pattern noted in Stage 7: the orchestrator is increasingly functioning as an editor on large existing files where agent timeouts are predictable. The three-tier retry policy recommended in the prior observation was not adopted; timeouts continue to be resolved by direct intervention without a retry attempt. For Stage 9, agents working on files approaching 4,000 words should be dispatched with explicit scope limits ("edit only Sections 2 and 3; do not read or rewrite the full document") to reduce the read-plus-generate time that triggers timeouts.
+
+**Engagement style adoption:** The senior developer engagement style was added to CLAUDE.md during Stage 8. Evidence of adoption is partial. The triage document (`review/triage-stage8.md`) contains explicit decision framing — the T16 orchestrator decision is structured as a binary with downstream consequences spelled out before dispatch — which matches the "risk preview before dispatch" pattern. The triage also held T16 resolution as a dependency for Dispatch 1C, which is correct sequential gate behavior. What is not visible in the session logs is evidence of pushback before execution: no log entry shows the orchestrator declining to dispatch an agent or flagging a task as under-scoped before it ran. The engagement style appears adopted at the output-structuring level (triage format, gate decisions) but not yet at the pre-dispatch challenge level.
+
+**Recommendation for Stage 9:** The cognitive load arithmetic in §02-04 is the single highest-priority reconciliation item before Q(c) ConOps agents consume the supervisor ratio. The 0.6 concurrency factor and OOD alert rate are both load-bearing for the 1:2–3 IOC ratio that feeds conops-integrator, far-side-base-architect, and cost-program. If those constants remain asserted rather than derived when Q(c) agents run, the ConOps section will build a crew operations model on unanchored numbers, and correcting those numbers later requires a cross-coupling cascade through three downstream sections. Stage 9 dispatch should hold conops-integrator until §A19 arithmetic is closed and confirmed by the reliability-margins reviewer.
+
+**Severity:** concerning
