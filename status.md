@@ -28,3 +28,7 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:02:30Z | COMMIT | Hook-compliance commit — §02-04 partial state (3,857 words, within gate), references.bib, status.md
 2026-05-04T00:05:00Z | AGENT-ERROR | human-factors-teaming timed out — §02-01 Pillar 3 + §A17 Queqiao-2 flag done; §02-04 arithmetic already complete from earlier pass; §A19 '3hrs/2hrs' blocker still present
 2026-05-04T00:05:30Z | FILE-FIXED | §A19 arithmetic blocker resolved directly — '3 hours' removed, '2 hours × 4 crew = 8 person-hrs' consistent; periodic demand now shows 0.6 concurrency factor
+2026-05-04T00:08:00Z | AGENT-ERROR | teleoperation-latency timed out — §02-02 edits already committed; Tier A '<100ms' fix applied directly
+2026-05-04T00:08:00Z | GATE-PASS | §02-02 at 2,734 words — PASSES hard cap 3,000 and gate 3,300
+2026-05-04T00:08:00Z | FILE-FIXED | CC-S8-003 Tier A boundary: '<100 ms' → '≤50 ms' in §02-02 line 76
+2026-05-04T00:08:10Z | COMMIT | §02-02 final — all HC corrections, geometry fix, Tier A boundary aligned
