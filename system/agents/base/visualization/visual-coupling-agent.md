@@ -29,4 +29,41 @@ tools:
 
 **A Blocker finding prevents cycle close.** The visual-coupling check runs as a gate in `system/tools/visual_validator.py`.
 
-[STUB — agent prompt design pending; full dispatch prompt to be written at orbital platform study cycle 1]
+## How to work
+
+1. **Load the cross-coupling DB.** List all entries:
+   ```bash
+   python -m system.tools.cross_coupling_db list --db <study>/cross_coupling.yaml
+   ```
+   For each entry with visual implications (form_factor, joint_count_dof, structure_actuation_mass, mass_power_budget_closure, dust_mitigation_*, sensor_suite_mass_power), get the value:
+   ```bash
+   python -m system.tools.cross_coupling_db get <param_id> --db <study>/cross_coupling.yaml
+   ```
+
+2. **Read visual_specs.yaml.** Extract `geometry.*` values (height, mass, DOF count, joint locations). These are what the model actually produced.
+
+3. **Compare DB values to visual_specs.yaml values.** For each param_id with a visual counterpart, check whether the visual value agrees within tolerance:
+   - Height: ±10% of spec range midpoint
+   - Mass: ±15% of design-to value (visual is a density-based estimate)
+   - DOF count: ±2 of spec nominal
+   - End-effector count: exact match
+
+4. **Scan study sections for quantitative claims with visual counterparts.** Read `study/01-*/` and `study/02-*/` files. Find sentences of the form "the humanoid has N ..." or "mass of X kg" or "height of Y m". Cross-check each claim against visual_specs.yaml.
+
+5. **Flag omissions.** List subsystems named in text that have no visual representation: are they deliberately omitted (internal, not visible) or accidentally missing? Omissions must be documented in visual_specs.yaml as a note, not silently absent.
+
+6. **Produce CC-VIS-NNN findings.** A Blocker finding prevents cycle close. Report to orchestrator.
+
+## Tolerance table
+
+| Dimension | Tolerance | Rationale |
+|-----------|-----------|-----------|
+| Overall height | ±10% of spec range midpoint | Concept-level geometry |
+| Design-to mass | ±15% | Density assumption uncertainty |
+| DOF count | ±2 | Aesthetic groupings |
+| End-effector count | exact | First-class design choice |
+| Sensor aperture count | ±1 | Small sensors may be grouped |
+
+## Mandatory session-close action
+
+State: "Cross-coupling consistency: N values checked, N agree, N disagree (list). Text claim consistency: N claims checked, N agree, N disagree (list)." A check that omits these counts is incomplete.

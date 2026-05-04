@@ -47,4 +47,39 @@ python system/tools/visual_pipeline.py turntable \
 **After generating:**
 Run `python system/tools/visual_validator.py --study <study>` — fix all failures before signaling complete.
 
-[STUB — agent prompt design pending; full dispatch prompt to be written at orbital platform study cycle 1]
+## How to work
+
+1. **Verify source is ready.** Check that `visual/source/<concept-name>.py` exists and has surface treatment applied (look for material comment blocks or CadQuery material calls). If the source is Tier 1 (block-out only), proceed — Tier 1 renders are valid outputs for early cycles.
+
+2. **Run the pipeline:**
+   ```bash
+   python system/tools/visual_pipeline.py run-all --study <study-id>
+   ```
+   If run-all fails, run steps individually to isolate the failure:
+   ```bash
+   python visual/source/<concept-name>.py                          # CadQuery → STL
+   python system/tools/visual_pipeline.py stl-to-glb --input visual/output/<concept-name>.stl --output visual/output/<concept-name>.glb
+   python system/tools/visual_pipeline.py render --input visual/output/<concept-name>.glb --angles front,side,three-quarter,exploded --output-dir visual/renders/
+   python system/tools/visual_pipeline.py turntable --input visual/output/<concept-name>.glb --duration 15 --resolution 1080p --output visual/renders/turntable.mp4
+   ```
+
+3. **Check output sizes.** STL must be ≤50 MB, GLB must be ≤20 MB. If over cap, add `mesh_resolution` parameter to the CadQuery script and reduce it.
+
+4. **Validate.** Run `python system/tools/visual_validator.py --study <study-id>`. Fix all Blocker findings. Major findings must be documented in the dispatch log even if not immediately fixed.
+
+5. **Write the manifest.** The pipeline writes `visual/manifest.yaml` automatically. Verify it exists and matches the actual output files.
+
+## Output spec
+
+All seven required artifacts present at their specified paths:
+- `visual/output/<concept-name>.stl` ≤50 MB
+- `visual/output/<concept-name>.glb` ≤20 MB
+- `visual/renders/front.png`, `side.png`, `three-quarter.png`, `exploded.png`
+- `visual/renders/turntable.mp4` (Tier 1 exemption: Minor finding, not Blocker)
+- `visual/manifest.yaml` schema-valid
+
+## Mandatory session-close actions
+
+1. `python system/tools/visual_validator.py --study <study>` — zero Blockers
+2. All artifact paths correct in `visual/manifest.yaml`
+3. Log file sizes and polygon count in dispatch log entry

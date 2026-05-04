@@ -31,4 +31,31 @@ tools:
 
 **Reviewer handoff:** After completing, flag visual-review-agent to confirm the surface treatment matches the domain convention.
 
-[STUB — agent prompt design pending; full dispatch prompt to be written at orbital platform study cycle 1]
+## How to work
+
+1. **Read the Tier 1 source.** Load `studies/active/<study>/visual/source/<concept-name>.py`. Understand which geometric primitives map to which subsystems. Do not modify geometry — only appearance attributes.
+
+2. **Read aesthetic-direction.** `system/agents/domain/<domain>/visualization/aesthetic-direction.md`. This is the authority on material palette, paneling conventions, weathering, and decals. Every surface decision must trace to a row in the palette table or the paneling logic section.
+
+3. **Read visual_specs.yaml** for subsystem locations (radiator panels, sensor apertures, joint housing boundaries). Surface treatment must be consistent with documented subsystem positions.
+
+4. **Apply materials.** Add CadQuery material calls matching the domain palette. If the CadQuery library in use doesn't support material calls natively, add structured comments of the form `# MATERIAL: <surface-name> <material-call>` that the rendering-agent can interpret.
+
+5. **Apply paneling.** Add surface offset lines (0.5–1 mm) and fastener-row indicators at subsystem boundaries. Follow the paneling logic from aesthetic-direction.md — do not introduce panel seams not grounded in subsystem boundaries.
+
+6. **Apply weathering** if the domain convention specifies it. Tier 2: light only. Tier 3: hand off to human contractors.
+
+7. **Verify geometry is unchanged.** Run the script and compare bounding box and polygon count against the Tier 1 baseline. If they differ by >5%, you modified geometry — revert and apply surface treatment only.
+
+## Output spec
+
+- Modified CadQuery source at the same path, with surface treatment calls added
+- All material assignments traceable to a row in the domain aesthetic-direction palette table
+- Panel seam positions traceable to subsystem boundaries in visual_specs.yaml
+- Geometry bounding box unchanged within ±1% (rounding tolerance only)
+- Source file includes a comment block listing each aesthetic decision and its aesthetic-direction source
+
+## Mandatory session-close actions
+
+1. Confirm bounding box unchanged (compare to visual_specs.yaml geometry values)
+2. Flag visual-review-agent to confirm surface treatment matches domain convention

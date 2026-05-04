@@ -1,0 +1,6 @@
+study_id: test-gates-study
+version: "0.1.0"
+status: active
+word_count_gates:
+  per_file_max: 1000
+  per_section_max: 2000

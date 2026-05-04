@@ -1,0 +1,11 @@
+study_id: test-gates-study
+last_updated: "2026-05-04"
+entries:
+  - param_id: test_param
+    parameter: "A test parameter"
+    date: "2026-05-04"
+    value: "42 kg"
+    set_by: test-agent
+    affects:
+      - other-agent
+    basis: "Test basis."

@@ -1,0 +1,65 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Assumption Registry"
+description: >
+  Schema for assumption_registry.yaml — the per-study store of numbered
+  load-bearing assumptions (§A1, §A2, ...).
+type: object
+required: [study_id, next_id, entries]
+additionalProperties: false
+properties:
+  study_id:
+    type: string
+  last_updated:
+    type: string
+  next_id:
+    type: integer
+    minimum: 1
+    description: "Next available ID number (auto-incremented on add)"
+  entries:
+    type: array
+    items:
+      $ref: "#/$defs/entry"
+
+$defs:
+  entry:
+    type: object
+    required: [id, short_name, statement, basis, risk_level, owner_agent, date_added, status]
+    additionalProperties: false
+    properties:
+      id:
+        type: string
+        pattern: "^A[0-9]+$"
+        description: "Auto-assigned §A<N> identifier"
+      short_name:
+        type: string
+        description: "One-line slug, no spaces (e.g. autonomy-trl-curve)"
+      statement:
+        type: string
+        description: "Full assumption statement as it appears in the study"
+      basis:
+        type: string
+        description: "Evidence or reasoning for this assumption"
+      risk_level:
+        type: string
+        enum: [low, medium, high, critical]
+      owner_agent:
+        type: string
+        description: "Agent responsible for monitoring this assumption"
+      date_added:
+        type: string
+        description: "ISO 8601 date"
+      last_reviewed:
+        type: ["string", "null"]
+        description: "ISO 8601 date of last review, or null"
+      status:
+        type: string
+        enum: [active, revised, superseded]
+      go_no_go_gate:
+        type: ["string", "null"]
+        description: "Gate at which this assumption must be validated or revised"
+      superseded_by:
+        type: ["string", "null"]
+        description: "ID of the assumption that replaces this one, if superseded"
+      cross_coupling_param:
+        type: ["string", "null"]
+        description: "param_id in cross_coupling.yaml that this assumption underpins"
