@@ -1,0 +1,74 @@
+# Visual Specs — per-study visual parameter store
+# This file is updated by visualization-architect at the start of each visual cycle.
+# Schema: system/orchestration/schemas/visual_artifacts.schema.yaml
+
+# Template — copy to studies/active/<study>/visual_specs.yaml and populate from
+# the study's cross-coupling DB.
+
+study_id: "<study-id>"
+last_updated: "YYYY-MM-DD"
+
+primary_concept:
+  name: "<concept-name>"
+  fidelity_tier: 1  # 1=block-out, 2=concept-art, 3=hero-render
+  domain: "<domain>"  # drives aesthetic-direction overlay
+
+geometry:
+  # Values derived from cross-coupling DB — do not hardcode; query at generation time.
+  # python -m system.tools.cross_coupling_db get <param_id> --db <db_path>
+  overall_height_m: null       # from form_factor
+  design_mass_kg: null          # from form_factor
+  dof_count: null               # from joint_count_dof
+  joint_locations:
+    - name: "neck"
+      dof: null
+    - name: "torso"
+      dof: null
+    - name: "shoulder_l"
+      dof: null
+    - name: "shoulder_r"
+      dof: null
+    - name: "elbow_l"
+      dof: null
+    - name: "elbow_r"
+      dof: null
+    - name: "wrist_l"
+      dof: null
+    - name: "wrist_r"
+      dof: null
+    - name: "hip_l"
+      dof: null
+    - name: "hip_r"
+      dof: null
+    - name: "knee_l"
+      dof: null
+    - name: "knee_r"
+      dof: null
+    - name: "ankle_l"
+      dof: null
+    - name: "ankle_r"
+      dof: null
+
+mass_distribution:
+  # Normalized fractions — must sum to 1.0
+  # Derived from structure_actuation_mass and mass_power_budget_closure entries
+  head: null
+  torso: null
+  upper_arm_each: null
+  lower_arm_each: null
+  hand_each: null
+  thigh_each: null
+  lower_leg_each: null
+  foot_each: null
+
+surface_area_m2:
+  # Used by visual_validator to check thermal radiator coverage claims
+  total_body: null
+  radiator_panels: null
+
+output_paths:
+  source: "studies/active/<study>/visual/source/<concept-name>.py"
+  stl: "studies/active/<study>/visual/output/<concept-name>.stl"
+  glb: "studies/active/<study>/visual/output/<concept-name>.glb"
+  renders_dir: "studies/active/<study>/visual/renders/"
+  turntable: "studies/active/<study>/visual/renders/turntable.mp4"

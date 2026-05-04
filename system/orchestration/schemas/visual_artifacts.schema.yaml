@@ -1,0 +1,70 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Visual Artifacts Manifest"
+description: >
+  Schema for visual/manifest.yaml — the structured record of all visual
+  artifacts produced for a study's visual representation.
+type: object
+required: [study_id, concept_name, fidelity_tier, artifacts]
+additionalProperties: false
+properties:
+  study_id:
+    type: string
+  concept_name:
+    type: string
+    description: "Slug for the primary visual concept, e.g. 'space-humanoid'"
+  fidelity_tier:
+    type: integer
+    enum: [1, 2, 3]
+    description: "1=block-out, 2=concept-art, 3=hero-render"
+  last_updated:
+    type: string
+  generator:
+    type: string
+    description: "Script that produced this output, e.g. visual/source/space-humanoid.py"
+  artifacts:
+    $ref: "#/$defs/artifact_set"
+  spec_values:
+    type: object
+    description: "Key spec values reflected in this geometry (from cross-coupling DB)"
+    additionalProperties: true
+
+$defs:
+  artifact_set:
+    type: object
+    required: [stl, glb]
+    additionalProperties: false
+    properties:
+      stl:
+        $ref: "#/$defs/artifact_file"
+        description: "Engineering reference mesh"
+      glb:
+        $ref: "#/$defs/artifact_file"
+        description: "Looking Glass-ready binary glTF"
+      renders:
+        type: object
+        additionalProperties: false
+        properties:
+          front:
+            $ref: "#/$defs/artifact_file"
+          side:
+            $ref: "#/$defs/artifact_file"
+          three_quarter:
+            $ref: "#/$defs/artifact_file"
+          exploded:
+            $ref: "#/$defs/artifact_file"
+      turntable:
+        $ref: "#/$defs/artifact_file"
+        description: "1080p MP4 turntable, 15 seconds"
+  artifact_file:
+    type: object
+    required: [path]
+    additionalProperties: false
+    properties:
+      path:
+        type: string
+      size_bytes:
+        type: integer
+      polygon_count:
+        type: integer
+      checksum_sha256:
+        type: string
