@@ -1,7 +1,7 @@
 ---
 title: "Human-in-the-Loop Value: Overview"
 status: draft
-review-status: unreviewed
+review-status: stage-8-enforcement-pass
 owner: human-factors-teaming
 last-updated: 2026-05-03
 ---
@@ -46,7 +46,7 @@ Section 02-02 derives the three-tier latency architecture from physics: Tier A (
 
 Section 02-03 develops the 20-task taxonomy for far-side base operations, assigns each task a minimum autonomy TRL for unattended execution, and maps the 2035 IOC task allocation between autonomy-led, jointly-executed, and human-led categories. The seven-category human value floor — first execution of any new task type in the operational environment, all physical contact with suited crew, pressurized interface operations, crew-habitat-access decisions, habitat structural modification, science priority decisions, and OOD situations flagged by the robot itself — represents the tasks where human authorization is required not because TRL is low but because the consequence profile demands it.
 
-Section 02-04 (the teaming model) synthesizes these two inputs into three supervision modes — continuous, periodic, and on-demand — and maps each mode to its applicable latency tier, task category, and cognitive load. The three-tier latency model maps to three distinct teaming modes; the task allocation table maps specific tasks to those modes. The supervisor ratio, crew composition, and forward-deployment commitment all derive from this synthesis.
+Section 02-04 (the teaming model) synthesizes these two inputs into three supervision modes — continuous, periodic, and on-demand — and maps each mode to its applicable latency tier, task category, and cognitive load. The supervisor ratio, crew composition, and forward-deployment commitment all derive from this synthesis.
 
 ---
 
@@ -62,14 +62,14 @@ Earth supervision is not eliminated; it serves a real and important function. Ea
 
 The medical emergency case makes the argument concrete. A crew member on EVA suffers a suit breach. The humanoid is the nearest asset capable of providing first response. From the base habitat at ≤50 ms RTLT, a second crew member can drive the humanoid to the scene, assess via the robot's cameras, and direct manipulation in real time. From Earth at 2.8 s RTLT, the available response is a pre-programmed autonomous emergency protocol — which, at TRL 7 in 2035, may or may not handle the specific scenario correctly. Earth supervision in a medical emergency does not provide a degraded version of the on-base response; it provides a qualitatively different and operationally inadequate response for this task profile.
 
+A third driver — symbolic and operational continuity — is addressed in §02-04 Section 4 as a program argument independent of the technical performance case.
+
 ---
 
 ## 5. Preview of Section 02-04
 
-Section 02-04 develops the full teaming model across five areas. First, it defines the three supervision modes — continuous, periodic, and on-demand — with precise cognitive load estimates derived from the Mir crew time baseline (30–40% maintenance absorption, Topic 7 in the Soviet/Russian heritage file) and the Mars-500 behavioral degradation data \cite{basner2013mars500}. Second, it presents the cognitive load analysis across the three latency tiers, with the arithmetic showing why 4 crew and 3 humanoids close the supervisory demand balance at IOC with a 3–4× headroom margin. Third, it defends the supervisor ratio — 1 human to 2–3 humanoids at IOC (2035), advancing to 1:4–5 by full operation (2040) — with the NIP-10 heritage as the 5:1 baseline and the §A1 autonomy curve as the advancement model. Fourth, it states the three-pillar case for forward-deployed humans: latency (physics), situational awareness (mental model currency), and symbolic/operational continuity (political and program weight of crewed presence). Fifth, it ties the teaming model explicitly to the §A8 two-tier compute architecture and the §A9 foundation-model-supervisory-only constraint, showing how these architectural decisions enable the on-demand supervision mode.
+Section 02-04 develops the full teaming model across five areas. First, it defines the three supervision modes — continuous, periodic, and on-demand — with precise cognitive load estimates derived from the Mir crew time baseline (30–40% maintenance absorption; planning value 35%) and the Mars-500 behavioral degradation data \cite{basner2013mars500}. Second, it presents the cognitive load analysis: 4 crew × 2 hours/crew member/shift supervisory allocation = 8 person-hours/shift capacity; 4.25 person-hours/shift demand at IOC; utilization 53%; headroom 47% of capacity. The 2 hours/crew member figure derives from an 8-hour productive work day × 25% supervisory allocation = 2 hours. Third, it defends the supervisor ratio — 1 human to 2–3 humanoids at IOC (2035), advancing to 1:4–5 by full operation (2040) — with the NIP-10 heritage as the 5:1 baseline and the §A1 autonomy curve as the advancement model. The 5–10× productivity differential between Tier A and Tier B supervision modes is a parametric estimate based on checkpoint latency analysis in §02-02 and the cognitive load model in §02-04; no direct empirical analog exists and the estimate requires validation at the 2029 testbed. Fourth, it states the three-pillar case for forward-deployed humans: latency (physics), situational awareness (mental model currency), and symbolic/operational continuity (political and program weight of crewed presence). Fifth, it ties the teaming model explicitly to the §A8 two-tier compute architecture and the §A9 foundation-model-supervisory-only constraint, showing how these architectural decisions enable the on-demand supervision mode.
 
 ---
-
-*Word count: approximately 1,720 words.*
 
 \bibliography{corpus/references}
