@@ -53,3 +53,6 @@ handback-stage*.md
 
 # generated CAD output (regenerate with: python cad/humanoid_model.py)
 /cad/output/
+
+# export archives
+*.zip
