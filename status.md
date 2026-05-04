@@ -25,3 +25,6 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:00:53Z | AGENT-ERROR | autonomy-trl-tasking timed out (stream idle timeout) — 14 tool uses completed; §02-03 at 3,692 words; re-dispatch required
 2026-05-04T00:01:30Z | AGENT-ERROR | autonomy-trl-tasking stream-idle-timeout — content changes complete (T16, two-tier floor, task-redesign done); table compression incomplete; §02-03 at 3,692 words
 2026-05-04T00:01:30Z | AGENT-DISPATCH | autonomy-trl-tasking re-dispatched (table compression only) — target <3,000 words
+2026-05-04T00:02:30Z | COMMIT | Hook-compliance commit — §02-04 partial state (3,857 words, within gate), references.bib, status.md
+2026-05-04T00:05:00Z | AGENT-ERROR | human-factors-teaming timed out — §02-01 Pillar 3 + §A17 Queqiao-2 flag done; §02-04 arithmetic already complete from earlier pass; §A19 '3hrs/2hrs' blocker still present
+2026-05-04T00:05:30Z | FILE-FIXED | §A19 arithmetic blocker resolved directly — '3 hours' removed, '2 hours × 4 crew = 8 person-hrs' consistent; periodic demand now shows 0.6 concurrency factor

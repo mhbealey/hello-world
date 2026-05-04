@@ -269,11 +269,11 @@ Owner: human-factors-teaming (ratio definition and derivation), conops-integrato
 
 **Demand derivation:**
 - 12 autonomy-led tasks: ~0.05 person-hr/robot-hr × 3 robots × 8 hr operational window = ~1.2 person-hr/shift
-- 6 jointly-executed tasks: ~0.2 person-hr/robot-hr × 3 robots × 5 hr active window = ~3.0 person-hr/shift  
-- Total: ~4.2 person-hr/shift (rounded to 4.25 with scheduling overhead)
+- 6 jointly-executed tasks: ~0.2 person-hr/robot-hr × 3 robots × ~4.2 hr active window × 0.6 concurrency factor = ~1.5 person-hr/shift (derivation in §02-04 Section 1; concurrency factor accounts for staggered sortie starts)
+- Total: ~4.25 person-hr/shift (on-demand 2.0 + periodic 1.5 + continuous 0.75)
 
 **Capacity derivation:**
-- Mir heritage: 30–40% of crew time absorbed by maintenance (life support, systems, habitat). With maintenance absorption at 35%, a 12-hour crew waking period leaves approximately 65% = 7.8 hours for other activities. For supervisory activities specifically, the fraction available without competing with science, EVA prep, and personal time is 25–30%, or approximately 3 hours per crew member per shift. For 4 crew: 4 × 2 hours ≈ 8 person-hr/shift (conservative estimate).
+- Mir heritage: 30–40% of crew time absorbed by maintenance (life support, systems, habitat). With maintenance absorption at 35%, a 12-hour crew waking period leaves approximately 65% = 7.8 hours for other activities. For supervisory activities specifically, the fraction available without competing with science, EVA prep, and personal time is 25% of the 8-hour productive work day = **2 hours per crew member per shift**. For 4 crew: 4 × 2 hours = **8 person-hr/shift**.
 
 **Sensitivity:** If maintenance absorption rises to 50% (Mir high-demand periods), available supervisory capacity drops to approximately 5–6 person-hr/shift. Headroom compresses to 1.2–1.4×. The ConOps agent must model this scenario.
 

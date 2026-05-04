@@ -3,7 +3,7 @@ title: "Human-in-the-Loop Value: Autonomy TRL and Task Allocation"
 status: draft
 review-status: stage-8-enforcement-pass
 owner: autonomy-trl-tasking
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 ---
 
 # Section 02-03 — Autonomy TRL and Task Allocation
@@ -20,15 +20,15 @@ The table below maps autonomous capability to the task categories relevant to th
 
 | Task Category | Current Space TRL | Current Terrestrial TRL | Gap to Mission Requirement | Notes |
 |---|---|---|---|---|
-| **Locomotion — prepared paths** | 3 | 6 | TRL 6 by 2029 per §A1 | No bipedal humanoid has walked on any planetary surface; FEDOR demonstrated station ingress in zero-g. Terrestrial TRL 6 gate: 30-min unscripted walk on JSC-1A simulant in 1/6-g offload by Q4 2028. |
-| **Locomotion — unstructured terrain** | 2 | 4 | TRL 6 by 2035 | Atlas and Unitree handle moderate outdoor terrain but show long-tail failures on loose granular surfaces — the closest terrestrial lunar-regolith analog. No gravity-compensated test on simulant exists. |
-| **Manipulation — structured, pre-taught grasps** | 5 | 7 | TRL 6 by 2029 | Robonaut 2 panel operations and ISS handrail grasp at TRL 5 \cite{diftler2011r2}; Figure 02 and Digit in factory deployments at TRL 7. Gap: task library must be built in ground simulant before deployment. |
-| **Manipulation — unstructured, novel objects** | 2 | 4 | TRL 6 by 2035 | No dexterous manipulation of novel objects in space. Terrestrial research demos fail consistently outside training distribution \cite{zhao2023aloha}. Lunar novel objects are the normal condition in scientific fieldwork. |
-| **Navigation — 3D mapping, terrain avoidance** | 8 | 9 | Met by 2029 with adaptation | Mars AutoNav heritage: stereo-camera terrain classification, autonomous traverse, 22.8 km through Jezero at TRL 8 \cite{ono2018msl}. Gap: speed (humanoid target 1.0–1.5 m/s vs. rover 0.045 m/s) and biped platform. |
-| **Fault response — reactive, safe-stop** | 6 | 7 | TRL 7 by 2029 | Rovers implement autonomous tilt-limit, safe-stop, and comm-loss safe-mode with decade of flight heritage. Extension to biped adds fall detection and recovery (terrestrial TRL 5). Composite TRL 6. |
-| **Fault response — deliberative, reconfiguration** | 3 | 5 | TRL 8 by 2035 | Curiosity wheel-damage workarounds are best space heritage; no load-bearing joint failure reconfiguration precedent. Single hip/knee failure may prevent upright locomotion; decision logic has no space precedent. |
-| **Multi-step task execution — scripted** | 5 | 6 | TRL 6 by 2029 | AEGIS/MSL autonomous science and R2 panel operations at TRL 5 \cite{ono2018msl}; Figure 02 factory deployments at TRL 6. Gap: lunar tasks require 2–8 hour unattended sequences, an order of magnitude beyond published demos. |
-| **Novelty handling — unscripted situation response** | 2 | 3 | TRL 5 by 2035; TRL 7 by 2038–2040 | No autonomous space system has responded productively to a situation outside its pre-defined envelope without ground intervention. VLA zero-shot performance degrades substantially at training distribution boundary; the model's self-assessment of OOD membership is the most poorly calibrated capability. |
+| **Locomotion — prepared paths** | 3 | 6 | TRL 6 by 2029 per §A1 | Bipedal lunar surface is TRL 2–3; requires 2029 first-article demo on JSC-1A simulant in 1/6-g offload. |
+| **Locomotion — unstructured terrain** | 2 | 4 | TRL 6 by 2035 | Long-tail failures on loose granular surfaces; no gravity-compensated simulant test exists. |
+| **Manipulation — structured, pre-taught grasps** | 5 | 7 | TRL 6 by 2029 | R2 ISS heritage at TRL 5 \cite{diftler2011r2}; task library must be built on simulant before deployment. |
+| **Manipulation — unstructured, novel objects** | 2 | 4 | TRL 6 by 2035 | Research demos fail outside training distribution \cite{zhao2023aloha}; lunar novel objects are the normal condition. |
+| **Navigation — 3D mapping, terrain avoidance** | 8 | 9 | Met by 2029 with adaptation | AutoNav heritage at TRL 8 \cite{ono2018msl}; gap is speed (1.0–1.5 m/s vs. rover 0.045 m/s) and biped platform. |
+| **Fault response — reactive, safe-stop** | 6 | 7 | TRL 7 by 2029 | Decade of rover safe-mode heritage; biped adds fall detection and recovery (terrestrial TRL 5). |
+| **Fault response — deliberative, reconfiguration** | 3 | 5 | TRL 8 by 2035 | No load-bearing joint failure reconfiguration precedent in space; decision logic TRL gap is the constraint. |
+| **Multi-step task execution — scripted** | 5 | 6 | TRL 6 by 2029 | AEGIS/R2 heritage at TRL 5 \cite{ono2018msl}; gap is 2–8 hour unattended sequences, beyond published demos. |
+| **Novelty handling — unscripted situation response** | 2 | 3 | TRL 5 by 2035; TRL 7 by 2038–2040 | No space system has responded productively outside its pre-defined envelope without ground intervention. |
 
 ---
 
@@ -38,26 +38,26 @@ The following tasks constitute the operational envelope for the lunar far-side b
 
 | # | Task Name | Primary Autonomy Category | Min TRL for Full Autonomy | Can be human-led? | Notes |
 |---|---|---|---|---|---|
-| T01 | Transit on prepared path between base modules | Locomotion (prepared) | TRL 6 | Yes, but tempo penalty | Daily transits impractical to supervise at 1:3 ratio |
-| T02 | Negotiate unprepared terrain to science waypoint | Locomotion (unstructured) | TRL 6 | Yes | Short excursions plausibly supervised via habitat video |
-| T03 | Navigate to GPS-designated sample collection point | Navigation (3D mapping) | TRL 8 (met) | Yes | AutoNav-class; heritage solid |
-| T04 | Collect regolith sample at designated site | Manipulation (pre-taught) | TRL 6 | Yes | Site slope and compaction variability require TRL 6 deliberative adaptation |
-| T05 | Install solar panel segment at pre-surveyed location | Multi-step task execution (scripted) | TRL 6 | Human-lead preferred before TRL 7 | Multi-step scripted with physical engagement; first execution always human-supervised |
-| T06 | Replace Tier 2 compute ORU in humanoid workshop | Manipulation (pre-taught) | TRL 6 | Human-lead for first execution | Pre-taught connector sequence in structured workshop; reduces crew EVA time |
-| T07 | Inspect external base structure (visual survey) | Navigation + Multi-step (scripted) | TRL 6 | Yes | Pre-programmed inspection path; directly analogous to Perseverance inspection drives |
-| T08 | Transport equipment from logistics airlock to worksite | Locomotion + Manipulation (pre-taught) | TRL 6 | Yes, but crew time intensive | Grasps and secures tools across 50–300 m of prepared path |
-| T09 | EVA support — carry tools to crew member at worksite | Locomotion + Manipulation (pre-taught) | TRL 6 | Jointly executed — crew confirms before handoff | Crew authorization gate required; safety-of-crew contact event |
-| T10 | Respond to SPE shelter warning — return autonomously to habitat | Fault response (reactive) | TRL 7 | Must be fully autonomous | Time window 15–30 minutes; assumes GLE75-class SPE profile and 100 mSv/sortie ALARA limit (design reference spectrum TBD at PDR); must confirm against habitat shielding model; logged as §A-TBD in margins register. Human authorization impractical in time-critical SPE scenario |
-| T11 | Detect and report joint anomaly, initiate safe-stop | Fault response (reactive) | TRL 7 | Must be fully autonomous | Tier 1 supervisor handles; crew notified after; no judgment required |
-| T12 | Reconfigure locomotion after single joint failure | Fault response (deliberative) | TRL 8 | Human-lead before TRL 8 | Load-bearing joint failure forces mode switch; deliberative reasoning required; human intervention required before TRL 8 |
-| T13 | Collect geological sample at novel outcrop (unscripted location) | Novelty handling + Manipulation | TRL 7 | Jointly executed — scientist provides site decision | Robot executes mechanics; scientist selects site via relay; autonomy handles execution |
-| T14 | Identify and report unrecognized hardware anomaly at base perimeter | Novelty handling | TRL 7 | Jointly executed | Robot flags deviation; human reviews and decides response |
-| T15 | Perform pre-scripted EVA preparation checklist (suit station) | Multi-step task execution (scripted) | TRL 6 | Yes | Well-bounded; high repetition; identical environment each cycle |
-| T16 | Operate radio telescope array calibration instrument | Multi-step (scripted) + Manipulation | TRL 6 | Autonomy-led at IOC (well-structured calibration protocol; human review of outputs, not real-time supervision) | VLBI correlation; scripted; pre-mapped instrument; not time-critical at minute timescales |
-| T17 | Respond to habitat pressure drop alarm — locate and report breach | Novelty handling + Navigation | TRL 7 | Must be partially autonomous | Time-critical; robot initiates inspection autonomously; human makes sealing/evacuation decision |
-| T18 | Train on new tool type via demonstration capture | Manipulation (supervised learning) | Not an autonomy gate | Must be crew-led | Crew demonstrates; robot records new behavior library entry; maintenance activity for the autonomy system |
-| T19 | Remove and replace dust-degraded radiator panel | Manipulation (pre-taught) + Locomotion | TRL 6 | Human-lead initially | Connector sequence and panel alignment are teachable; first execution requires crew supervision |
-| T20 | Assess and map terrain ahead of planned traverse | Navigation (3D mapping) | TRL 8 (met) | Yes | AutoNav-class heritage fully applicable; crew reviews map before long traverse approval |
+| T01 | Transit on prepared path between base modules | Locomotion (prepared) | TRL 6 | Yes, but tempo penalty | Daily transits impractical to supervise at 1:3 ratio. |
+| T02 | Negotiate unprepared terrain to science waypoint | Locomotion (unstructured) | TRL 6 | Yes | Short excursions plausibly supervised via habitat video. |
+| T03 | Navigate to GPS-designated sample collection point | Navigation (3D mapping) | TRL 8 (met) | Yes | AutoNav-class; heritage solid. |
+| T04 | Collect regolith sample at designated site | Manipulation (pre-taught) | TRL 6 | Yes | Slope and compaction variability require TRL 6 deliberative adaptation. |
+| T05 | Install solar panel segment at pre-surveyed location | Multi-step task execution (scripted) | TRL 6 | Human-lead preferred before TRL 7 | Physical engagement gates require human authorization; irreversible if misseated. |
+| T06 | Replace Tier 2 compute ORU in humanoid workshop | Manipulation (pre-taught) | TRL 6 | Human-lead for first execution | Structured workshop; pre-taught connector sequence. |
+| T07 | Inspect external base structure (visual survey) | Navigation + Multi-step (scripted) | TRL 6 | Yes | Pre-programmed path; analogous to Perseverance inspection drives. |
+| T08 | Transport equipment from logistics airlock to worksite | Locomotion + Manipulation (pre-taught) | TRL 6 | Yes, but crew time intensive | Prepared path; 50–300 m range. |
+| T09 | EVA support — carry tools to crew member at worksite | Locomotion + Manipulation (pre-taught) | TRL 6 | Jointly executed — crew confirms before handoff | Safety-of-crew contact; crew authorization required every handoff. |
+| T10 | Respond to SPE shelter warning — return autonomously to habitat | Fault response (reactive) | TRL 7 | Must be fully autonomous | 15–30 min window; human authorization impractical in time-critical SPE scenario. |
+| T11 | Detect and report joint anomaly, initiate safe-stop | Fault response (reactive) | TRL 7 | Must be fully autonomous | Tier 1 supervisor handles; no judgment required; crew notified after. |
+| T12 | Reconfigure locomotion after single joint failure | Fault response (deliberative) | TRL 8 | Human-lead before TRL 8 | Deliberative reasoning required; human intervention mandatory before TRL 8. |
+| T13 | Collect geological sample at novel outcrop (unscripted location) | Novelty handling + Manipulation | TRL 7 | Jointly executed — scientist provides site decision | Scientist selects via relay; robot executes mechanics. |
+| T14 | Identify and report unrecognized hardware anomaly at base perimeter | Novelty handling | TRL 7 | Jointly executed | Robot flags deviation; human assesses operational significance. |
+| T15 | Perform pre-scripted EVA preparation checklist (suit station) | Multi-step task execution (scripted) | TRL 6 | Yes | Well-bounded; high repetition; identical environment each cycle. |
+| T16 | Operate radio telescope array calibration instrument | Multi-step (scripted) + Manipulation | TRL 6 | Autonomy-led at IOC | Scripted calibration protocol; pre-mapped instrument; human reviews logs not execution. |
+| T17 | Respond to habitat pressure drop alarm — locate and report breach | Novelty handling + Navigation | TRL 7 | Must be partially autonomous | Robot initiates autonomously; human makes sealing/evacuation decision. |
+| T18 | Train on new tool type via demonstration capture | Manipulation (supervised learning) | Not an autonomy gate | Must be crew-led | Crew demonstrates; robot records new behavior library entry. |
+| T19 | Remove and replace dust-degraded radiator panel | Manipulation (pre-taught) + Locomotion | TRL 6 | Human-lead initially | Teachable connector sequence; first execution requires crew supervision. |
+| T20 | Assess and map terrain ahead of planned traverse | Navigation (3D mapping) | TRL 8 (met) | Yes | AutoNav-class; crew reviews map before long traverse approval. |
 
 ---
 
@@ -99,7 +99,7 @@ By 2035, the deliberative layer advances to TRL 7 (validated in space-analog env
 
 By the 2040 full operation horizon, the TRL 8 deliberative layer unlocks T12 (joint-failure reconfiguration) and advances novelty handling (T13, T14) from jointly-executed to a lighter-touch supervisory model. T17 (pressure breach response) may reach fully autonomous execution with crew notification rather than authorization, depending on mission rule evolution. Tasks T05 and T09 may shift to autonomy-led with crew monitoring rather than jointly executed as task library and operational experience accumulate.
 
-The Tier 1 human value floor (Categories 2, 3, 4, 5) does not shift regardless of TRL advancement — the consequence of autonomous failure is disproportionate and irreversible. The Tier 2 categories (1, 6, 7) are reviewed at the 2037 and 2040 gates per the criteria stated above. "The human value floor (see Section 3, IOC subsection) remains in force; its Tier 1 categories are unchanged, and Tier 2 reviews at the 2040 gate are specified in §A9."
+The Tier 1 human value floor (Categories 2, 3, 4, 5) does not shift regardless of TRL advancement — the consequence of autonomous failure is disproportionate and irreversible. The Tier 2 categories (1, 6, 7) are reviewed at the 2037 and 2040 gates per the criteria stated above.
 
 ---
 
@@ -124,7 +124,7 @@ This table is the primary input to the human-factors-teaming section (02-04). Th
 | T13 — Novel site geological sample | **Jointly executed** (scientist selects site, robot executes) | **Jointly executed** (scientific judgment remains human) |
 | T14 — Unrecognized hardware anomaly report | **Jointly executed** (robot flags, human decides) | **Jointly executed** (human decision remains for novel anomalies) |
 | T15 — EVA preparation checklist | **Autonomy-led** (crew present for suit operations; robot assists) | **Autonomy-led** |
-| T16 — Radio telescope calibration | **Autonomy-led** (IOC: autonomy-led — scripted calibration protocol; human reviews logs, not execution) | **Autonomy-led** |
+| T16 — Radio telescope calibration | **Autonomy-led** (scripted calibration protocol; human reviews logs, not execution) | **Autonomy-led** |
 | T17 — Habitat breach — locate and report | **Jointly executed** (robot locates, human decides sealing action) | **Jointly executed** or Autonomy-led with notify (depends on mission rules) |
 | T18 — New tool demonstration capture | **Human-led** (crew or ground demonstrates) | **Human-led** |
 | T19 — Radiator panel replacement | **Autonomy-led** after first supervised run | **Autonomy-led** |
@@ -148,17 +148,17 @@ The serious counter-case: Foundation models trained on internet-scale data and f
 
 The 2.78 s RTLT from Earth via Queqiao-2 relay eliminates Earth-based supervision for time-critical operations — but does it follow that forward-deployed humans are required? An alternative is to redesign the jointly-executed tasks to eliminate real-time supervision checkpoints entirely through mechanical interlocks, force-limit parameters, and pre-validated envelopes. Each of the six jointly-executed tasks is assessed below.
 
-**T05 (solar panel installation).** Human authorization at physical engagement gates is required because force-limiting interlocks cannot substitute for human judgment of panel seating against dusty, non-standard surfaces in the first operational years. Pre-validated parameter envelopes are possible for repeat executions once a 6-month operational baseline is established; this task is a Tier 2 candidate for migration to autonomy-led after that baseline. Redesign partially succeeds — first-execution authorization remains.
+**T05 (solar panel installation).** Force-limiting interlocks cannot substitute for human judgment of panel seating on dusty, non-standard surfaces in the first operational years. Pre-validated envelopes are feasible for repeat executions after a 6-month operational baseline; this task is a Tier 2 candidate for migration to autonomy-led after that baseline. Redesign partially succeeds — first-execution authorization remains.
 
-**T09 (EVA tool handoff).** Crew contact confirmation is required. A physical dead-man switch on the crew-member receiving side could theoretically substitute — but only if the crew member is physically present at the handoff point. Forward deployment is required for crew presence; Earth supervision cannot confirm crew safe positioning in real time within the 5.56 s minimum round-trip exchange. This task cannot be redesigned away from human involvement without compromising crew safety. Redesign fails.
+**T09 (EVA tool handoff).** A physical dead-man switch on the crew-member receiving side could theoretically substitute — but only if the crew member is physically present at the handoff point. Earth supervision cannot confirm crew safe positioning in real time within the 5.56 s minimum round-trip exchange. This task cannot be redesigned away from human involvement without compromising crew safety. Redesign fails.
 
-**T13 (science sample selection).** Science priority judgment — which sample to collect at a novel outcrop — is the defining jointly-executed element. An AI geologist substitute is not on this program at IOC; see §A9. Could scripted selection rules substitute? No, because the task is defined by its novelty: the outcrop is unscripted by definition. Tier 2 floor.
+**T13 (science sample selection).** Science priority judgment — which sample to collect at a novel outcrop — is the defining jointly-executed element. Could scripted selection rules substitute? No, because the task is defined by its novelty: the outcrop is unscripted by definition. Tier 2 floor.
 
-**T14 (anomaly reporting).** Context aggregation and mission-level significance assessment. The robot identifies a deviation; the human assesses whether it is operationally significant. Pre-validated decision trees could route low-stakes anomalies to autonomous response — this is a partial redesign that narrows the jointly-executed scope but does not eliminate it. Tier 2 candidate for 2040.
+**T14 (anomaly reporting).** Pre-validated decision trees could route low-stakes anomalies to autonomous response — a partial redesign that narrows the jointly-executed scope but does not eliminate it. Tier 2 candidate for 2040.
 
-**T15 (habitat systems monitoring — critical threshold).** Life-safety, Tier 1. Consequence asymmetry makes autonomous response insufficient at IOC TRL. Not a redesign candidate.
+**T16 (radio telescope calibration).** Redesign succeeded: the calibration protocol is scripted, the instrument is pre-mapped, and the procedure is not time-critical at minute timescales. T16 is autonomy-led at IOC per Section 3 and the task allocation table. This is the paradigm case where redesign works.
 
-**T16 (radio telescope calibration).** Redesign succeeded: the calibration protocol is scripted, the instrument is pre-mapped, and the procedure is not time-critical at minute timescales. T16 is autonomy-led at IOC per Section 3 and the task allocation table. This is the paradigm case where redesign works: a well-structured, repeatable procedure amenable to deliberative autonomy.
+**T17 (habitat breach — locate and report).** Life-safety, Tier 1. Consequence asymmetry makes autonomous sealing/evacuation decision insufficient at IOC TRL. The locate-and-report portion is autonomy-led; the response decision is not redesign-eligible.
 
 The medical emergency scenario — a crew member with a suit breach, sudden cognitive impairment, or trauma requiring immediate robotic assistance — is the concrete case that no task redesign eliminates. No interlock, parameter envelope, or pre-validated protocol substitutes for a human operator who can improvise in real time with the crew member present. This case, not the jointly-executed task list, is the irreducible argument for forward deployment.
 
