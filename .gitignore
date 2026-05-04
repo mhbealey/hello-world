@@ -30,8 +30,12 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# env files — never commit real credentials
+.env
+.env.local
 .env*.local
+.env.production
+.env.staging
 
 # vercel
 .vercel
