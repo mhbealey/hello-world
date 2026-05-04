@@ -102,3 +102,17 @@ DA-7 (supervisor ratio assumption chain) requires adding a failure-mode analysis
 ---
 
 *Stage 8 findings only. Stage 6 findings (DA-001 through DA-009, covering Question (a)) are preserved in git history but overwritten here per the orchestrator's instruction to hold stage 8 findings only in this file.*
+
+---
+
+## Wave 2 Re-Review
+
+*Targeted re-review of Stage 8 fixes to §02-03 and §02-04. Verifies that the three required content additions are present and adequate.*
+
+**DA-5/DA-8 (two-tier floor):** RESOLVED — The two-tier structure paragraph is present in §02-03 Section 3 with Tier 1 (permanent, physics-grounded: Categories 2, 3, 4, 5) and Tier 2 (IOC program positions, gate-revisable: Categories 1, 6, 7); gate criteria are specific and correct (Category 1 at >95% task library coverage, Category 6 at AI geologist validation, Category 7 at UQ TRL 6); the 2040 subsection references the two-tier structure rather than re-asserting uniform permanence.
+
+**DA-6 (task-redesign):** RESOLVED — The "Task-Redesign Alternative" subsection is present in §02-03 Section 5 and addresses all six jointly-executed tasks (T05, T09, T13, T14, T16, T17); T16 is correctly noted as a redesign success (autonomy-led at IOC); each remaining task provides a specific reason redesign fails or only partially succeeds; the medical emergency is named as the irreducible case for forward deployment.
+
+**DA-7 (failure mode):** RESOLVED — The "Failure mode — §A1 2035 gate miss" paragraph is present in §02-04 Section 3 and covers all three required elements: ratio reverts toward 1:1 on gate miss, consequence for 4-crew 3-humanoid config (three supervisors for fleet plus one for base ops, zero margin), and the 2029 gate named explicitly as the catch mechanism.
+
+**Overall:** PASS
