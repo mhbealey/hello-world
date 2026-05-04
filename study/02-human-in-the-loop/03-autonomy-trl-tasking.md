@@ -65,13 +65,7 @@ The following tasks constitute the operational envelope for the lunar far-side b
 
 ### 2029 First-Article Gate (TRL 6 reactive, TRL 5 deliberative/supervisory)
 
-At the 2029 gate, the capability ceiling per §A1 is: reactive layer TRL 6, deliberative layer TRL 5, supervisory layer TRL 5. In task terms:
-
-**Autonomously executable by 2029:** T03 (navigation to GPS waypoint), T11 (joint anomaly safe-stop), portions of T07 (visual inspection on pre-programmed path). Reactive or navigation layers carry the load; deliberative layer is minimal.
-
-**Requires human-in-loop in 2029:** Everything else. The deliberative TRL 5 ceiling means the robot can attempt pre-taught manipulation tasks (T04, T05, T06, T08) under human supervision but cannot handle exceptions autonomously. Multi-step tasks require human authorization at each major step because the deliberative layer lacks exception-handling maturity to decide independently when to proceed after a step anomaly.
-
-**Not executable even with human-in-loop in 2029:** T10 (SPE shelter return autonomously) and T12 (deliberative joint-failure reconfiguration) require TRL 7 deliberative response — not achievable by 2029 per §A1. The first-article gate is a hardware and locomotion gate, not a task-operations gate.
+At the 2029 gate (reactive TRL 6, deliberative TRL 5): T03 and T11 are autonomously executable; T04, T05, T06, T08 are executable under human supervision; T10 and T12 require TRL 7 deliberative response not available until 2035. The 2029 gate is a hardware and locomotion gate, not a task-operations gate.
 
 ### 2035 Initial Operational Capability (TRL 7+ in space-relevant environment)
 
@@ -97,9 +91,7 @@ By 2035, the deliberative layer advances to TRL 7 (validated in space-analog env
 
 ### 2038–2040 Full Operation (TRL 8 qualified in operational environment)
 
-By the 2040 full operation horizon, the TRL 8 deliberative layer unlocks T12 (joint-failure reconfiguration) and advances novelty handling (T13, T14) from jointly-executed to a lighter-touch supervisory model. T17 (pressure breach response) may reach fully autonomous execution with crew notification rather than authorization, depending on mission rule evolution. Tasks T05 and T09 may shift to autonomy-led with crew monitoring rather than jointly executed as task library and operational experience accumulate.
-
-The Tier 1 human value floor (Categories 2, 3, 4, 5) does not shift regardless of TRL advancement — the consequence of autonomous failure is disproportionate and irreversible. The Tier 2 categories (1, 6, 7) are reviewed at the 2037 and 2040 gates per the criteria stated above.
+By 2040, TRL 8 deliberative unlocks T12 and advances T13/T14 toward lighter-touch oversight; T17 may reach autonomy-led with crew notification depending on mission rules. The Tier 1 floor (Categories 2, 3, 4, 5) does not shift; Tier 2 categories (1, 6, 7) are reviewed at the 2037 and 2040 gates per the criteria stated above.
 
 ---
 
@@ -130,19 +122,13 @@ This table is the primary input to the human-factors-teaming section (02-04). Th
 | T19 — Radiator panel replacement | **Autonomy-led** after first supervised run | **Autonomy-led** |
 | T20 — Pre-traverse terrain mapping | **Autonomy-led** (human reviews map before long traverse approval) | **Autonomy-led** |
 
-**Supervisor ratio input to human-factors-teaming:** At 2035 IOC, 12 of 20 tasks are autonomy-led; 6 are jointly executed (requiring defined human interaction but not continuous supervision); 2 are human-led. A 4-person crew supervising 3 humanoids executing 2–3 concurrent task chains can manage the authorization load at roughly 1:3 robot-to-active-supervisor ratio during nominal operations. This is a first-order estimate; the human-factors-teaming section (02-04) validates it against cognitive workload models and task duration distributions.
+**Supervisor ratio input to §02-04:** At 2035 IOC, 12 tasks autonomy-led, 6 jointly executed, 2 human-led. A 4-person crew supervising 3 humanoids can manage the authorization load at roughly 1:3 ratio during nominal operations. §02-04 validates this against cognitive workload models.
 
 ---
 
 ## 5. Counter-Case: Do High-Autonomy Humanoids Need Human Supervision?
 
-The serious counter-case: Foundation models trained on internet-scale data and fine-tuned on robot demonstrations are rapidly improving zero-shot task transfer. VLA models (pi-0, OpenVLA \cite{black2024pi0}) demonstrate cross-task generalization in unstructured lab environments. If this trajectory continues, a 2035-vintage model might handle most jointly-executed task categories without human authorization gates. Why build the architecture around human-in-the-loop if autonomy may render it unnecessary?
-
-**Consequence asymmetry.** For tasks in a factory, the consequence of autonomous failure is a bad part and a human walkover to reset. For tasks at a lunar far-side base, the consequence space includes a crew member injured during a tool handoff, a habitat structural element damaged beyond repair in weeks, or a geological sample irreversibly contaminated. The asymmetry between a human authorization gate (2–5 minutes) and an autonomous failure in a high-consequence context is large enough that the burden of proof lies with those who want to remove the gate, not those who want to keep it.
-
-**The Lunokhod lesson runs in both directions.** Soviet engineers operated Lunokhod with full ground-in-the-loop teleoperation and covered 48 km of lunar surface with two vehicles \cite{huntress2011soviet}. The lesson cited for autonomy is that ground-in-the-loop cannot scale. The lesson cited for human supervision is that human operators kept the vehicle operational through sensor degradation and surface anomalies that a rule-based system would have terminated on. The appropriate update is not "therefore full autonomy" but "therefore design the human-autonomy interface to let human judgment act quickly when needed" — which is what the jointly-executed task category implements.
-
-**Exploration is structurally OOD.** A lunar base engaged in scientific fieldwork will routinely encounter geological formations, equipment states, and surface conditions for which no training data exists. Current evidence shows VLA performance degrades near training distribution boundaries in ways the model itself does not reliably identify \cite{zhao2023aloha}. An architecture relying on a model to self-assess whether it is in-distribution is relying on its most poorly calibrated capability. This is not a claim that models will never solve this — it is a claim that they have not solved it by 2026.
+The serious counter-case: VLA models demonstrate improving zero-shot generalization \cite{black2024pi0}, and a 2035-vintage model might handle most jointly-executed tasks without authorization gates. Three responses. First, consequence asymmetry: the cost of a human authorization gate (2–5 minutes) against the cost of an autonomous failure at a lunar far-side base (crew injury, irreversible habitat damage) places the burden of proof on those removing the gate, not those keeping it. Second, the Lunokhod lesson runs in both directions — human operators kept both rovers operational through anomalies that rule-based systems would have terminated on; the right update is "design the human-autonomy interface for speed," not "remove humans." Third, exploration is structurally OOD: VLA performance degrades at training distribution boundaries in ways the model cannot reliably self-identify \cite{zhao2023aloha}; relying on a model to self-assess in-distribution membership is relying on its least-calibrated capability.
 
 ### The Task-Redesign Alternative
 

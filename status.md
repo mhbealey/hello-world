@@ -32,3 +32,4 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:08:00Z | GATE-PASS | §02-02 at 2,734 words — PASSES hard cap 3,000 and gate 3,300
 2026-05-04T00:08:00Z | FILE-FIXED | CC-S8-003 Tier A boundary: '<100 ms' → '≤50 ms' in §02-02 line 76
 2026-05-04T00:08:10Z | COMMIT | §02-02 final — all HC corrections, geometry fix, Tier A boundary aligned
+2026-05-04T00:12:00Z | GATE-PASS | §02-03 at 2,984 words — PASSES hard cap 3,000; all four Q(b) sections now within gate
