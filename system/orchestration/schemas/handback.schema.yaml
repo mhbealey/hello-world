@@ -1,0 +1,75 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Cycle Handback"
+description: "Schema for cycle-NN.md frontmatter and the structured handback YAML companion."
+type: object
+required: [study_id, cycle, date_generated, objective, status, deliverables, findings_summary, blockers_remaining, next_cycle_inputs]
+additionalProperties: false
+properties:
+  study_id:
+    type: string
+  cycle:
+    type: ["integer", "string"]
+  date_generated:
+    type: string
+  objective:
+    type: string
+    description: "One-sentence cycle objective (copied from scaffold)"
+  status:
+    type: string
+    enum: [complete, incomplete, blocked]
+  word_count:
+    type: ["integer", "null"]
+    description: "Total word count of this handback document"
+  deliverables:
+    type: array
+    items:
+      $ref: "#/$defs/deliverable"
+  findings_summary:
+    $ref: "#/$defs/findings_summary"
+  blockers_remaining:
+    type: array
+    items:
+      type: string
+    description: "finding_ids of unresolved Blocker findings at cycle close"
+  next_cycle_inputs:
+    type: string
+    description: "One paragraph: what the next cycle should pick up and why"
+  gates_passed:
+    type: boolean
+    description: "True if all pre-handback gates passed"
+
+$defs:
+  deliverable:
+    type: object
+    required: [path, status]
+    additionalProperties: false
+    properties:
+      path:
+        type: string
+      status:
+        type: string
+        enum: [produced, updated, blocked, deferred]
+      word_count:
+        type: ["integer", "null"]
+      notes:
+        type: ["string", "null"]
+
+  findings_summary:
+    type: object
+    required: [total, blockers, majors, minors, nits, resolved, deferred]
+    additionalProperties: false
+    properties:
+      total:
+        type: integer
+      blockers:
+        type: integer
+      majors:
+        type: integer
+      minors:
+        type: integer
+      nits:
+        type: integer
+      resolved:
+        type: integer
+      deferred:
+        type: integer

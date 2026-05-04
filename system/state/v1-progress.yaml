@@ -1,0 +1,517 @@
+schema_version: 1
+created_at: '2026-05-04T03:51:12+00:00'
+last_updated: '2026-05-04T03:51:18+00:00'
+tasks:
+- task_id: T-01
+  title: Create the progress tracker
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies: []
+  started_at: null
+  completed_at: '2026-05-04T03:51:16+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-02
+  title: Create the v1 working directory skeleton
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-01
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-03
+  title: Add CHANGELOG
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-02
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-04
+  title: Cross-coupling schema
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-02
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-05
+  title: Assumption registry schema
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-04
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-06
+  title: Finding, session log, and handback schemas
+  status: not-started
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-05
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-07
+  title: Schema validator tool
+  status: not-started
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-06
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-08
+  title: Migrate lunar content to archive
+  status: completed
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-02
+  - T-03
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-09
+  title: Update internal cross-references
+  status: completed
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-08
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-10
+  title: Remove unused infrastructure
+  status: completed
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-09
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-11
+  title: Audit and rotate secrets
+  status: completed
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-10
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-12
+  title: Migrate cross-coupling log to YAML
+  status: completed
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-04
+  - T-08
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-13
+  title: Build the cross-coupling DB API
+  status: completed
+  size: L
+  checkpoint: false
+  dependencies:
+  - T-12
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-14
+  title: Build the cross-coupling consistency gate
+  status: completed
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-13
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-15
+  title: Migrate assumption registry to YAML
+  status: not-started
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-05
+  - T-08
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-16
+  title: Build the assumption registry service
+  status: completed
+  size: L
+  checkpoint: false
+  dependencies:
+  - T-15
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-17
+  title: Word count gate
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-07
+  started_at: null
+  completed_at: '2026-05-04T03:51:17+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-18
+  title: Citation integrity gate
+  status: completed
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-17
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-19
+  title: Derivation display gate
+  status: not-started
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-18
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-20
+  title: Frontmatter validator
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-17
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-21
+  title: Pre-handback gate runner
+  status: completed
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-14
+  - T-17
+  - T-18
+  - T-19
+  - T-20
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-22
+  title: Migrate findings to structured YAML
+  status: not-started
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-06
+  - T-08
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-23
+  title: Rewrite the handback generator
+  status: not-started
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-13
+  - T-16
+  - T-21
+  - T-22
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-24
+  title: Build the status surface
+  status: not-started
+  size: M
+  checkpoint: false
+  dependencies:
+  - T-06
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-25
+  title: Build the status web view
+  status: not-started
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-24
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-26
+  title: Move agents to system/agents/
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-08
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-27
+  title: Add versioning frontmatter to agent files
+  status: not-started
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-26
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-28
+  title: Materialize five missing reviewer agents
+  status: completed
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-27
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-29
+  title: Identify lunar-specific content in agent prompts
+  status: not-started
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-27
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-30
+  title: Execute the base/overlay split
+  status: not-started
+  size: L
+  checkpoint: false
+  dependencies:
+  - T-29
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-31
+  title: Set up pytest infrastructure
+  status: not-started
+  size: M
+  checkpoint: false
+  dependencies: []
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-32
+  title: Set up CI workflow
+  status: not-started
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-31
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-33
+  title: Set up pre-commit hooks
+  status: not-started
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-32
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-34
+  title: Rewrite top-level CLAUDE.md
+  status: completed
+  size: S
+  checkpoint: true
+  dependencies:
+  - T-08
+  - T-26
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-35
+  title: Rewrite README.md
+  status: completed
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-34
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-36
+  title: Document Architecture Decision Records
+  status: not-started
+  size: L
+  checkpoint: false
+  dependencies:
+  - T-30
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-37
+  title: Build the cycle scaffold template
+  status: completed
+  size: M
+  checkpoint: false
+  dependencies: []
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-38
+  title: Build the new-study scaffolding tool
+  status: completed
+  size: L
+  checkpoint: true
+  dependencies:
+  - T-30
+  - T-37
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-39
+  title: Define visual artifact schema
+  status: completed
+  size: S
+  checkpoint: false
+  dependencies:
+  - T-06
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-40
+  title: Build the visual pipeline skeleton
+  status: completed
+  size: M
+  checkpoint: true
+  dependencies:
+  - T-39
+  started_at: null
+  completed_at: '2026-05-04T03:51:18+00:00'
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-41
+  title: Generate v1.0 implementation handback
+  status: not-started
+  size: M
+  checkpoint: true
+  dependencies: []
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''
+- task_id: T-42
+  title: Tag v1.0.0 release
+  status: not-started
+  size: S
+  checkpoint: true
+  dependencies:
+  - T-41
+  started_at: null
+  completed_at: null
+  notes: ''
+  deliverable_paths: []
+  blockers: ''

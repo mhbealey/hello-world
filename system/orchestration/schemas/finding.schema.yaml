@@ -1,0 +1,55 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Reviewer Finding"
+description: "Schema for a single finding produced by any of the six reviewers."
+type: object
+required: [finding_id, reviewer, severity, study_id, cycle, file_path, observation, impact, fix]
+additionalProperties: false
+properties:
+  finding_id:
+    type: string
+    description: "Reviewer-namespaced ID, e.g. AE-001, HC-003, DA-007, CC-VIS-002"
+    pattern: "^[A-Z][A-Z0-9-]+-\\d+$"
+  reviewer:
+    type: string
+    enum:
+      - aerospace-engineer-reviewer
+      - heritage-citations-reviewer
+      - reliability-margins-reviewer
+      - cross-coupling-reviewer
+      - devils-advocate-reviewer
+      - scope-discipline-reviewer
+      - visual-review-agent
+      - visual-coupling-agent
+  severity:
+    type: string
+    enum: [Blocker, Major, Minor, Nit]
+  study_id:
+    type: string
+  cycle:
+    type: ["integer", "string"]
+    description: "Cycle number or 'stage-N' for pre-v1.0 findings"
+  file_path:
+    type: string
+    description: "Study-relative path to the file containing the finding"
+  section:
+    type: ["string", "null"]
+    description: "Section heading or anchor within the file"
+  observation:
+    type: string
+    description: "What the reviewer found"
+  impact:
+    type: string
+    description: "Which claim or commitment is at risk"
+  fix:
+    type: string
+    description: "Specific change required to resolve"
+  status:
+    type: string
+    enum: [open, resolved, deferred, wont-fix]
+    default: open
+  resolution_notes:
+    type: ["string", "null"]
+  date_found:
+    type: string
+  date_resolved:
+    type: ["string", "null"]

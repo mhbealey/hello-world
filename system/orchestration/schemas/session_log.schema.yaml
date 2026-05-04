@@ -1,0 +1,72 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Session Log"
+description: "Schema for session-logs.yaml — per-study log of agent dispatch sessions."
+type: object
+required: [study_id, sessions]
+additionalProperties: false
+properties:
+  study_id:
+    type: string
+  sessions:
+    type: array
+    items:
+      $ref: "#/$defs/session"
+
+$defs:
+  session:
+    type: object
+    required: [session_id, date, cycle, agents_dispatched, summary]
+    additionalProperties: false
+    properties:
+      session_id:
+        type: string
+        description: "Unique session identifier (e.g. 2026-05-04-01)"
+      date:
+        type: string
+      cycle:
+        type: ["integer", "string", "null"]
+        description: "Cycle number this session belongs to, or null for pre-cycle work"
+      agents_dispatched:
+        type: array
+        items:
+          type: string
+        description: "List of agent names dispatched in this session"
+      summary:
+        type: string
+        description: "One paragraph: what was attempted, completed, and any blockers"
+      artifacts_produced:
+        type: array
+        items:
+          type: string
+        description: "File paths written or modified"
+      blockers:
+        type: array
+        items:
+          type: string
+      helpers_spawned:
+        type: array
+        description: "Helper agents spawned per §11.9"
+        items:
+          $ref: "#/$defs/helper_event"
+      cross_coupling_updates:
+        type: array
+        items:
+          type: string
+        description: "param_ids added or modified in cross_coupling.yaml"
+
+  helper_event:
+    type: object
+    required: [parent_agent, purpose, elapsed_ms, outcome]
+    additionalProperties: false
+    properties:
+      parent_agent:
+        type: string
+      purpose:
+        type: string
+      elapsed_ms:
+        type: integer
+      outcome:
+        type: string
+        enum: [success, timeout, error]
+      result_summary:
+        type: ["string", "null"]
