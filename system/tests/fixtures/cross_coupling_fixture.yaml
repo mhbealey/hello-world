@@ -1,0 +1,25 @@
+study_id: test-study
+last_updated: "2026-01-01"
+
+entries:
+  - param_id: form_factor
+    parameter: "Space humanoid primary form factor"
+    date: "2026-01-01"
+    value: "Full bipedal humanoid; design-to mass 75 kg; NTE mass 97.5 kg (30% margin)"
+    set_by: humanoid-systems-architect
+    affects:
+      - robotics-actuation-structures
+      - space-environments
+    basis: "Tradespace of five candidates; bipedal scores highest (3.65/5.00)."
+
+  - param_id: supervisor_ratio
+    parameter: "Human-to-humanoid supervisor ratio"
+    date: "2026-01-01"
+    value: "1:2–3 at IOC 2035; 1:4–5 at full operation 2038–2040"
+    set_by: human-factors-teaming
+    affects:
+      - conops-integrator
+      - cost-program
+    basis: "Derived from Mir crew time baseline and IOC task allocation table."
+    notes:
+      - "Correction note example."

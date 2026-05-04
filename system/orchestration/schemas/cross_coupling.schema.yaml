@@ -1,0 +1,60 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Cross-Coupling Parameter Database"
+description: >
+  Schema for cross_coupling.yaml — the structured store of load-bearing
+  architectural parameters shared across agents in a study.
+type: object
+required: [study_id, entries]
+additionalProperties: false
+properties:
+  study_id:
+    type: string
+    description: "Study identifier (matches study-config.yaml study_id)"
+  last_updated:
+    type: string
+    description: "ISO 8601 date of last modification"
+  entries:
+    type: array
+    minItems: 1
+    items:
+      $ref: "#/$defs/entry"
+
+$defs:
+  entry:
+    type: object
+    required: [param_id, parameter, date, value, set_by, affects, basis]
+    additionalProperties: false
+    properties:
+      param_id:
+        type: string
+        pattern: "^[a-z][a-z0-9_]*$"
+        description: "Stable slug used by agents in CLI queries"
+      parameter:
+        type: string
+        description: "Human-readable parameter name"
+      date:
+        type: string
+        description: "ISO 8601 date this entry was set"
+      value:
+        type: string
+        description: "Canonical value — what agents should use"
+      set_by:
+        type: string
+        description: "Agent or process that set this value"
+      affects:
+        type: array
+        minItems: 1
+        items:
+          type: string
+        description: "Agents whose artifacts depend on this parameter"
+      basis:
+        type: string
+        description: "Justification and heritage for this value"
+      notes:
+        type: array
+        items:
+          type: string
+        description: "Subsequent corrections or clarifications to this entry"
+      superseded_by:
+        type: string
+        description: "param_id of the entry that replaces this one, if any"
