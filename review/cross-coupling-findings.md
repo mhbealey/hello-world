@@ -2,7 +2,7 @@
 title: Cross-Coupling Consistency Review Findings
 status: findings-complete
 owner: cross-coupling-reviewer
-last-updated: 2026-05-03
+last-updated: 2026-05-04
 stage: 8
 ---
 
@@ -194,3 +194,15 @@ The following parameters were checked and found fully consistent across all refe
 - 2 human-led tasks (T12, T18): consistent across all sections.
 - §A9 constraint (foundation models at supervisory layer only): consistent across §02-03 Section 5, §02-04 Section 5, and register.
 - §A8 two-tier compute as enabler of on-demand supervision: §02-04 Section 5 correctly references §A8 and is consistent with the register.
+
+---
+
+## Wave 2 Re-Review
+
+**Blocker AE-S8-06 / RM-M02:** RESOLVED — §A19 capacity derivation states "2 hours per crew member" and "4 × 2 hours = 8 person-hr/shift"; §02-04 Section 2 matches exactly; the §A19 periodic demand correctly shows ~1.5 person-hr (with 0.6 concurrency factor applied), not 3.0.
+
+**Blocker CC-S8-001 / AE-S8-09:** RESOLVED — T16 is marked "Autonomy-led" in the Section 4 task allocation table; a row-by-row count yields exactly 12 autonomy-led (T01, T03, T04, T06, T07, T08, T10, T11, T15, T16, T19, T20), 6 jointly-executed (T02, T05, T09, T13, T14, T17), and 2 human-led (T12, T18), matching the stated 12/6/2 summary.
+
+**Finding CC-S8-003:** RESOLVED — §02-02 Section 3 Tier A heading now reads "RTLT ≤50 ms"; the performance degradation summary table reads "≤50 ms (Tier A)"; no remaining instance of "Tier A <100 ms" or "RTLT <100 ms" describing the on-base tier was found.
+
+**Overall:** PASS
