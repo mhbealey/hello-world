@@ -170,3 +170,31 @@ The priority fix list (from P2-8): Valkyrie R5 fact sheet, Harmonic Drive AG cat
 **Recommendation for Stage 9:** The cognitive load arithmetic in §02-04 is the single highest-priority reconciliation item before Q(c) ConOps agents consume the supervisor ratio. The 0.6 concurrency factor and OOD alert rate are both load-bearing for the 1:2–3 IOC ratio that feeds conops-integrator, far-side-base-architect, and cost-program. If those constants remain asserted rather than derived when Q(c) agents run, the ConOps section will build a crew operations model on unanchored numbers, and correcting those numbers later requires a cross-coupling cascade through three downstream sections. Stage 9 dispatch should hold conops-integrator until §A19 arithmetic is closed and confirmed by the reliability-margins reviewer.
 
 **Severity:** concerning
+
+---
+
+## 2026-05-04 — System v1.0 restructure: context compaction mid-execution, clean pickup
+
+**Pattern:** The System v1.0 restructure — moving from a study-specific repo to a multi-study infrastructure layout — was executed across two context windows due to a mid-session compaction. The work completed in the continuation session: writing ARCHIVED.md and study-config.yaml for `studies/archive/lunar-humanoid-pathfinder/`, writing skeleton README.md files for five new directories (program/, team/, business/, ops/, studies/active/), rewriting CLAUDE.md from ~400 lines to 59, rewriting README.md from study-focused to program-infrastructure-focused, fixing .gitignore, staging 119 file changes, committing, and pushing to branch `claude/setup-study-scaffolding-GYFFu`. The compaction summary was accurate — no work was duplicated, no work was lost, and the continuation session picked up exactly where the prior session ended.
+
+**Evidence:** Single clean commit containing all 119 file changes. Context provided by the continuation session summary identified exactly which files were untracked (the five new reviewer agent files), which .gitignore fix was needed (root `/site/` entry removed then restored), and which structural decisions had already been made (CLAUDE.md target of 59 lines, study-config.yaml location). The .gitignore catch was a catch-before-commit: the `??` untracked entry for `site/` was noticed during `git status` review and restored before the commit ran.
+
+**Implication:** Context compaction mid-restructure is survivable when the summary is accurate. The continuation session required no re-reading of already-completed files or re-execution of already-completed tasks. This suggests the compaction mechanism is reliable enough that large restructure sessions need not be avoided on grounds of compaction risk — the concern should instead be whether the summary accurately captures in-flight state. The one failure mode to watch for: untracked files. Files that are written but not staged are invisible to the compaction summary's "committed changes" view. The five reviewer agent files were flagged as untracked in the summary, which was correct — but only because the summary author specifically tracked git state. A summary that reported "all files written" without checking `git status` would have missed them.
+
+**Recommendation:** For multi-session restructure work, the handoff summary should include a `git status --short` snapshot as a mandatory field alongside the prose summary. This costs one tool call and makes the untracked-file gap impossible to miss. The broader principle: the summary format should be designed to surface the information most likely to be needed at pickup, not just a narrative of what was done.
+
+**Severity:** informational (positive finding with one structural note)
+
+---
+
+## 2026-05-04 — CLAUDE.md rewrite: describe the system, not the study
+
+**Pattern:** The CLAUDE.md rewrite went from ~400 lines (study-specific content, agent dispatch rules, thesis framing, engagement model prose) to 59 lines (system structure description, working principles, breadcrumb conventions, dispatch policy, gates). The key discipline that produced the reduction: distinguish between content that describes the system structure (appropriate for CLAUDE.md) and content that describes how a specific study works or what agents should do (belongs in agent files or study-level docs). The prior CLAUDE.md had absorbed agent dispatch rules, reviewer invocation instructions, and study-specific thesis framing that have no place in a system-level orientation file.
+
+**Evidence:** The new CLAUDE.md at `/home/user/hello-world/CLAUDE.md` (59 lines) versus the prior study-specific version. The 100-line target stated at the start of the restructure was met and surpassed — the final file is 59 lines, 41% under the target. The six sections that survived the rewrite are all structural: what the repo is, system layout, active agents, engagement style pointer, working principles, breadcrumbs, dispatch, gates. Nothing study-specific remains.
+
+**Implication:** The CLAUDE.md length discipline has a structural driver: every line added to CLAUDE.md that belongs in an agent file is a line that will be read by every future session regardless of whether that session is running the relevant agent. CLAUDE.md is loaded at session start; agent files are loaded only when the agent is dispatched. Content that belongs in agent files but lives in CLAUDE.md creates a maintenance coupling: changing the dispatch rule requires editing CLAUDE.md rather than the agent file. The 59-line result is not just aesthetically clean — it means the file can be extended with future system-level additions without hitting a complexity wall. The prior 400-line version would have been difficult to maintain across multiple simultaneous studies.
+
+**Recommendation:** Establish a standing rule for CLAUDE.md contributions: before adding a line to CLAUDE.md, ask whether it describes the system (yes: add to CLAUDE.md) or describes what an agent should do or what a study's scope is (no: add to the relevant agent file or study-level doc). The 59-line current state is the floor; the maintenance discipline is what keeps it there.
+
+**Severity:** informational (positive finding)
