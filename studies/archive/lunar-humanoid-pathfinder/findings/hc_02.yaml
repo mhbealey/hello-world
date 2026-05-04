@@ -1,0 +1,37 @@
+finding_id: HC-02
+reviewer: heritage-citations-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md` (Queqiao-2 Relay Geometry);
+  `study/02-human-in-the-loop/01-overview.md` (§4); `study/02-human-in-the-loop/04-teaming-model.md`
+  (Pillar 1)'
+observation: '"Queqiao-2 occupies an elliptical frozen orbit around the Moon with
+  a periapsis of approximately 200–250 km and an apoapsis of approximately 16,000–17,000
+  km above the lunar surface, with an orbital period of approximately 24 hours and
+  an inclination of 62.4°." Independent astronomer Scott Tilley determined in September
+  2024 that Queqiao-2 entered a retrograde orbit with inclination approximately 119.25°
+  and dimensions approximately 254 × 16,941 km — not the planned 62.4° prograde frozen
+  orbit of 200 × 16,000 km. This is not a small rounding difference; the inclination
+  differs by 57 degrees and the orbit is retrograde rather than prograde. The satellite
+  is confirmed operational (successfully relayed for Chang''e-4 and Chang''e-6) so
+  the change does not invalidate the relay function, but the claimed orbital parameters
+  — specifically the 62.4° inclination — are the pre-launch design specification,
+  not the confirmed operational state. The latency calculations in §02-02 are not
+  materially af'
+impact: '"Queqiao-2 occupies an elliptical frozen orbit around the Moon with a periapsis
+  of approximately 200–250 km and an apoapsis of approximately 16,000–17,000 km above
+  the lunar surface, with an orbital period of approximately 24 hours and an inclination
+  of 62.4°."'
+fix: (1) Update the inclination statement from "62.4°" to the confirmed value (~119.25°
+  retrograde) or qualify it explicitly as "planned/nominal specification per CNSA
+  pre-launch announcements; actual operational inclination reported by independent
+  tracking at ~119.25° retrograde (Scott Tilley, September 2024)." (2) Flag that the
+  coverage availability estimate of 75–85% was derived for the 62.4° prograde orbit
+  and has not been validated against the actual retrograde orbit geometry. (3) Update
+  the `cn
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

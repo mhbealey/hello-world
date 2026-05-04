@@ -1,0 +1,41 @@
+finding_id: AE-S8-06
+reviewer: aerospace-engineer-reviewer
+severity: Blocker
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2 vs. `study/05-cross-cutting/margins-and-assumptions.md`,
+  §A19'
+observation: 'The §02-04 derivation and the §A19 derivation give the same answer (8
+  person-hours) via two different paths that contradict each other.
+
+
+  §02-04 path: 4 crew × 8 hr/shift × 0.25 fraction = 8 person-hours. This implies
+  each crew member contributes 2 person-hours of supervisory capacity from an 8-hour
+  shift.
+
+
+  §A19 path: fraction available for supervision = 25–30% → "approximately 3 hours
+  per crew member per shift" (3 hours is 37.5% of an 8-hour shift, not 25–30%). Then
+  §A19 states "4 × 2 hours ≈ 8 person-hr/shift" — reverting to 2 hours/crew member
+  despite the preceding sentence saying 3 hours/crew member. The paragraph is internally
+  contradictory: it states 3 hours per crew member and then multiplies by 2 hours
+  per crew member.
+
+
+  Furthermore, the §02-04 arithmetic omits a critical element: the section uses an
+  8-hour work shift, but Mir crews worked a 12-hour waking day with roughly half dedicated
+  to scheduled activities. If the base operates on a 12-hour waking day with 8 hours
+  of schedul'
+impact: See finding.
+fix: '(1) Correct the §A19 derivation: either state 2 hours per crew member (matching
+  the 8-hour shift × 25% calculation) or 3 hours per crew member (matching the 25–30%
+  of a 12-hour waking day) — not both in adjacent sentences. (2) State explicitly
+  in §02-04 whether the 8-hour shift is the time base for the capacity calculation
+  or whether a longer waking period is assumed. (3) Reconcile §02-04 Section 2 and
+  §A19 so both documents show identical arithmetic. This is a blocker because the
+  supervisory ca'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

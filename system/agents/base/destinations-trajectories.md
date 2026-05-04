@@ -1,5 +1,8 @@
 ---
 name: destinations-trajectories
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the destination sequence and the trajectory/transportation analysis. Invoke for questions about which destinations, in what order, with what launch and lander manifests.
 tools:
   - Read

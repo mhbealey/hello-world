@@ -1,641 +1,382 @@
-#!/usr/bin/env python3
-"""
-Generate the stage handback document.
+"""Cycle handback generator — v1.0.
 
-Reads the repo state — section content, frontmatter, review findings,
-retro artifacts, session logs, cross-coupling log, assumption registry —
-and produces a single self-contained markdown document for the next
-planning session.
+Reads the structured stores for a study cycle and produces:
+  1. A YAML companion document (validated against handback.schema.yaml)
+  2. A companion Markdown narrative (max 5,000 words)
+
+Both files are written to studies/<study-id>/handbacks/cycle-<NN>.{yaml,md}.
 
 Usage:
-    python tools/generate_handback.py [--stage N] [--out path]
-
-Defaults:
-    --stage 4
-    --out handback-stage{N}.md
+    python -m system.orchestration.handback --study <study-id> --cycle <N>
+    python -m system.orchestration.handback --study my-study --cycle 1 --dry-run
 """
 
 import argparse
 import re
+import sys
+from datetime import datetime, timezone
 from pathlib import Path
-from datetime import datetime
-from collections import defaultdict
 
 import yaml
 
-ROOT = Path(__file__).resolve().parent.parent
-STUDY_DIR = ROOT / "study"
-REVIEW_DIR = ROOT / "review"
-RETRO_DIR = ROOT / "retro"
-CORPUS_DIR = ROOT / "corpus"
-
-STATUS_ORDER = ["not-started", "in-progress", "draft", "reviewed", "final"]
-REVIEW_STATUS_ORDER = ["unreviewed", "findings-open", "findings-addressed", "accepted"]
+_STUDIES_ROOT = Path("studies")
+_SCHEMAS_DIR = Path(__file__).parent / "schemas"
+_MAX_WORDS = 5000
+_STATUS_ENUM = {"complete", "incomplete", "blocked"}
 
 
-def parse_frontmatter(text):
-    if not text.startswith("---"):
-        return {}, text
-    parts = text.split("---", 2)
-    if len(parts) < 3:
-        return {}, text
-    try:
-        meta = yaml.safe_load(parts[1]) or {}
-    except yaml.YAMLError:
-        meta = {}
-    return meta, parts[2].lstrip()
+def _now() -> str:
+    return datetime.now(timezone.utc).date().isoformat()
 
 
-def collect_section_state():
-    """Walk study/, return list of section dicts with metadata + word count."""
-    sections = []
-    if not STUDY_DIR.exists():
-        return sections
-
-    for path in sorted(STUDY_DIR.rglob("*.md")):
-        text = path.read_text(encoding="utf-8")
-        meta, body = parse_frontmatter(text)
-        rel = path.relative_to(ROOT).as_posix()
-        words = len(re.findall(r"\b\w+\b", body))
-        sections.append({
-            "path": rel,
-            "title": meta.get("title") or path.stem.replace("-", " ").title(),
-            "status": meta.get("status", "not-started"),
-            "review_status": meta.get("review-status", "unreviewed"),
-            "owner": meta.get("owner", "—"),
-            "last_updated": meta.get("last-updated", "—"),
-            "words": words,
-            "body": body,
-        })
-    return sections
+def _word_count(text: str) -> int:
+    return len(re.findall(r"\b\w+\b", text))
 
 
-def parse_findings_summary(path, stage_filter=None):
-    """Extract severity counts and findings list from a reviewer report.
+def _study_path(study_id: str) -> Path:
+    for root in (_STUDIES_ROOT / "active", _STUDIES_ROOT / "archive"):
+        p = root / study_id
+        if p.exists():
+            return p
+    raise FileNotFoundError(f"Study not found: {study_id} (checked active/ and archive/)")
 
-    If stage_filter is set (e.g. 8), only returns data if the file's frontmatter
-    stage: field matches. Files without a stage: field are treated as stage 0
-    (pre-stage-tracking era) and are excluded when stage_filter is set.
-    """
+
+def _load_yaml(path: Path) -> dict | list | None:
     if not path.exists():
-        return {"counts": {}, "findings": [], "exists": False, "stage_mismatch": False}
-
-    text = path.read_text(encoding="utf-8")
-    meta, body = parse_frontmatter(text)
-
-    file_stage = meta.get("stage", None)
-
-    if stage_filter is not None:
-        if file_stage is None or int(file_stage) != int(stage_filter):
-            return {
-                "counts": {},
-                "findings": [],
-                "exists": True,
-                "stage_mismatch": True,
-                "file_stage": file_stage,
-            }
-
-    counts = {}
-    for sev in ["Blocker", "Major", "Minor", "Nit"]:
-        m = re.search(rf"\|\s*{sev}\s*\|\s*(\d+)\s*\|", body, re.IGNORECASE)
-        if m:
-            counts[sev.lower()] = int(m.group(1))
-        else:
-            counts[sev.lower()] = 0
-
-    findings = []
-    finding_blocks = re.split(r"^###\s+Finding\s+", body, flags=re.MULTILINE)[1:]
-    for block in finding_blocks:
-        finding = {}
-        title_match = re.match(r"([^\n]+)", block)
-        if title_match:
-            finding["title"] = title_match.group(1).strip()
-        for field in ["Severity", "Section", "Claim", "Issue", "Required action"]:
-            m = re.search(rf"\*\*{field}:\*\*\s*([^\n]+)", block)
-            if m:
-                finding[field.lower().replace(" ", "_")] = m.group(1).strip()
-        if finding:
-            findings.append(finding)
-
-    return {"counts": counts, "findings": findings, "exists": True, "stage_mismatch": False}
+        return None
+    with open(path, encoding="utf-8") as fh:
+        return yaml.safe_load(fh)
 
 
-def collect_all_findings(stage_filter=None):
-    """Read all review/*-findings.md files, optionally filtered to a stage."""
-    reviewers = [
-        "aerospace-engineer",
-        "heritage-citations",
-        "reliability-margins",
-        "scope-discipline",
-        "cross-coupling",
-        "devils-advocate",
-    ]
-    results = {}
-    for r in reviewers:
-        path = REVIEW_DIR / f"{r}-findings.md"
-        results[r] = parse_findings_summary(path, stage_filter=stage_filter)
-    return results
+def _read_scaffold(study_dir: Path, cycle: int) -> dict:
+    cycle_str = f"{cycle:02d}"
+    scaffold_path = study_dir / "cycles" / f"cycle-{cycle_str}" / "scaffold.md"
+    if not scaffold_path.exists():
+        return {"objective": f"Cycle {cycle} (scaffold not found)", "deliverables_raw": []}
+
+    text = scaffold_path.read_text(encoding="utf-8")
+    objective = ""
+    m = re.search(r"^##\s+Objective\s*\n+([^\n]+)", text, re.MULTILINE)
+    if m:
+        objective = m.group(1).strip()
+
+    deliverables = []
+    in_table = False
+    for line in text.splitlines():
+        if "| Path" in line or "| path" in line:
+            in_table = True
+            continue
+        if in_table and line.startswith("|") and "---" not in line:
+            parts = [p.strip() for p in line.split("|")[1:-1]]
+            if parts:
+                deliverables.append({"path": parts[0], "planned": True})
+        elif in_table and not line.startswith("|"):
+            in_table = False
+
+    return {"objective": objective or f"Cycle {cycle}", "deliverables_raw": deliverables}
 
 
-def find_cross_reviewer_patterns(all_findings):
-    """Identify findings that multiple reviewers flagged on the same section/claim."""
-    section_hits = defaultdict(list)
-    for reviewer, data in all_findings.items():
-        for f in data.get("findings", []):
-            sec = f.get("section", "").split(",")[0].strip()
-            if sec:
-                section_hits[sec].append({
-                    "reviewer": reviewer,
-                    "severity": f.get("severity", "?"),
-                    "title": f.get("title", ""),
-                    "issue": f.get("issue", ""),
-                })
-    return {sec: hits for sec, hits in section_hits.items() if len(hits) >= 2}
+def _collect_deliverables(study_dir: Path, cycle: int, planned: list[dict]) -> list[dict]:
+    cycle_str = f"{cycle:02d}"
+    cycle_dir = study_dir / "cycles" / f"cycle-{cycle_str}"
 
+    produced_paths: set[str] = set()
+    if cycle_dir.exists():
+        for f in cycle_dir.rglob("*"):
+            if f.is_file() and f.name != "scaffold.md":
+                produced_paths.add(f.relative_to(study_dir).as_posix())
 
-def read_or_blank(path):
-    if path.exists():
-        return path.read_text(encoding="utf-8")
-    return ""
-
-
-def extract_after_frontmatter(text):
-    _, body = parse_frontmatter(text)
-    return body
-
-
-def parse_session_logs():
-    path = RETRO_DIR / "session-logs.md"
-    if not path.exists():
-        return []
-    body = extract_after_frontmatter(path.read_text(encoding="utf-8"))
-    sessions = re.split(r"^##\s+", body, flags=re.MULTILINE)[1:]
-    return [s.strip() for s in sessions if s.strip()]
-
-
-def parse_cross_coupling_log():
-    path = STUDY_DIR / "05-cross-cutting" / "cross-coupling-log.md"
-    if not path.exists():
-        return []
-    body = extract_after_frontmatter(path.read_text(encoding="utf-8"))
-    entries = re.split(r"^##\s+", body, flags=re.MULTILINE)[1:]
     result = []
-    for e in entries:
-        e = e.strip()
-        if not e:
-            continue
-        first_line = e.split("\n", 1)[0]
-        # Skip format/documentation sections — real entries start with a date
-        if not re.match(r"\d{4}-\d{2}-\d{2}", first_line):
-            continue
-        result.append(e)
+    for item in planned:
+        path_str = item["path"]
+        full = study_dir / path_str
+        if full.exists():
+            status = "produced"
+            wc: int | None = None
+            if full.suffix == ".md":
+                wc = _word_count(full.read_text(encoding="utf-8"))
+        else:
+            status = "deferred"
+            wc = None
+        result.append({"path": path_str, "status": status, "word_count": wc, "notes": None})
+
+    for p in sorted(produced_paths):
+        already = any(d["path"] == p for d in result)
+        if not already:
+            full = study_dir / p
+            wc = _word_count(full.read_text(encoding="utf-8")) if full.suffix == ".md" else None
+            result.append({"path": p, "status": "produced", "word_count": wc, "notes": None})
+
     return result
 
 
-def parse_open_questions():
-    path = STUDY_DIR / "05-cross-cutting" / "open-questions.md"
-    if not path.exists():
+def _load_findings_summary(study_dir: Path, cycle: int) -> dict:
+    empty = {"total": 0, "blockers": 0, "majors": 0, "minors": 0, "nits": 0, "resolved": 0, "deferred": 0}
+    findings_dir = study_dir / "findings"
+    if not findings_dir.exists():
+        return empty
+
+    counts: dict[str, int] = {k: 0 for k in empty}
+    for f in findings_dir.glob("*.yaml"):
+        data = _load_yaml(f)
+        if not isinstance(data, dict):
+            continue
+        if str(data.get("cycle", "")) != str(cycle):
+            continue
+        counts["total"] += 1
+        sev = str(data.get("severity", "")).lower()
+        status = str(data.get("status", "open")).lower()
+        if sev == "blocker":
+            counts["blockers"] += 1
+        elif sev == "major":
+            counts["majors"] += 1
+        elif sev == "minor":
+            counts["minors"] += 1
+        elif sev == "nit":
+            counts["nits"] += 1
+        if status == "resolved":
+            counts["resolved"] += 1
+        elif status == "deferred":
+            counts["deferred"] += 1
+    return counts
+
+
+def _load_blockers_remaining(study_dir: Path, cycle: int) -> list[str]:
+    findings_dir = study_dir / "findings"
+    if not findings_dir.exists():
         return []
-    body = extract_after_frontmatter(path.read_text(encoding="utf-8"))
-    rows = []
-    pattern = re.compile(
-        r"^\s*-\s*\[([^\]]+)\]\s*(.+?)\s*—\s*(.+?)\s*—\s*(.+?)\s*—\s*(.+)$"
-    )
-    for line in body.splitlines():
-        m = pattern.match(line)
-        if m:
-            domain = m.group(1).strip()
-            question = m.group(2).strip()
-            # Filter out format-documentation placeholder rows
-            if domain.lower() == "domain" or question.lower() == "question":
-                continue
-            rows.append({
-                "domain": domain,
-                "question": question,
-                "context": m.group(3).strip(),
-                "owner": m.group(4).strip(),
-                "by_when": m.group(5).strip(),
-            })
-    return rows
+    blockers = []
+    for f in findings_dir.glob("*.yaml"):
+        data = _load_yaml(f)
+        if not isinstance(data, dict):
+            continue
+        if str(data.get("cycle", "")) != str(cycle):
+            continue
+        if str(data.get("severity", "")).lower() == "blocker":
+            if str(data.get("status", "open")).lower() not in ("resolved", "wont-fix"):
+                blockers.append(data.get("finding_id", f.stem))
+    return sorted(blockers)
 
 
-def get_assumption_registry_text():
-    path = STUDY_DIR / "05-cross-cutting" / "margins-and-assumptions.md"
-    return read_or_blank(path)
+def _derive_status(blockers_remaining: list[str], deliverables: list[dict]) -> str:
+    if blockers_remaining:
+        return "blocked"
+    blocked_deliverables = [d for d in deliverables if d["status"] == "blocked"]
+    if blocked_deliverables:
+        return "incomplete"
+    return "complete"
 
 
-def get_critical_section_text(sections, max_chars=8000):
-    """Return full text of the most-mature sections, truncated to max_chars total."""
-    mature = [s for s in sections if s["status"] in ("draft", "reviewed", "final")]
-    mature.sort(key=lambda s: s["words"], reverse=True)
-
-    output = []
-    chars_used = 0
-    for s in mature:
-        chunk = f"\n\n### {s['title']} (`{s['path']}`)\n\n{s['body']}\n"
-        if chars_used + len(chunk) > max_chars:
-            chunk = chunk[: max_chars - chars_used] + "\n\n*[truncated]*"
-            output.append(chunk)
-            break
-        output.append(chunk)
-        chars_used += len(chunk)
-    return "\n".join(output)
+def _load_session_summary(study_dir: Path, cycle: int) -> str:
+    sessions_file = study_dir / "retro" / "session-logs.yaml"
+    data = _load_yaml(sessions_file)
+    if not isinstance(data, dict):
+        return ""
+    sessions = data.get("sessions", [])
+    cycle_sessions = [s for s in sessions if str(s.get("cycle", "")) == str(cycle)]
+    if not cycle_sessions:
+        return ""
+    last = cycle_sessions[-1]
+    return str(last.get("summary", ""))
 
 
-def check_word_count_gates():
-    """Hard gate: refuse handback generation if any section is >10% over its hard cap."""
-    caps = {
-        "study/02-human-in-the-loop/01-overview.md": 2400,
-        "study/02-human-in-the-loop/02-latency-tradespace.md": 3000,
-        "study/02-human-in-the-loop/03-autonomy-trl-tasking.md": 3000,
-        "study/02-human-in-the-loop/04-teaming-model.md": 4200,
+def _build_next_cycle_inputs(
+    study_dir: Path,
+    cycle: int,
+    blockers: list[str],
+    findings_summary: dict,
+) -> str:
+    parts = []
+    if blockers:
+        parts.append(f"Resolve {len(blockers)} open blocker(s): {', '.join(blockers)}.")
+    total = findings_summary.get("total", 0)
+    unresolved = total - findings_summary.get("resolved", 0) - findings_summary.get("deferred", 0)
+    if unresolved > 0:
+        parts.append(f"Address {unresolved} open finding(s) from cycle {cycle}.")
+    session_summary = _load_session_summary(study_dir, cycle)
+    if session_summary:
+        parts.append(session_summary[:300])
+    if not parts:
+        parts.append(f"Continue from cycle {cycle} deliverables. No blockers outstanding.")
+    return " ".join(parts)
+
+
+def build_handback_yaml(study_id: str, cycle: int, study_dir: Path) -> dict:
+    scaffold = _read_scaffold(study_dir, cycle)
+    deliverables = _collect_deliverables(study_dir, cycle, scaffold["deliverables_raw"])
+    findings_summary = _load_findings_summary(study_dir, cycle)
+    blockers_remaining = _load_blockers_remaining(study_dir, cycle)
+    status = _derive_status(blockers_remaining, deliverables)
+    next_inputs = _build_next_cycle_inputs(study_dir, cycle, blockers_remaining, findings_summary)
+
+    return {
+        "study_id": study_id,
+        "cycle": cycle,
+        "date_generated": _now(),
+        "objective": scaffold["objective"],
+        "status": status,
+        "deliverables": deliverables,
+        "findings_summary": findings_summary,
+        "blockers_remaining": blockers_remaining,
+        "next_cycle_inputs": next_inputs,
+        "gates_passed": len(blockers_remaining) == 0,
     }
-    violations = []
-    for path_str, hard_cap in caps.items():
-        path = ROOT / path_str
-        if not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8")
-        _, body = parse_frontmatter(text)
-        words = len(re.findall(r"\b\w+\b", body))
-        if words > hard_cap * 1.10:
-            violations.append(
-                f"{path_str}: {words} words "
-                f"(hard cap {hard_cap}, +10% tolerance {int(hard_cap * 1.10)})"
-            )
-    return violations
 
 
-def build_handback(stage_num):
-    sections = collect_section_state()
-    all_findings = collect_all_findings(stage_filter=stage_num)
-    cross_patterns = find_cross_reviewer_patterns(all_findings)
-    sessions = parse_session_logs()
-    coupling = parse_cross_coupling_log()
-    open_qs = parse_open_questions()
+def build_handback_markdown(hb: dict, study_dir: Path) -> str:
+    cycle = hb["cycle"]
+    lines: list[str] = []
 
-    total_words = sum(s["words"] for s in sections)
-    by_status = defaultdict(int)
-    by_review_status = defaultdict(int)
-    for s in sections:
-        by_status[s["status"]] += 1
-        by_review_status[s["review_status"]] += 1
+    lines += [
+        f"---",
+        f"study_id: {hb['study_id']}",
+        f"cycle: {cycle}",
+        f"date_generated: {hb['date_generated']}",
+        f"status: {hb['status']}",
+        f"---",
+        "",
+        f"# Cycle {cycle} Handback — {hb['study_id']}",
+        "",
+        f"**Generated:** {hb['date_generated']}  ",
+        f"**Status:** {hb['status'].upper()}  ",
+        f"**Gates passed:** {'Yes' if hb.get('gates_passed') else 'No'}",
+        "",
+        "## Objective",
+        "",
+        hb["objective"],
+        "",
+        "## Deliverables",
+        "",
+        "| Path | Status | Words |",
+        "|------|--------|------:|",
+    ]
 
-    total_blockers = sum(d["counts"].get("blocker", 0) for d in all_findings.values())
-    total_majors = sum(d["counts"].get("major", 0) for d in all_findings.values())
-    total_minors = sum(d["counts"].get("minor", 0) for d in all_findings.values())
-    total_nits = sum(d["counts"].get("nit", 0) for d in all_findings.values())
+    for d in hb["deliverables"]:
+        wc = d.get("word_count") or "—"
+        lines.append(f"| `{d['path']}` | {d['status']} | {wc} |")
 
-    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+    lines += ["", "## Findings Summary", ""]
+    fs = hb["findings_summary"]
+    lines += [
+        f"- **Total:** {fs['total']}",
+        f"- Blockers: {fs['blockers']}  Majors: {fs['majors']}  "
+        f"Minors: {fs['minors']}  Nits: {fs['nits']}",
+        f"- Resolved: {fs['resolved']}  Deferred: {fs['deferred']}",
+        "",
+    ]
 
-    out = []
-    out.append(f"# Stage {stage_num} Handback")
-    out.append("")
-    out.append(
-        f"*Generated {now}. Self-contained handback for the next planning session. "
-        f"Paste this entire document into a new conversation to plan stages "
-        f"{stage_num + 1}+.*"
-    )
-    out.append("")
-    out.append("---")
-    out.append("")
+    if hb["blockers_remaining"]:
+        lines += ["## Open Blockers", ""]
+        for b in hb["blockers_remaining"]:
+            lines.append(f"- {b}")
+        lines.append("")
 
-    # 1. Executive snapshot
-    out.append("## 1. Executive Snapshot")
-    out.append("")
-    out.append(f"**Total sections:** {len(sections)}")
-    out.append(f"**Total words written:** {total_words:,}")
-    out.append("")
-    out.append("**Section status:**")
-    for status in STATUS_ORDER:
-        c = by_status.get(status, 0)
-        if c:
-            out.append(f"- {status}: {c}")
-    out.append("")
-    out.append("**Review status:**")
-    for rs in REVIEW_STATUS_ORDER:
-        c = by_review_status.get(rs, 0)
-        if c:
-            out.append(f"- {rs}: {c}")
-    out.append("")
-    out.append("**Findings totals:**")
-    out.append(f"- Blockers: {total_blockers}")
-    out.append(f"- Majors: {total_majors}")
-    out.append(f"- Minors: {total_minors}")
-    out.append(f"- Nits: {total_nits}")
-    out.append("")
+    lines += [
+        "## Next Cycle Inputs",
+        "",
+        hb["next_cycle_inputs"],
+        "",
+    ]
 
-    # 2. What got built
-    out.append("## 2. What Got Built")
-    out.append("")
-    out.append("| Section | Status | Review | Owner | Words | Updated |")
-    out.append("|---------|--------|--------|-------|------:|---------|")
-    for s in sections:
-        out.append(
-            f"| {s['title']} | {s['status']} | {s['review_status']} | "
-            f"{s['owner']} | {s['words']:,} | {s['last_updated']} |"
+    # Load session summary if present
+    sessions_file = study_dir / "retro" / "session-logs.yaml"
+    sessions_data = _load_yaml(sessions_file)
+    if isinstance(sessions_data, dict):
+        cycle_sessions = [
+            s for s in sessions_data.get("sessions", [])
+            if str(s.get("cycle", "")) == str(cycle)
+        ]
+        if cycle_sessions:
+            lines += ["## Session Log", ""]
+            for s in cycle_sessions:
+                lines.append(f"**Session {s.get('session_id', '?')}** ({s.get('date', '?')})")
+                lines.append("")
+                lines.append(str(s.get("summary", "")))
+                artifacts = s.get("artifacts_produced", [])
+                if artifacts:
+                    lines.append("")
+                    lines.append("Artifacts:")
+                    for a in artifacts:
+                        lines.append(f"  - {a}")
+                lines.append("")
+
+    return "\n".join(lines)
+
+
+def _validate_yaml(data: dict) -> list[str]:
+    try:
+        import jsonschema
+    except ImportError:
+        return []
+    schema_path = _SCHEMAS_DIR / "handback.schema.yaml"
+    if not schema_path.exists():
+        return []
+    with open(schema_path, encoding="utf-8") as fh:
+        schema = yaml.safe_load(fh)
+    errors = []
+    try:
+        jsonschema.validate(data, schema)
+    except jsonschema.ValidationError as e:
+        errors.append(f"Schema violation: {e.message}")
+    return errors
+
+
+def generate(study_id: str, cycle: int, dry_run: bool = False) -> tuple[Path, Path]:
+    study_dir = _study_path(study_id)
+    handbacks_dir = study_dir / "handbacks"
+    cycle_str = f"{cycle:02d}"
+
+    hb_yaml_path = handbacks_dir / f"cycle-{cycle_str}.yaml"
+    hb_md_path = handbacks_dir / f"cycle-{cycle_str}.md"
+
+    hb_data = build_handback_yaml(study_id, cycle, study_dir)
+    hb_md = build_handback_markdown(hb_data, study_dir)
+
+    wc = _word_count(hb_md)
+    if wc > _MAX_WORDS:
+        print(
+            f"WARNING: handback is {wc} words (limit {_MAX_WORDS}). "
+            "Trim session logs or deliverables list.",
+            file=sys.stderr,
         )
-    out.append("")
 
-    # 3. What's broken — findings that matter
-    out.append("## 3. Findings That Matter")
-    out.append("")
-    out.append(
-        f"Blockers and majors only for stage {stage_num}. "
-        "Minors and nits omitted from handback (they're in the repo)."
+    errors = _validate_yaml(hb_data)
+    if errors:
+        for e in errors:
+            print(f"SCHEMA ERROR: {e}", file=sys.stderr)
+        if not dry_run:
+            sys.exit(1)
+
+    if dry_run:
+        print("--- YAML ---")
+        print(yaml.dump(hb_data, default_flow_style=False, allow_unicode=True))
+        print("--- MARKDOWN ---")
+        print(hb_md)
+        print(f"--- word count: {wc} ---")
+        return hb_yaml_path, hb_md_path
+
+    handbacks_dir.mkdir(parents=True, exist_ok=True)
+    with open(hb_yaml_path, "w", encoding="utf-8") as fh:
+        yaml.dump(hb_data, fh, default_flow_style=False, allow_unicode=True, sort_keys=False)
+    hb_md_path.write_text(hb_md, encoding="utf-8")
+
+    print(f"Handback written:")
+    print(f"  YAML: {hb_yaml_path}")
+    print(f"  MD:   {hb_md_path}")
+    print(f"  Words: {wc}  Status: {hb_data['status']}")
+    return hb_yaml_path, hb_md_path
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        prog="handback",
+        description="Generate a cycle handback document",
     )
-    out.append("")
-
-    any_stage_mismatch = any(
-        d.get("stage_mismatch") for d in all_findings.values()
-    )
-    if any_stage_mismatch:
-        stale = [r for r, d in all_findings.items() if d.get("stage_mismatch")]
-        out.append(
-            f"**NOTE:** Reviews not yet run for stage {stage_num}. "
-            f"The following files exist but belong to a different stage "
-            f"and are excluded: {', '.join(stale)}. "
-            "Findings counts below reflect only current-stage reviews."
-        )
-        out.append("")
-
-    for reviewer, data in all_findings.items():
-        if not data.get("exists") or data.get("stage_mismatch"):
-            if not data.get("exists"):
-                out.append(f"*{reviewer}: Reviews not yet run for stage {stage_num}.*")
-                out.append("")
-            continue
-        blockers = [f for f in data["findings"]
-                    if f.get("severity", "").lower().startswith("blocker")]
-        majors = [f for f in data["findings"]
-                  if f.get("severity", "").lower().startswith("major")]
-        if not blockers and not majors:
-            continue
-        out.append(f"### {reviewer}")
-        out.append("")
-        for f in blockers + majors:
-            sev = f.get("severity", "?")
-            out.append(f"**[{sev}] {f.get('title', '(untitled)')}**")
-            if f.get("section"):
-                out.append(f"- *Section:* {f['section']}")
-            if f.get("claim"):
-                out.append(f"- *Claim:* {f['claim']}")
-            if f.get("issue"):
-                out.append(f"- *Issue:* {f['issue']}")
-            if f.get("required_action"):
-                out.append(f"- *Required action:* {f['required_action']}")
-            out.append("")
-
-    # 4. Cross-reviewer patterns
-    if cross_patterns:
-        out.append("## 4. Patterns Across Reviewers")
-        out.append("")
-        out.append("Sections flagged by 2+ reviewers — these are the priorities.")
-        out.append("")
-        for sec, hits in cross_patterns.items():
-            out.append(f"### {sec}")
-            out.append("")
-            for h in hits:
-                out.append(
-                    f"- **{h['reviewer']}** [{h['severity']}]: "
-                    f"{h['title']} — {h['issue']}"
-                )
-            out.append("")
-    else:
-        out.append("## 4. Patterns Across Reviewers")
-        out.append("")
-        out.append("*No sections flagged by 2+ reviewers (or reviews not yet run).*")
-        out.append("")
-
-    # 5. Decisions that got made
-    out.append("## 5. Decisions Locked In")
-    out.append("")
-    out.append(
-        "From `study/05-cross-cutting/cross-coupling-log.md`. "
-        "These constrain stages going forward."
-    )
-    out.append("")
-    if coupling:
-        for entry in coupling:
-            if "\n" in entry:
-                first_line, rest = entry.split("\n", 1)
-            else:
-                first_line, rest = entry, ""
-            out.append(f"### {first_line.strip()}")
-            out.append("")
-            if rest.strip():
-                out.append(rest.strip())
-                out.append("")
-    else:
-        out.append("*No cross-coupling decisions logged yet.*")
-        out.append("")
-
-    # 6. Open questions blocking progress
-    out.append("## 6. Open Questions Blocking Progress")
-    out.append("")
-    if open_qs:
-        out.append("| Domain | Question | Owner | By when |")
-        out.append("|--------|----------|-------|---------|")
-        for q in open_qs:
-            out.append(
-                f"| {q['domain']} | {q['question']} | {q['owner']} | {q['by_when']} |"
-            )
-    else:
-        out.append("*No open questions registered.*")
-    out.append("")
-
-    # 7. Assumption registry (full)
-    out.append("## 7. Assumption Registry (Full)")
-    out.append("")
-    out.append("Verbatim from `study/05-cross-cutting/margins-and-assumptions.md`.")
-    out.append("")
-    reg_text = get_assumption_registry_text()
-    if reg_text:
-        out.append(extract_after_frontmatter(reg_text))
-    else:
-        out.append("*Registry not found.*")
-    out.append("")
-
-    # 8. What broke in the agent system
-    out.append("## 8. What Broke in the Agent System")
-    out.append("")
-    for retro_file in ["agent-performance.md", "orchestrator-performance.md",
-                       "process-lessons.md"]:
-        path = RETRO_DIR / retro_file
-        if path.exists():
-            out.append(f"### {retro_file}")
-            out.append("")
-            out.append(extract_after_frontmatter(path.read_text(encoding="utf-8")))
-            out.append("")
-
-    if not any((RETRO_DIR / f).exists() for f in
-               ["agent-performance.md", "orchestrator-performance.md", "process-lessons.md"]):
-        out.append("*No retro artifacts found.*")
-        out.append("")
-
-    # 9. Session logs (compressed)
-    out.append("## 9. Session Logs")
-    out.append("")
-    if sessions:
-        if len(sessions) > 10:
-            out.append(
-                f"*Showing last 10 of {len(sessions)} sessions. "
-                "Earlier sessions: titles only.*"
-            )
-            out.append("")
-            for s in sessions[:-10]:
-                first_line = s.split("\n", 1)[0]
-                out.append(f"- {first_line}")
-            out.append("")
-            out.append("**Recent sessions (full):**")
-            out.append("")
-            for s in sessions[-10:]:
-                first_line = s.split("\n", 1)[0] if "\n" in s else s[:80]
-                out.append(f"### {first_line}")
-                out.append("")
-                out.append(s)
-                out.append("")
-        else:
-            for s in sessions:
-                first_line = s.split("\n", 1)[0] if "\n" in s else s[:80]
-                out.append(f"### {first_line}")
-                out.append("")
-                out.append(s)
-                out.append("")
-    else:
-        out.append("*No session logs found.*")
-        out.append("")
-
-    # 10. Critical section content
-    out.append("## 10. Critical Section Content (Full Text)")
-    out.append("")
-    out.append(
-        "Full text of the most-mature sections, capped at ~8,000 characters total. "
-        "The next planning session reads these to ground its proposals in what was "
-        "actually written, not just what the metadata says."
-    )
-    out.append("")
-    out.append(get_critical_section_text(sections))
-    out.append("")
-
-    # 11. User's note
-    out.append("## 11. User's Note for the Next Planning Session")
-    out.append("")
-    out.append(
-        "*[Edit this section before pasting into the next conversation. "
-        "Tell the planner what you're thinking now, what you've changed your "
-        "mind about, what surprised you, what you want stages 5+ to focus on. "
-        "Three to five sentences is enough.]*"
-    )
-    out.append("")
-    out.append("**Your note:**")
-    out.append("")
-    out.append("> ")
-    out.append("")
-
-    # 12. Instructions for the planner
-    out.append("## 12. Instructions for the Next Planning Session")
-    out.append("")
-    out.append(
-        f"You are receiving this handback to design stages "
-        f"{stage_num + 1}, {stage_num + 2}, and {stage_num + 3} of the "
-        "humanoid-forward space exploration study."
-    )
-    out.append("")
-    out.append("**Your job:**")
-    out.append("")
-    out.append("1. Read this handback in full.")
-    out.append("2. Identify the 2-3 most important findings or patterns.")
-    out.append(
-        "3. Decide whether the next stage should be remediation "
-        "(fixing what's broken), continuation (next major content push), "
-        "integration (weaving sections together), or pivot (the findings "
-        "revealed something the study needs to change fundamentally)."
-    )
-    out.append(
-        f"4. Propose stages {stage_num + 1}–{stage_num + 3} with concrete scope "
-        "for each, in the same single-file scaffolding format used for stages 1-4."
-    )
-    out.append(
-        "5. Be honest if the findings suggest the study should change "
-        "direction. The handback exists so the loop can correct itself."
-    )
-    out.append("")
-    out.append("**What good output looks like:**")
-    out.append("")
-    out.append(f"- A clear assessment of what stages 1–{stage_num} produced.")
-    out.append("- A specific recommendation for the next stage with reasoning.")
-    out.append(
-        "- A scaffolding document for the next stage in the same "
-        "`=== FILE: path ===` format used previously."
-    )
-    out.append(
-        "- Any prompt-tuning recommendations for existing agents based "
-        "on the retro findings."
-    )
-    out.append("")
-    out.append("---")
-    out.append("")
-    out.append("*End of handback.*")
-
-    return "\n".join(out)
-
-
-def check_breadcrumb_freshness():
-    """Warn if breadcrumbs are stale or missing."""
-    issues = []
-
-    sessions_path = RETRO_DIR / "session-logs.md"
-    if sessions_path.exists():
-        body = extract_after_frontmatter(sessions_path.read_text(encoding="utf-8"))
-        if "## " not in body:
-            issues.append("retro/session-logs.md has no session entries")
-    else:
-        issues.append("retro/session-logs.md does not exist")
-
-    reg_path = STUDY_DIR / "05-cross-cutting" / "margins-and-assumptions.md"
-    if reg_path.exists():
-        text = reg_path.read_text(encoding="utf-8").lower()
-        trl_lines = [l for l in text.split("\n")
-                     if "trl" in l and "|" in l and "humanoid" in l]
-        if len(trl_lines) > 1:
-            issues.append(
-                f"Possible TRL contradiction: {len(trl_lines)} TRL-related "
-                "assumption rows. Review margins-and-assumptions.md for consistency."
-            )
-
-    return issues
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--stage", type=int, default=4)
-    parser.add_argument("--out", default=None)
+    parser.add_argument("--study", required=True, help="Study ID")
+    parser.add_argument("--cycle", required=True, type=int, help="Cycle number")
+    parser.add_argument("--dry-run", action="store_true", help="Print to stdout, do not write")
     args = parser.parse_args()
-
-    violations = check_word_count_gates()
-    if violations:
-        print("BLOCKER: word-count gate violations detected:")
-        for v in violations:
-            print(f"  - {v}")
-        print("\nHandback generation refused. Trim sections or re-dispatch agents.")
-        import sys
-        sys.exit(1)
-
-    issues = check_breadcrumb_freshness()
-    if issues:
-        print("WARNING: breadcrumb issues detected:")
-        for i in issues:
-            print(f"  - {i}")
-        print("\nProceeding anyway, but the handback may be incomplete.")
-        print()
-
-    out_path = args.out or f"handback-stage{args.stage}.md"
-    handback = build_handback(args.stage)
-
-    Path(out_path).write_text(handback, encoding="utf-8")
-    print(f"Handback generated: {out_path}")
-    print(f"Length: {len(handback):,} characters / ~{len(handback) // 4:,} tokens")
+    generate(args.study, args.cycle, dry_run=args.dry_run)
 
 
 if __name__ == "__main__":

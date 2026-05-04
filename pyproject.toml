@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[project]
+name = "space-program-infra"
+version = "1.0.0"
+description = "Private space program analytical infrastructure"
+requires-python = ">=3.11"
+dependencies = [
+    "pyyaml>=6.0",
+    "trimesh>=4.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "jsonschema>=4.22",
+    "ruff>=0.4",
+]
+vis = [
+    "trimesh>=4.0",
+    "pyrender>=0.1.45",
+    "imageio[ffmpeg]>=2.34",
+    "numpy>=1.26",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["system/tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I"]
+ignore = ["E501"]
+
+[tool.coverage.run]
+source = ["system"]
+omit = ["system/tests/*", "*/fixtures/*"]

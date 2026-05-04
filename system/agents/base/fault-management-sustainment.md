@@ -1,5 +1,8 @@
 ---
 name: fault-management-sustainment
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns failure modes, contingency response, maintenance, and the sustainment concept. Invoke for any reliability, repair, or contingency question.
 tools:
   - Read

@@ -1,0 +1,37 @@
+finding_id: HC-04
+reviewer: heritage-citations-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1'
+observation: '"The Lunokhod traverse record — 10.54 km for Lunokhod 1 over 10.5 months;
+  39.16 km for Lunokhod 2 over approximately 5 months." The study cites `lroc_lunokhod2_traverse`
+  (Karachevtseva et al., Planetary and Space Science, 2013) which is the LRO photogrammetry
+  paper for Lunokhod 2, correctly establishing the revised 39.16 km figure. However,
+  the same research group published a companion paper for Lunokhod 1 (Karachevtseva
+  et al., Planetary and Space Science, 2013 — separate paper, same DOI series) that
+  revised the Lunokhod 1 distance from the telemetry-based 10.54 km to **9.93 km**
+  based on LRO NAC imagery. The study correctly uses the LRO-revised 39.16 km for
+  Lunokhod 2 but retains the older, pre-LRO 10.54 km for Lunokhod 1. This is internally
+  inconsistent: both figures should either use the LRO-revised values (9.93 km and
+  39.16 km) or both use the original telemetry-based estimates.
+
+
+  The combined traverse total cited in Section 02-03 as reference to "48 km of lunar
+  surface with two ve'
+impact: '"The Lunokhod traverse record — 10.54 km for Lunokhod 1 over 10.5 months;
+  39.16 km for Lunokhod 2 over approximately 5 months."'
+fix: 'Either use the LRO-revised figures for both rovers (9.93 km and 39.16 km), citing
+  both Karachevtseva papers, or retain the original telemetry figures for both (10.54
+  km and ~37 km) with a note that LRO revision exists. Do not mix LRO-revised Lunokhod
+  2 with pre-LRO Lunokhod 1. Add the Lunokhod 1 LRO cartography paper (companion to
+  `lroc_lunokhod2_traverse`) to `corpus/references.bib` if the LRO-revised Lunokhod
+  1 figure is to be used.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

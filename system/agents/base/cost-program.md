@@ -1,5 +1,8 @@
 ---
 name: cost-program
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the cost estimate and program structure. Invoke for cost questions, schedule questions, and program organization.
 tools:
   - Read

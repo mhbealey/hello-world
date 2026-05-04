@@ -1,0 +1,36 @@
+finding_id: RM-N02
+reviewer: reliability-margins-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Continuous
+  Supervision)'
+observation: '
+
+  **Severity:** Minor
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Continuous
+  Supervision)
+
+  **Number/claim:** "Empirically, this sustained vigilance is cognitively expensive
+  in the 40–60 minute range and degrades above two hours for highly skilled monitoring
+  tasks \cite{kanas2008space}."
+
+  **Problem:** The \cite{kanas2008space} reference — Kanas and Manzey''s "Space Psychology
+  and Psychiatry" — is a behavioral health text covering crew psychology, interpersonal
+  dynamics, '
+impact: See finding.
+fix: 'Verify that \cite{kanas2008space} contains the specific 40–60 minute and 2-hour
+  degradation figures, and if it cites primary vigilance literature, cite that literature
+  directly. If the figures are standard vigilance research findings (the "vigilance
+  decrement" literature), cite a primary reference such as Warm JS, Parasuraman R,
+  Matthews G (2008) "Vigilance requires hard mental work and is stressful" *Human
+  Factors* 50(3), which documents the temporal profile of vigilance degradation.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

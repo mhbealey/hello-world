@@ -1,0 +1,32 @@
+finding_id: HC-01
+reviewer: heritage-citations-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 2'
+observation: '"The METERON SUPVIS Justin experiments (2015–2016) tested a supervisory
+  control approach at ISS-to-ground latency." The Schmaus et al. 2019 paper documents
+  SUPVIS Justin ISS crew sessions conducted in 2017 and 2018 (first session August
+  25, 2017 with Sergei Ryazansky; second session March 2018 with Scott Tingle; third
+  session with Alexander Gerst in 2018). The ground preparation and simulation work
+  began earlier, but the actual ISS-to-ground teleoperation experiments took place
+  in 2017–2018, not 2015–2016. The METERON project began around 2013, and Haptics-1/Haptics-2
+  experiments were earlier, which may explain the date confusion — but SUPVIS Justin
+  specifically ran in 2017–2018. The BibTeX entry for `schmaus2019suprvisjustin` correctly
+  gives the paper year as 2019, which would be consistent with a 2017–2018 experimental
+  campaign. The "2015–2016" date in the text is incorrect for the SUPVIS Justin sessions
+  specifically.'
+impact: '"The METERON SUPVIS Justin experiments (2015–2016) tested a supervisory control
+  approach at ISS-to-ground latency."'
+fix: 'Correct "2015–2016" to "2017–2018" for the SUPVIS Justin ISS sessions. If the
+  intent was to reference the earlier ground-based preparation phases, clarify that
+  the ISS crew sessions occurred in 2017–2018. Verify against `schmaus2019suprvisjustin`
+  primary paper which states the experiment dates.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

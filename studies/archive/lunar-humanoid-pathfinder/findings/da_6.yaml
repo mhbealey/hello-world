@@ -1,0 +1,27 @@
+finding_id: DA-6
+reviewer: devils-advocate-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/devils-advocate-findings.md
+section: null
+observation: '
+
+  **Attack:** The strongest version of this attack is not that forward deployment
+  is wrong — it is that the study has not eliminated a cheaper alternative. The physics
+  argument for forward deployment is: 2.78 s RTLT from Earth is inadequate for real-time
+  supervision of jointly-executed tasks. The study''s response is: therefore humans
+  must be physically at the lunar far side. But there is a third option the study
+  does not seriously evaluate: redesign the jointly-executed tasks to not require
+  real-'
+impact: See finding.
+fix: 'Section 02-03 must add a subsection of two to three paragraphs explicitly engaging
+  the task-redesign alternative for each of the six jointly-executed tasks and explaining
+  why redesign fails. For each task, the argument must show either: (a) the real-time
+  human judgment function cannot be replaced by a mechanical, parametric, or pre-validated
+  substitute without unacceptable safety degradation; or (b) redesigning the task
+  to eliminate real-time supervision would reduce scientific or operational va'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,23 @@
+finding_id: AE-S8-09
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 4 and Section
+  3'
+observation: '"At 2035 IOC, 12 of 20 tasks are autonomy-led; 6 are jointly executed
+  (requiring defined human interaction but not continuous supervision); 2 are human-led."
+  Counting from the task allocation table in Section 4 at IOC (2035):'
+impact: '"At 2035 IOC, 12 of 20 tasks are autonomy-led; 6 are jointly executed (requiring
+  defined human interaction but not continuous supervision); 2 are human-led."'
+fix: Recount the task allocation table row by row at IOC to produce the verified split.
+  If the split is 11/7/2, update the summary claim in Section 4 of §02-03, the §02-01
+  overview, and the §02-04 teaming model's cognitive load inputs. If the split is
+  9/9/2 (treating first-run events as jointly-executed), the periodic supervision
+  demand rises and the headroom calculation in §02-04 must be rerun. This is a blocker-class
+  arithmetic issue if the cognitive load model is based on the incorrect 12/6/2 spli
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

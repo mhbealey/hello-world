@@ -1,0 +1,34 @@
+finding_id: RM-N04
+reviewer: reliability-margins-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/01-overview.md` (Section 4 reference in §02-02
+  Section 4); `study/02-human-in-the-loop/02-latency-tradespace.md`, Section 4'
+observation: '
+
+  **Severity:** Minor
+
+  **Section:** `study/02-human-in-the-loop/01-overview.md` (Section 4 reference in
+  §02-02 Section 4); `study/02-human-in-the-loop/02-latency-tradespace.md`, Section
+  4
+
+  **Number/claim:** "The productivity differential between the two regimes — for a
+  task profile that includes novel manipulation, infrastructure installation, and
+  scientific sampling — favors forward deployment by a factor estimated at 5–10× for
+  task-hours delivered per crew-hour invested."
+
+  **Problem:** The 5–10× p'
+impact: See finding.
+fix: 'Either derive the 5–10× figure from the cognitive load arithmetic in §02-04
+  (which at least contains a structured demand model), or replace it with a more defensible
+  framing: "The cognitive load arithmetic in §02-04 shows that 4 crew supervising
+  3 humanoids in periodic supervision mode can deliver 3 humanoid-operational-days
+  per crew-day. Under Lunokhod-heritage direct teleoperation at Tier B latency, an
+  analogous crew would manage approximately 1 rover-equivalent operational day per
+  five crew-m'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

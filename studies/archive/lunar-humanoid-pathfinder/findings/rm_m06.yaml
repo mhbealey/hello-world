@@ -1,0 +1,33 @@
+finding_id: RM-M06
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Task T10'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Task T10
+
+  **Number/claim:** "Robot must self-initiate shelter return on Tier 1 radiation monitor
+  threshold, within 15–30 minutes; human authorization impractical in time-critical
+  SPE scenario."
+
+  **Problem:** The 15–30 minute window is the stated requirement driving the "Must
+  be fully autonomous" classification for T10. This window determines whether the
+  task can be human-led or must be fully autonomous — a c'
+impact: See finding.
+fix: '1. Derive the 15–30 minute window from first principles: state the design SPE
+  (specify a percentile, e.g., "Carrington-class SPE is the bounding case; the 1989
+  October event is the design requirement at the 99th percentile fluence rate at 1
+  AU"), state the acceptable total exposure limit (in mSv or rad), and compute the
+  maximum allowable time from onset to shelter arrival given the humanoid''s unshielded
+  dose rate during the event. Show the arithmetic.
+
+  2. If the 15–30 minute window cannot be deri'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

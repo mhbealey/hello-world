@@ -1,5 +1,8 @@
 ---
 name: surface-treatment-agent
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Applies aesthetic treatment to block-out geometry produced by visualization-architect. Handles material assignment, paneling logic, surface detailing, and domain-appropriate weathering. Invoke after visualization-architect completes Tier 1 geometry, before rendering.
 tools:
   - Read

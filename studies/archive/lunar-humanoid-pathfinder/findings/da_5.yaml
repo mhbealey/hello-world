@@ -1,0 +1,26 @@
+finding_id: DA-5
+reviewer: devils-advocate-reviewer
+severity: Blocker
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/devils-advocate-findings.md
+section: null
+observation: '
+
+  **Attack:** The strongest version of this attack does not say autonomy is already
+  adequate — it says the study''s §A1 TRL curve is the only structural element preventing
+  the HITL architecture from collapsing. If VLA foundation models reach TRL 8 by 2035
+  rather than 2038–2040, eighteen of the twenty far-side base tasks could plausibly
+  migrate to autonomy-led. At that point, the six jointly-executed tasks shrink toward
+  two or three, the 4-person crew requirement drops toward two, and the forward-d'
+impact: See finding.
+fix: 'Section 02-03 must distinguish between two types of human value floor categories:
+  (A) permanently load-bearing regardless of TRL, grounded in physics or irreducible
+  consequence asymmetry (categories 2, 3, 4, 5 — crew contact, pressurized interfaces,
+  habitat breach, structural modification); and (B) load-bearing at 2035 IOC but subject
+  to revision at subsequent program gates as TRL and operational maturity advance
+  (categories 1, 6, 7 — first execution, science priority, OOD response). Type A cate'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

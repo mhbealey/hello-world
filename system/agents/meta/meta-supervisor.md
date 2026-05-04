@@ -1,5 +1,8 @@
 ---
 name: meta-supervisor
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Passive observer that reads session logs, agent outputs, and orchestrator behavior, then writes observations about system patterns. Does not write study content. Invoke at the end of each work session to update observations.
 tools:
   - Read

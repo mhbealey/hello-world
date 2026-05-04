@@ -1,0 +1,33 @@
+finding_id: RM-M04
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 3, Step 4'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 3, Step 4
+
+  **Number/claim:** "By 2040, 16–17 of 20 tasks at autonomy-led level reduces the
+  jointly-executed checkpoint demand by approximately 60%, reducing total supervisory
+  demand per shift from 4.25 to approximately 2.5 person-hours. Against the same 8
+  person-hour capacity, the headroom grows to 5.5 person-hours — sufficient to support
+  a 1:4–5 ratio."
+
+  **Problem:** The 60% reduction in checkpoint demand '
+impact: See finding.
+fix: '1. Derive the 60% checkpoint demand reduction from the task allocation table:
+  identify which tasks shift from jointly-executed to autonomy-led between 2035 and
+  2040, compute the checkpoint demand reduction from each migration, and sum. If T05
+  and T09 do not migrate (consistent with the task allocation table), recompute the
+  2040 demand with only T16 migrating.
+
+  2. Reconcile with the task allocation table: the 16–17 tasks autonomy-led claim
+  in §02-04 must match the count in §02-03''s "Allocation at '
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

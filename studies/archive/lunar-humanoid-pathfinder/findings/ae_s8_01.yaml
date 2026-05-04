@@ -1,0 +1,36 @@
+finding_id: AE-S8-01
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Queqiao-2
+  Relay Geometry"'
+observation: '"Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900
+  km from Earth center, yielding OWLT of 400,900 ÷ 299,792 = **1.337 s**" The derivation
+  assumes Queqiao-2 is positioned radially outward from Earth on the Earth-Moon centerline
+  (i.e., directly behind the Moon as seen from Earth). This is not the orbital geometry
+  required for simultaneous Earth and far-side line-of-sight. For the satellite to
+  see both Earth and the far side simultaneously, it must be above the lunar limb
+  — not on the anti-Earth axis — which means the Earth-to-satellite slant range is
+  approximately the Earth-Moon distance, not Earth-Moon + altitude. The geometry that
+  makes far-side coverage possible is precisely the geometry where the satellite''s
+  altitude above the Moon adds only minimally to the Earth-satellite range.
+
+
+  More precisely: Queqiao-2 at apoapsis above the lunar limb is roughly 384,400 km
+  from Earth (the Earth-Moon distance) plus a projection of the satellite''s orbital
+  radius onto the Ea'
+impact: '"Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900
+  km from Earth center, yielding OWLT of 400,900 ÷ 299,792 = **1.337 s**"'
+fix: Replace the additive Earth-Moon + altitude path calculation with a slant-range
+  calculation using the law of cosines, accounting for the actual angular offset of
+  Queqiao-2 from the Earth-Moon radial axis at the orbital positions that provide
+  dual-link coverage. Recompute the RTLT bounds accordingly. If the corrected values
+  shift the RTLT upper end below 2.92 s, update the latency table and the §02-01 overview
+  claim of "2.78–2.92 seconds." The §A17 register entry should be updated if the relay
+  ava
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

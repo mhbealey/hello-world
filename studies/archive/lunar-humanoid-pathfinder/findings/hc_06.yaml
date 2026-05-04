@@ -1,0 +1,34 @@
+finding_id: HC-06
+reviewer: heritage-citations-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1'
+observation: '"The crew adapted to this delay with a distinctive operational technique:
+  the driver would issue a move command, then wait for the next transmitted television
+  frame (updated every 7–20 seconds)." The `lroc_lunokhod2_traverse` BibTeX entry
+  is the Karachevtseva et al. (2013) cartography paper establishing Lunokhod 2''s
+  traverse distance from LRO photogrammetry. It is a mapping and distance-measurement
+  paper, not an account of teleoperation operations, image update intervals, or operator
+  technique. The 7–20 second image update interval is confirmed by other sources (Lunokhod
+  2 had cameras operating at 3.2, 5.7, 10.9, or 21.1 s/frame; the 7–20 second figure
+  appears in Murphy 1998 CMU-RI-TR-98-10 "Panospheric Video for Robotic Telexploration"
+  citing Lunokhod operational records). The claim is accurate; the citation is the
+  wrong source for it. The cartography paper establishes traverse distances, not operator
+  technique.'
+impact: '"The crew adapted to this delay with a distinctive operational technique:
+  the driver would issue a move command, then wait for the next transmitted television
+  frame (updated every 7–20 seconds)."'
+fix: 'Either add a more appropriate citation for the image update interval claim (e.g.,
+  Murphy 1998, or Huntress & Marov 2011 if that text covers operational technique)
+  alongside `lroc_lunokhod2_traverse`, or replace `lroc_lunokhod2_traverse` with a
+  more appropriate operations-focused source for this specific claim. Add the supplementary
+  source to `corpus/references.bib`.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,31 @@
+finding_id: RM-Nit01
+reviewer: reliability-margins-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/05-cross-cutting/margins-and-assumptions.md`, §A18'
+observation: '
+
+  **Severity:** Nit
+
+  **Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A18
+
+  **Number/claim:** "Hard ceiling approximately 1:8–10 regardless of TRL due to human
+  value floor saturation in a 4-person crew."
+
+  **Problem:** The ceiling is not TRL-independent — it is crew-size-dependent. A 6-person
+  crew with the same human value floor tasks would have a ceiling of approximately
+  1:12–15. The ceiling is correctly derived from the combination of the human value
+  floor and the fixed 4-person cr'
+impact: See finding.
+fix: 'Replace "regardless of TRL" with "regardless of TRL for a 4-person crew." Add:
+  "This ceiling scales with crew size; a 6-person crew at the same autonomy TRL has
+  a ceiling of approximately 1:12."
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

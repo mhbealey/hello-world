@@ -1,0 +1,21 @@
+finding_id: SD-8-009
+reviewer: scope-discipline-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'Each supervision mode subsection in Section 1 contains a "Required for"
+  list that names specific tasks from the 20-task taxonomy (e.g., "T09 (EVA tool handoff
+  to crew)", "T02 (unstructured terrain with human path approval)"). This list fully
+  duplicates the Task Allocation Table in §02-03 Section 4, which is the authoritative
+  source for mode assignments. Section 1''s job is to define the modes and their properties;
+  the task assignments are a §02-03 output. The duplication is not incorrect — it
+  aids readability — but it adds approximately 200 words and creates a maintenance
+  dependency: when the task allocation changes, both tables must be updated simultaneously.'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

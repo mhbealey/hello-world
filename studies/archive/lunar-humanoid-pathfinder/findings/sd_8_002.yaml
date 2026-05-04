@@ -1,0 +1,26 @@
+finding_id: SD-8-002
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: The three heritage anchors (Lunokhod, METERON/KONTUR-2, Sheridan/Verplank)
+  each establish specific latency performance characteristics. The "Summary Position"
+  subsection then re-narrates the same latency regime properties in five paragraphs
+  keyed to the same five tiers, without adding new data or changing the conclusions.
+  Each paragraph restates content from the preceding heritage anchors while adding
+  operational glosses that are already implied. For example, the "1–5 s" paragraph
+  repeats the frame-advance adaptation, the Lunokhod crater incident, and the reactive
+  autonomy requirement — all of which were stated at greater precision in the Lunokhod
+  heritage anchor. The ">60 s" paragraph ("Jupiter and beyond") covers a destination
+  that is explicitly out of scope for the first operational decade and adds nothing
+  to the latency argument for the lunar far-side case. The "200 ms–1 s" paragraph
+  describes predictive display requirements for a regime that is not the primary operating
+  mode for a
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,34 @@
+finding_id: CC-S8-006
+reviewer: cross-coupling-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Nit
+
+  **Parameter:** Per-layer TRL targets at the 2029 gate
+
+  **Source value (§02-03 Section 3 heading):** "2029 First-Article Gate (TRL 6 reactive,
+  TRL 5 deliberative/supervisory)" — states per-layer breakdown.
+
+  **Downstream value (§02-03 Section 6 "Reconciliation with §A1 and §A9" opening):**
+  "The TRL table in Section 1 supports the §A1 curve for the reactive and navigation
+  layers: locomotion on prepared paths reaching TRL 6 by 2029 is consistent..." —
+  discusses the reactive layer on'
+impact: See finding.
+fix: 'Add one sentence to §02-03 Section 6 after the reactive layer discussion: "The
+  deliberative layer''s path to TRL 5 by 2029 is achievable if the lunar-analog task
+  demonstration dataset construction begins by 2027 (§02-03 Section 6 already states
+  this) — this also covers the supervisory layer TRL 5 target, since supervisory layer
+  capability in 2029 depends on the same dataset construction milestone. Both targets
+  are consistent with §A1."
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,32 @@
+finding_id: RM-M03
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Periodic Supervision)'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (Periodic
+  Supervision)
+
+  **Number/claim:** "Crew time cost. Approximately 0.2 — one person-hour of supervision
+  per five robot-hours of operation. Derivation: a typical 8-hour operational shift
+  with jointly-executed tasks running involves approximately 4–6 checkpoint interactions,
+  each consuming 5–10 minutes of active crew attention. That totals 20–60 minutes
+  of active supervisory work per 8-hour shift per'
+impact: See finding.
+fix: '1. Close the gap between the derived upper bound (0.125 person-hours/robot-hour)
+  and the stated conservative value (0.2): either explain what the additional factor
+  is (perhaps scheduling overhead, concurrent alert handling, or checkpoint decision
+  latency) or reduce the stated value to 0.125 and accept a lower demand estimate.
+
+  2. Define and defend the "5 hr active window" used in the Section 2 calculation.
+  If jointly-executed tasks run for 5 of 8 operational hours per humanoid, state this
+  explici'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

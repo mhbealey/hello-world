@@ -1,0 +1,32 @@
+finding_id: CC-S8-005
+reviewer: cross-coupling-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Minor
+
+  **Parameter:** Count of autonomy-led tasks used to calculate supervisory benefit
+  in the supervisor ratio derivation
+
+  **Source value (§02-04 Section 2, cognitive load arithmetic):** Uses "12 autonomy-led
+  tasks" as basis for the on-demand supervision demand calculation.
+
+  **Downstream value (§02-04 Section 3 Step 2):** "At TRL 7 deliberative layer (2035
+  IOC), 12 of 20 mission tasks are autonomy-led. Each autonomy-led task reduces active
+  supervision demand from the NIP-10 continuo'
+impact: See finding.
+fix: 'Conditional on CC-S8-001 resolution. If the count resolves to 11/7/2, update
+  both §02-04 Section 2 on-demand calculation (changes monitoring person-hours subtotal
+  marginally) and §02-04 Section 3 Step 2 (changes the stated factor from 20× to 18×).
+  If the count resolves to 12/6/2, no change needed here.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

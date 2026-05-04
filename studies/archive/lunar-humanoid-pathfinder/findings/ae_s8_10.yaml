@@ -1,0 +1,33 @@
+finding_id: AE-S8-10
+reviewer: aerospace-engineer-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 5'
+observation: 'Section 5 presents three answers to the counter-case ("why do high-autonomy
+  humanoids need human supervision?") focused on OOD failure, consequence asymmetry,
+  and the Lunokhod bidirectional lesson. The section takes the brief''s instruction
+  to "seriously address the counter-case" seriously for the technical arguments, but
+  misses the most economically consequential version: the cost of the forward-deployed
+  crew. A 4-person permanent crew at a lunar far-side base represents an order-of-magnitude
+  more program cost than robotic-only operations, and the counter-case in its strongest
+  form is not "autonomy handles OOD well" but "the cost of crew makes the human value
+  floor prohibitively expensive; better to accept higher autonomous failure rates
+  than pay for permanent crew." This is a program-level argument, not a technical
+  performance argument, and it is the version that will appear in program reviews
+  and budget discussions. The study takes the forward-deployment commitment as load-bearing,
+  b'
+impact: Section 5 presents three answers to the counter-case ("why do high-autonomy
+  humanoids need human supervision?") focused on OOD failure, consequence asymmetry,
+  and the Lunokhod bidirectional lesson.
+fix: 'Add a fourth point to the counter-case response addressing the cost argument.
+  The response is: the economic case for the humanoid architecture rests on the crew
+  multiplier (a small crew supervising a large humanoid fleet produces more task-hours
+  than a crew operating without robots or a purely autonomous fleet requiring periodic
+  servicing missions). The cost argument for forward deployment is not "crew is cheap"
+  but "crew at the far side is what makes the humanoid fleet productive, and the produ'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

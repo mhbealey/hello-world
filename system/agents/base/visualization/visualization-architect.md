@@ -1,5 +1,8 @@
 ---
 name: visualization-architect
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the top-level visual representation of the study's primary concept. Reads the cross-coupling DB and assumption registry to extract locked spec values and produces a parametric 3D model whose geometry directly reflects those values. Invoke when a visual cycle begins or when locked spec values change.
 tools:
   - Read

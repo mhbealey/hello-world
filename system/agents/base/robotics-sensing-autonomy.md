@@ -1,5 +1,8 @@
 ---
 name: robotics-sensing-autonomy
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns perception, sensing, and the onboard autonomy stack of the space humanoid. Invoke for questions about cameras, lidar, IMUs, on-board compute, autonomy architecture, or the boundary between autonomy and teleoperation.
 tools:
   - Read

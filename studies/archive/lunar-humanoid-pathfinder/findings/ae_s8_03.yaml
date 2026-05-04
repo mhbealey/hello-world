@@ -1,0 +1,44 @@
+finding_id: AE-S8-03
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Cognitive
+  Load Under the Three-Tier Model"'
+observation: '"Headroom: 3.75 person-hours (approximately 3.75÷4.25 = 88% margin over
+  demand)" and "roughly a factor of 2 between demand and capacity" The two characterizations
+  are inconsistent and both are stated in non-standard ways that create confusion
+  about whether the budget is comfortable or tight.
+
+
+  Arithmetic check (all correct):
+
+  - Total demand: 2.0 + 1.5 + 0.75 = 4.25 person-hours ✓
+
+  - Capacity: 4 crew × 8 hr × 0.25–0.30 fraction → 8 person-hours ✓
+
+  - Surplus: 8 − 4.25 = 3.75 person-hours ✓
+
+
+  The problem is the characterization: "88% margin over demand" is computed as (capacity
+  − demand) / demand = 3.75 / 4.25 = 88.2%. However, a reader seeing "88% margin"
+  without context will likely interpret it as "the budget is 88% consumed" (i.e.,
+  12% margin remaining), which inverts the correct reading. The standard aerospace
+  margin convention is (capacity − demand) / demand expressed as a positive number
+  when capacity exceeds demand — so 88% margin is formally correct but stylistically
+  unusual. The "fact'
+impact: '"Headroom: 3.75 person-hours (approximately 3.75÷4.25 = 88% margin over demand)"
+  and "roughly a factor of 2 between demand and capacity"'
+fix: 'Replace "88% margin over demand" with standard utilization and margin language:
+  "supervisory demand = 4.25 person-hours (53% of available capacity); headroom =
+  3.75 person-hours (47% of capacity)." Remove the inconsistent "factor of 2" claim
+  or replace it with "capacity exceeds demand by 1.88×." The finding does not change
+  the arithmetic — the numbers are correct — only the presentation is non-standard.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

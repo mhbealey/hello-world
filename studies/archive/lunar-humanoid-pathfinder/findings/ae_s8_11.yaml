@@ -1,0 +1,32 @@
+finding_id: AE-S8-11
+reviewer: aerospace-engineer-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Physical
+  constants and distances used"'
+observation: '"Earth-Moon mean distance: 384,400 km (IAU nominal value). Earth-Moon
+  mean RTLT: 1.282 × 2 = **2.56 s**" The IAU 384,400 km figure is the nominal semi-major
+  axis of the Moon''s orbit. The actual mean Earth-Moon distance varies due to the
+  lunar orbital eccentricity (e ≈ 0.055), giving a perigee of ~356,500 km and apogee
+  of ~406,700 km — a ±7% range around the mean. The mean over a full orbit is very
+  close to the nominal (within 0.1%), so the 384,400 km figure is appropriate for
+  the mean case. However, the direct Earth-Moon RTLT in the latency table is stated
+  as a fixed 2.38–2.71 s range (near side), which implies min OWLT of 1.19 s and max
+  OWLT of 1.36 s. Verification: 356,500 ÷ 299,792 = 1.189 s ≈ 1.19 s ✓; 406,700 ÷
+  299,792 = 1.357 s ≈ 1.36 s ✓. These numbers are correct. The mean OWLT derivation
+  (384,400 ÷ 299,792 = 1.282 s) is also correct. No arithmetic error, just a nit on
+  presentation.'
+impact: '"Earth-Moon mean distance: 384,400 km (IAU nominal value). Earth-Moon mean
+  RTLT: 1.282 × 2 = **2.56 s**"'
+fix: 'No numerical change needed. Optionally, note in the derivation that the 384,400
+  km is the semi-major axis (not the true mean distance), which differs from the true
+  mean by <0.1% due to orbital eccentricity — negligible for this analysis.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

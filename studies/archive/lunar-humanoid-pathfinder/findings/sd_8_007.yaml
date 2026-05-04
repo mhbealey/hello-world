@@ -1,0 +1,23 @@
+finding_id: SD-8-007
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'The mission task taxonomy table (20 tasks) has a Notes column where
+  each row contains 20–50 words of operational rationale: why the task is human-led,
+  what the tempo penalty is, when the first human-supervised run applies. Many of
+  these notes contain conditional logic ("TRL 6 capable by 2029 if task library built";
+  "repeat execution is autonomy-led after the 2035 IOC") that belongs in Section 3
+  (Gap Analysis) rather than a table cell. The table''s job is to classify tasks (taxonomy
+  + minimum TRL + allocation); the justification for the classification belongs in
+  Section 3''s gap analysis or in the preceding TRL table''s Notes. The table is currently
+  doing double duty as both a classification instrument and a justification document,
+  inflating it by approximately 450 words.'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

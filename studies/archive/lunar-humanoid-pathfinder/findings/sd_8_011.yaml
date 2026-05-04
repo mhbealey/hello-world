@@ -1,0 +1,22 @@
+finding_id: SD-8-011
+reviewer: scope-discipline-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: The 2040 subsection is approximately 210 words but delivers less analytical
+  content than the 2029 and 2035 subsections. It lists which tasks may shift to autonomy-led
+  (T12, lighter-touch T13/T14, possibly T17), then re-states the human value floor.
+  The human value floor content is stated in full at the end of this subsection (7
+  items, ~200 words), but it was already established in the 2035 IOC subsection ("What
+  remains permanently human-required regardless of TRL"). The floor does not change
+  between 2035 and 2040, and re-stating it in the 2040 subsection is redundant. The
+  2040 analytical content (what moves, what stays) can be stated in 4–6 sentences;
+  the human value floor listing should not be repeated.
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

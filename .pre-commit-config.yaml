@@ -1,0 +1,24 @@
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.10
+    hooks:
+      - id: ruff
+        args: [--select, "E,F,W,I", --ignore, "E501"]
+
+  - repo: local
+    hooks:
+      - id: schema-validation
+        name: Validate YAML schemas
+        language: python
+        entry: python system/tools/validate_all_yaml.py --quiet
+        pass_filenames: false
+        types: [yaml]
+        additional_dependencies: [pyyaml, jsonschema]
+
+      - id: pytest-fast
+        name: Run unit tests
+        language: python
+        entry: pytest system/tests/ -x -q --tb=short
+        pass_filenames: false
+        stages: [pre-push]
+        additional_dependencies: [pytest, pyyaml, jsonschema]

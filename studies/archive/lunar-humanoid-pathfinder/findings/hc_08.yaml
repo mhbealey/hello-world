@@ -1,0 +1,32 @@
+finding_id: HC-08
+reviewer: heritage-citations-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`; `corpus/references.bib`'
+observation: '"SSRMS (Canadarm2) has operated continuously on ISS since 2001. Seven
+  joints using harmonic drive transmissions with brushless DC motors. TRL 8 for its
+  defined task set." The `ssrms2020ntrs` BibTeX entry explicitly states "[VERIFY]
+  — SSRMS operational heritage widely cited; primary NTRS reference number TBD before
+  PDR." The citation is used in Section 02-03 without flagging the verification status
+  to the reader. The SSRMS factual claims (7 joints, harmonic drives, TRL 8) are accurate
+  per publicly available NASA and Canadian Space Agency documentation, but the specific
+  NTRS document cited does not have a confirmed accession number. This is a low-severity
+  issue because the facts are not in dispute — SSRMS is extensively documented — but
+  the citation scaffolding is incomplete.'
+impact: '"SSRMS (Canadarm2) has operated continuously on ISS since 2001. Seven joints
+  using harmonic drive transmissions with brushless DC motors. TRL 8 for its defined
+  task set."'
+fix: 'Locate a specific NTRS document (or NASA/CSA technical publication) for SSRMS
+  and add the accession number to the BibTeX entry. Remove the [VERIFY] flag once
+  confirmed. Candidate documents include MDA Space publications and JSC Engineering
+  Papers on Canadarm2. This does not affect the Section 02-03 argument but should
+  be resolved before PDR per the citation discipline policy.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

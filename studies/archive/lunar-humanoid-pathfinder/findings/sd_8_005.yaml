@@ -1,0 +1,28 @@
+finding_id: SD-8-005
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'Section 5 addresses the counter-case that improving VLA models will
+  render human supervision unnecessary by 2035. Three arguments are provided: exploration
+  is structurally OOD, consequence asymmetry, and the Lunokhod lesson. These arguments
+  are architecturally important — they belong in this study. However, Section 5''s
+  role is redundant with §02-01 (Overview), which already states all three of these
+  arguments as the basis for the three-condition framework in Section 2 of the Overview.
+  The "consequence asymmetry" argument appears in §02-01 Section 2 (Condition 3) at
+  essentially the same level of detail. The "exploration is structurally OOD" argument
+  appears in §02-01 Section 2 (Condition 2). The Lunokhod bilateral lesson (humans
+  saved Lunokhod despite ground-in-the-loop limitations) is the most novel content
+  in Section 5 (~100 words) and is the only part worth preserving here.
+
+
+  Section 6 "Reconciliation with §A1 and §A9" is a verification exercise confirming
+  that the TRL table does not '
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

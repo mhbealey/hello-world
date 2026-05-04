@@ -1,5 +1,8 @@
 ---
 name: humanoid-systems-architect
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the top-level configuration of the space humanoid — form factor, mass and power budget, subsystem integration. Invoke for any question about overall humanoid design, configuration trades, or budget reconciliation. This agent is the integrator for Question (a).
 tools:
   - Read

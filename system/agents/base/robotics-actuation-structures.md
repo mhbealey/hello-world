@@ -1,5 +1,8 @@
 ---
 name: robotics-actuation-structures
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns actuation, joints, structural design, and mechanical hardening of the space humanoid. Invoke for questions about actuators (electric vs. hydraulic), joint sealing, structural concept, dust mitigation at the mechanical level.
 tools:
   - Read

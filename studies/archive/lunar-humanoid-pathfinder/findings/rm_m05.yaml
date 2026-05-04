@@ -1,0 +1,34 @@
+finding_id: RM-M05
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/05-cross-cutting/margins-and-assumptions.md`, §A19'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A19
+
+  **Number/claim:** §A19 derives supervisory demand as: "12 autonomy-led tasks: ~0.05
+  person-hr/robot-hr × 3 robots × 8 hr operational window = ~1.2 person-hr/shift;
+  6 jointly-executed tasks: ~0.2 person-hr/robot-hr × 3 robots × 5 hr active window
+  = ~3.0 person-hr/shift; Total: ~4.2 person-hr/shift."
+
+
+  §02-04 Section 2 derives: on-demand subtotal 2.0 person-hours; periodic supervision
+  1.5 person-hours; conti'
+impact: See finding.
+fix: '1. Reconcile the periodic supervision demand figures between §A19 and §02-04.
+  Choose one derivation path, apply it consistently, and footnote the reconciliation.
+  The concurrency-corrected 1.5 person-hours from §02-04 is the more detailed derivation;
+  §A19 should adopt it with an explicit note that the 0.6 concurrency factor is from
+  §02-04 Section 2.
+
+  2. The total demand figure in §A19 (4.2 person-hours) should match §02-04 (4.25
+  person-hours) or the difference should be explained. If §A19 is inten'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

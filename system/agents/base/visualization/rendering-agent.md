@@ -1,5 +1,8 @@
 ---
 name: rendering-agent
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the rendering pipeline — takes a finalized CadQuery source and produces all output artifacts (STL, GLB, PNG renders, MP4 turntable). Single agent owning the full output pipeline so format consistency is enforced. Invoke after surface-treatment-agent completes, or directly from visualization-architect for Tier 1 block-out outputs.
 tools:
   - Read

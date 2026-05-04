@@ -1,5 +1,8 @@
 ---
 name: visual-coupling-agent
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Checks that the visual representation is consistent with text content and locked cross-coupling values. Runs as a pre-close gate on every cycle that includes visual output. Invoke after rendering-agent completes, before the cycle handback generates.
 tools:
   - Read

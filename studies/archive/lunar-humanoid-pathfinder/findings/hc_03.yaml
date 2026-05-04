@@ -1,0 +1,36 @@
+finding_id: HC-03
+reviewer: heritage-citations-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Heritage Anchor 1'
+observation: '"Lunokhod 2''s final months: the rover drove into a crater whose trailing
+  shadow was not visible in the preceding frame, covering the solar panels with dust
+  that terminated the mission." The Lunokhod 2 terminal sequence, as documented in
+  multiple sources including the Smithsonian Air & Space retrospective and the 2003
+  retrospective paper (Kemurdzhian et al.), was as follows: (1) The rover descended
+  into a small crater (~4.5 m across) because the crater''s shadow was hidden behind
+  crater walls in the navigation camera view. (2) When operators maneuvered the rover
+  out of the crater, the open lid of the solar panel array touched the crater wall,
+  causing lunar soil to be deposited on the solar cells. (3) When the lid was then
+  closed for the lunar night, that accumulated soil was transferred onto the thermal
+  radiators on the rover body. (4) The insulating effect of soil on the radiators
+  prevented adequate heat rejection; internal temperatures rose to fatal levels on
+  the following day. The mis'
+impact: '"Lunokhod 2''s final months: the rover drove into a crater whose trailing
+  shadow was not visible in the preceding frame, covering the solar panels with dust
+  that terminated the mission."'
+fix: 'Correct the failure mechanism description to: the rover descended into a crater
+  whose rim was not visible in the preceding frame; during recovery, the open solar
+  lid contacted the crater wall, depositing soil on the solar cells; when the lid
+  closed, this soil was deposited onto the thermal radiators; insulation of the radiators
+  caused thermal overheating that terminated the mission. The latency-and-situational-awareness
+  lesson is preserved; the technical claim is corrected.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

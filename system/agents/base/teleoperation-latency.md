@@ -1,5 +1,8 @@
 ---
 name: teleoperation-latency
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the latency tradespace — how teleoperation degrades with distance, the curves of human supervision effectiveness, and the comms architecture implications. Invoke for any question about teleoperation, latency, or comms-driven architecture decisions.
 tools:
   - Read

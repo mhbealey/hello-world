@@ -1,0 +1,35 @@
+finding_id: AE-S8-14
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/01-overview.md`, Section 1; `study/02-human-in-the-loop/02-latency-tradespace.md`,
+  Section 3, Tier A; `study/02-human-in-the-loop/04-teaming-model.md`, Section 5'
+observation: '"The forward-deployed crew on the far-side base habitat operates at
+  ≤50 ms RTLT to the humanoids." (§02-01); "Target for this study: ≤50 ms RTLT from
+  crew workstation to humanoid over the base network." (§02-02); "The far-side-base-architect
+  must confirm that the on-base network achieves ≤50 ms RTLT from every deployed humanoid
+  position to the primary crew workstation." (§02-04) The ≤50 ms RTLT target is stated
+  in three separate documents as the architectural commitment for Tier A supervision,
+  but its derivation is never shown and the reference for the "direct teleoperation
+  viable zone" (0–200 ms) is cited in §02-02 as the upper bound of viability, not
+  as the derivation of 50 ms specifically. The distance from the crew workstation
+  to the humanoid(s) at the far-side base governs this latency. At the speed of light,
+  50 ms RTLT corresponds to a one-way distance of 0.025 s × 299,792 km/s = 7,495 km
+  — obviously far more than the physical base dimensions. The physics of light propagation
+  imp'
+impact: '"The forward-deployed crew on the far-side base habitat operates at ≤50 ms
+  RTLT to the humanoids." (§02-01); "Target for this study: ≤50 ms RTLT from crew
+  workstation to humanoid over the base network." (§02-02); "The far-side-base-architect
+  must confirm that the on-base network achieves ≤50 ms RTLT'
+fix: 'Show the on-base network latency derivation. State the physical base dimensions
+  (crew quarters to robot maximum deployment distance), derive propagation latency,
+  add codec and protocol overhead, and confirm the 50 ms figure is achievable. If
+  50 ms is trivially met (it almost certainly is), state this and remove the forward-looking
+  "architect must confirm" language, or replace it with a more specific task for the
+  architect (e.g., "confirm that the codec pipeline and display latency do not exceed '
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

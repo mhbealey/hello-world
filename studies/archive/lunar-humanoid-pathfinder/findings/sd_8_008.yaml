@@ -1,0 +1,26 @@
+finding_id: SD-8-008
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'The Pillar 2 section makes a correct and important argument about mental
+  model currency at different latency tiers. It then grounds this with two heritage
+  examples: Lunokhod crater boundary failure and the Spektr collision (1997). The
+  Lunokhod example is appropriate — it is the primary heritage anchor for the latency
+  argument throughout Section 02 and has been established in detail in §02-02. The
+  Spektr/TORU example is a different kind of failure: the Spektr collision resulted
+  from altered center-of-gravity response in the Progress spacecraft during a manual
+  docking attempt, not from a latency-induced mental model failure in the sense described
+  by the surrounding paragraph. Cosmonaut Tsibliev was operating TORU at low latency
+  (within the Mir station''s radio line-of-sight); the issue was unfamiliarity with
+  an altered system state, not propagation delay. Using Spektr as a latency heritage
+  example is imprecise and potentially misleading. Additionally, the full two-example
+  structure is lon'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

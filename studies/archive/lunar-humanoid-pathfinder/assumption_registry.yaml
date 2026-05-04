@@ -1,0 +1,211 @@
+study_id: lunar-humanoid-pathfinder
+next_id: 20
+assumptions:
+- id: A1
+  short_name: Humanoid autonomy maturity curve
+  statement: Humanoid autonomy maturity curve  This study assumes humanoid autonomy
+    reaches **TRL 6 in space-relevant environments by approximately 2029**, advancing
+    to **TRL 7+ in space-relevant environments by approximately 2035**, advancing
+    to **TRL 8 (qualified through demonstration in operational environmen
+  basis: See §A1 below
+  risk_level: high
+  owner_agent: autonomy-trl-tasking
+  date_added: '2026-05-04'
+  status: active
+  go_no_go_gate: '2029'
+- id: A2
+  short_name: 'Space humanoid design-to mass: 75 kg (not-to-exceed 97.5 kg with 30%
+    margin)'
+  statement: 'Space humanoid design-to mass: 75 kg (not-to-exceed 97.5 kg with 30%
+    margin)  The form factor tradespace analysis in `study/01-optimal-space-humanoid/02-form-factor-tradespace.md`
+    sets a parametric mass target of **75 kg design-to** for the bipedal space humanoid
+    in surface EVA-support configuration'
+  basis: See §A2 below
+  risk_level: high
+  owner_agent: humanoid-systems-architect
+  date_added: '2026-05-04'
+  status: active
+- id: A3
+  short_name: 'Space humanoid power budget: ≤500 W steady-state, ≤800 W peak'
+  statement: 'Space humanoid power budget: ≤500 W steady-state, ≤800 W peak  The form
+    factor tradespace analysis sets parametric power targets of **500 W steady-state
+    locomotion** and **800 W peak (manipulation under load)** for the bipedal space
+    humanoid.'
+  basis: See study document
+  risk_level: medium
+  owner_agent: orchestrator
+  date_added: '2026-05-04'
+  status: active
+- id: A4
+  short_name: 'Primary actuation type: HD-Electric for load-bearing joints'
+  statement: 'Primary actuation type: HD-Electric for load-bearing joints  **Updated
+    2026-05-03 to address HC-001 (Atlas Electric misidentification as harmonic drive
+    heritage).**  The actuation section (`study/01-optimal-space-humanoid/03-actuation-structures.md`)
+    selects **high-ratio harmonic drive electric actu'
+  basis: See §A4 below
+  risk_level: medium
+  owner_agent: robotics-actuation-structures
+  date_added: '2026-05-04'
+  status: active
+- id: A5
+  short_name: Structure + actuation mass ≤30 kg design-to (≤39 kg NTE)
+  statement: Structure + actuation mass ≤30 kg design-to (≤39 kg NTE)  **Updated 2026-05-03
+    to address AE-001 (DOF count reconciliation) and integrate §A14 actuator mass
+    sensitivity.**  The actuation section sets a parametric mass allocation of **30.0
+    kg design-to / 39.0 kg NTE** for the combined structure and a
+  basis: See §A5 below
+  risk_level: medium
+  owner_agent: robotics-actuation-structures
+  date_added: '2026-05-04'
+  status: active
+- id: A6
+  short_name: 'Joint dust seal: FFKM lip seal at ≥−60°C (heater-maintained); TRL 4
+    for dynamic '
+  statement: 'Joint dust seal: FFKM lip seal at ≥−60°C (heater-maintained); TRL 4
+    for dynamic joint application  **Updated 2026-05-03 to address AE-010 (FFKM at
+    −180°C is infeasible due to polymer glass transition) and correct the baseline
+    design.**  The actuation section specifies **perfluoroelastomer (FFKM/Kalr'
+  basis: See §A6 below
+  risk_level: medium
+  owner_agent: robotics-actuation-structures / space-environments
+  date_added: '2026-05-04'
+  status: active
+- id: A7
+  short_name: Sensor suite mass ~2.1 kg design-to, 37–75 W peak power
+  statement: Sensor suite mass ~2.1 kg design-to, 37–75 W peak power  The sensing
+    section (`study/01-optimal-space-humanoid/04-sensing-autonomy.md`) allocates **~2.1
+    kg design-to mass** and **37–75 W peak power (10–30 W average with LIDAR duty
+    cycling)** for the full sensor suite.
+  basis: See §A7 below
+  risk_level: low
+  owner_agent: robotics-sensing-autonomy
+  date_added: '2026-05-04'
+  status: active
+- id: A8
+  short_name: 'Compute architecture: two-tier RH supervisor + commercial AI accelerator
+    (watchd'
+  statement: 'Compute architecture: two-tier RH supervisor + commercial AI accelerator
+    (watchdog)  The sensing/autonomy section establishes a **two-tier compute architecture**:
+    Tier 1 is a radiation-hardened supervisor processor (RAD750-class, 5–10 W, always-on)
+    running safety-critical deterministic control loops'
+  basis: See §A8 below
+  risk_level: high
+  owner_agent: robotics-sensing-autonomy
+  date_added: '2026-05-04'
+  status: active
+  go_no_go_gate: '2029'
+- id: A9
+  short_name: Foundation models used at supervisory autonomy layer only; not primary
+    task exec
+  statement: Foundation models used at supervisory autonomy layer only; not primary
+    task executor  The sensing/autonomy section takes the position that **foundation
+    models (VLA-class, LLM reasoning) are an enabling technology for the supervisory
+    autonomy layer** — crew-robot natural language interface, goal deco
+  basis: See §A9 below
+  risk_level: medium
+  owner_agent: robotics-sensing-autonomy
+  date_added: '2026-05-04'
+  status: active
+- id: A10
+  short_name: 'Lunar night FSP power reservation: 70–200 W per humanoid unit'
+  statement: 'Lunar night FSP power reservation: 70–200 W per humanoid unit  The environments
+    section establishes a **parametric estimate of 70–200 W continuous FSP draw per
+    humanoid during lunar night hibernation**: 50–150 W for electronics compartment
+    and battery survival heaters, plus 20–50 W for joint heaters'
+  basis: See §A10 below
+  risk_level: medium
+  owner_agent: space-environments
+  date_added: '2026-05-04'
+  status: active
+- id: A11
+  short_name: 'Radiation hardening: hybrid RHBD + spot shielding + ORU replacement
+    strategy'
+  statement: 'Radiation hardening: hybrid RHBD + spot shielding + ORU replacement
+    strategy  The environments section establishes a **hybrid radiation hardening
+    strategy**: RHBD parts for Tier 1 safety-critical processor (TID-qualified >1
+    Mrad); RHBD where available for critical motor controller and safety-monitor'
+  basis: See §A11 below
+  risk_level: medium
+  owner_agent: space-environments
+  date_added: '2026-05-04'
+  status: active
+- id: A12
+  short_name: 'Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface'
+  statement: 'Lunar surface TID: 20–30 krad(Si)/yr at unshielded surface  The environments
+    section uses **20–30 krad(Si)/yr as the GCR-dominated total ionizing dose rate
+    at the unshielded lunar far side surface**.'
+  basis: See §A12 below
+  risk_level: medium
+  owner_agent: space-environments
+  date_added: '2026-05-04'
+  status: active
+- id: A13
+  short_name: 'Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)'
+  statement: 'Battery energy density: 160 Wh/kg design-to (space-qualified Li-ion)  The
+    mass-power budget section sizes the power system on **space-qualified lithium-ion
+    cells at 160 Wh/kg design-to**, with 150 Wh/kg as the conservative NTE floor.'
+  basis: See §A13 below
+  risk_level: medium
+  owner_agent: humanoid-systems-architect
+  date_added: '2026-05-04'
+  status: active
+- id: A14
+  short_name: 'Actuator mass sensitivity: 342 g/joint budget vs. 385 g/joint derived;
+    Class A j'
+  statement: 'Actuator mass sensitivity: 342 g/joint budget vs.'
+  basis: See study document
+  risk_level: medium
+  owner_agent: orchestrator
+  date_added: '2026-05-04'
+  status: active
+- id: A15
+  short_name: 'Boot cover replacement interval: 500 surface-hours (parametric, no
+    heritage)'
+  statement: 'Boot cover replacement interval: 500 surface-hours (parametric, no heritage)  **Added
+    2026-05-03 to address RM-017 finding.**  The actuation section assumes disposable
+    Vectran/Zylon foot covers are replaced at **500 surface-hours** per pair.'
+  basis: See §A15 below
+  risk_level: low
+  owner_agent: robotics-actuation-structures / far-side-base-architect
+  date_added: '2026-05-04'
+  status: active
+- id: A16
+  short_name: 'Locomotion power gait factor: 0.55 (normal gait vs. vigorous locomotion)'
+  statement: 'Locomotion power gait factor: 0.55 (normal gait vs.'
+  basis: See §A16 below
+  risk_level: medium
+  owner_agent: humanoid-systems-architect / robotics-actuation-structures
+  date_added: '2026-05-04'
+  status: active
+- id: A17
+  short_name: 'Relay constellation availability: ≥95% by IOC; two-satellite minimum
+    required'
+  statement: 'Relay constellation availability: ≥95% by IOC; two-satellite minimum
+    required  **Added 2026-05-03 by teleoperation-latency.'
+  basis: See §A17 below
+  risk_level: medium
+  owner_agent: far-side-base-architect / teleoperation-latency
+  date_added: '2026-05-04'
+  status: active
+- id: A18
+  short_name: 'Supervisor ratio: 1:2–3 humanoids per active supervisor at IOC (2035);
+    1:4–5 at '
+  statement: 'Supervisor ratio: 1:2–3 humanoids per active supervisor at IOC (2035);
+    1:4–5 at full operation (2040)  **Added 2026-05-03 by human-factors-teaming (orchestrator
+    completing missing closing action).**  **Position:** 1 human actively supervising
+    2–3 humanoids at IOC (2035).'
+  basis: See §A18 below
+  risk_level: high
+  owner_agent: human-factors-teaming
+  date_added: '2026-05-04'
+  status: active
+- id: A19
+  short_name: 'Crew composition at IOC: 4 crew, 3 humanoids; headroom factor ≥2×'
+  statement: 'Crew composition at IOC: 4 crew, 3 humanoids; headroom factor ≥2×  **Added
+    2026-05-03 by human-factors-teaming (orchestrator completing missing closing action).**  **Position:**
+    Baseline crew composition at IOC (2035) is 4 crew members and 3 humanoids.'
+  basis: See §A19 below
+  risk_level: high
+  owner_agent: human-factors-teaming
+  date_added: '2026-05-04'
+  status: active

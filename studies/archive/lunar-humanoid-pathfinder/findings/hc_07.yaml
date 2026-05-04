@@ -1,0 +1,36 @@
+finding_id: HC-07
+reviewer: heritage-citations-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Pillar 2 (Situational
+  Awareness)'
+observation: '"The TORU manual docking failure (Spektr collision, 1997) resulted in
+  part from cosmonaut Tsibliev''s incomplete mental model of the Progress spacecraft''s
+  altered center of gravity response characteristics \cite{nasa_sma_spektr}." The
+  factual claim is accurate and consistent with multiple accounts of the Spektr collision.
+  The `nasa_sma_spektr` BibTeX entry gives the URL `https://sma.nasa.gov/docs/default-source/safety-messages/safetymessage-2010-11-08-mirprogresscollision-vits.pdf`
+  with note "To be confirmed against primary source before PDR." Web search confirms
+  NASA SMA did publish such a document ("Spektr of Failure: Mir-Progress Collision").
+  The URL format is a common NASA SMA URL pattern and a direct URL from web search
+  returned the document. The note "dated 8 November 2010" is confirmed.
+
+
+  One minor inaccuracy: the BibTeX entry identifies the document as "Safety Message"
+  dated 8 November 2010, but the text characterizes it as a "Significant Incident
+  Analysis." The NASA SMA website '
+impact: '"The TORU manual docking failure (Spektr collision, 1997) resulted in part
+  from cosmonaut Tsibliev''s incomplete mental model of the Progress spacecraft''s
+  altered center of gravity response characteristics \cite{nasa_sma_spektr}."'
+fix: 'Confirm the URL resolves and update the BibTeX note from "To be confirmed against
+  primary source before PDR" to "Confirmed accessible at URL as of [date]" when primary
+  source access is achieved. Correct "Significant Incident Analysis" in the text (if
+  the document is a Safety Message) or verify the NASA SMA document uses that title.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

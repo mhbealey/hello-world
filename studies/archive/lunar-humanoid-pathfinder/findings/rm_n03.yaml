@@ -1,0 +1,33 @@
+finding_id: RM-N03
+reviewer: reliability-margins-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/05-cross-cutting/margins-and-assumptions.md`, §A17; also `study/02-human-in-the-loop/02-latency-tradespace.md`,
+  Section 1'
+observation: '
+
+  **Severity:** Minor
+
+  **Section:** `study/05-cross-cutting/margins-and-assumptions.md`, §A17; also `study/02-human-in-the-loop/02-latency-tradespace.md`,
+  Section 1
+
+  **Number/claim:** "Queqiao-2 provides approximately 75–85% availability of simultaneous
+  dual-line-of-sight coverage for a receiver at the equatorial far side (based on
+  its 24-hour elliptical frozen orbit geometry)."
+
+  **Problem:** The 75–85% availability figure appears in both §02-02 and §A17 but
+  is derived differently in each. §02-02 st'
+impact: See finding.
+fix: 'Add a two-sentence geometric derivation: "Based on Queqiao-2''s elliptical frozen
+  orbit (24-hour period, inclination 62.4°, apoapsis ~16,500 km, periapsis ~200–250
+  km above lunar surface), the satellite spends approximately [X]% of its orbital
+  period above the minimum elevation angle required for simultaneous Earth and far-side
+  equatorial receiver line-of-sight. This geometric argument yields the 75–85% range;
+  detailed link availability computation with actual orbit elements is required before
+  th'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,25 @@
+finding_id: SD-8-004
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: The relay availability paragraph begins with an appropriate estimate
+  of current Queqiao-2 dual-link coverage (75–85%), then extends into a projection
+  for a "24-hour relay constellation (two or more Queqiao-class satellites phased
+  180° apart)" achieving >95% availability. This constellation architecture recommendation
+  is a far-side-base-architect deliverable, not a latency tradespace finding. The
+  latency section's job is to identify what availability is needed (>95%) and what
+  current assets provide (75–85%). The gap between those two numbers is an open question
+  that creates a requirement for the constellation design — it is not the latency
+  section's job to propose the constellation. Additionally, the concluding note ("By
+  the 2038–2040 IOC target, either an extended Queqiao constellation or an alternative
+  relay architecture...is assumed operational") is duplicated from §A17 in the assumptions
+  register and does not need to appear in the body of this section.
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

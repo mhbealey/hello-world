@@ -1,0 +1,31 @@
+finding_id: CC-S8-001
+reviewer: cross-coupling-reviewer
+severity: Blocker
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Blocker
+
+  **Parameter:** Count of tasks in each allocation category at IOC (2035): autonomy-led
+  / jointly-executed / human-led
+
+  **Source value (§02-03 task allocation table, Section 3 narrative, and §02-04 periodic
+  supervision list):** Counting tasks assigned at IOC: Autonomy-led: T01, T03, T04,
+  T06, T07, T08, T10, T11, T15, T19, T20 = **11 tasks**. Jointly-executed: T02, T05,
+  T09, T13, T14, T16, T17 = **7 tasks**. Human-led: T12, T18 = **2 tasks**. Total:
+  20. Count per actual tables'
+impact: See finding.
+fix: Either (a) change the §02-03 task allocation table for T16 from "Jointly executed"
+  to "Autonomy-led" at IOC and remove T16 from §02-04's periodic supervision task
+  list — which makes the 12/6/2 count correct; or (b) update every summary statement
+  and the cross-coupling log to read 11/7/2 — which makes the count match the tables.
+  Option (a) is probably the correct editorial call because T16 (scripted calibration
+  procedure with scientist reviewing logs rather than authorizing execution gates)
+  is op
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,27 @@
+finding_id: DA-7
+reviewer: devils-advocate-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/devils-advocate-findings.md
+section: null
+observation: '
+
+  **Attack:** The supervisor ratio (1:2–3 humanoids per active supervisor at IOC,
+  improving to 1:4–5 by 2040) is derived through a five-step chain, with each step
+  adding an assumption. Step 1 is the NIP-10 empirical data point (5:1, no autonomy,
+  2.5 s RTLT). Steps 2 through 5 are model-derived: the §A1 TRL curve predicts twelve
+  of twenty tasks are autonomy-led by 2035; this reduces per-task supervision demand
+  from 1.0 to 0.05 person-hours per robot-hour; therefore demand drops to 4.25 person-hour'
+impact: See finding.
+fix: 'Section 02-04 Section 3 must add a failure-mode analysis: what does the program
+  look like if §A1 misses the 2035 gate by two years? Specifically: (a) what ratio
+  is achievable at IOC without the TRL 7 deliberative layer — likely 1:1 to 1:1.5
+  based on the fraction of tasks that can be autonomy-led at TRL 5–6; (b) what crew
+  size is required at that ratio to supervise 3 humanoids plus maintain base operations;
+  (c) does the program remain economically viable at that crew size; (d) at what point
+  in th'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

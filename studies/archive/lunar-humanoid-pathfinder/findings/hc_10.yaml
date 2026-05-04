@@ -1,0 +1,37 @@
+finding_id: HC-10
+reviewer: heritage-citations-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Queqiao-2 Relay Geometry'
+observation: '"Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900
+  km from Earth center." The derivation uses "16,500 km" as the midpoint representative
+  of the "16,000–17,000 km" apoapsis range. This is internally consistent. However,
+  the apoapsis altitude is measured above the lunar surface, not above the lunar center.
+  The Moon''s mean radius is 1,737 km, so the satellite at 16,500 km above the surface
+  is approximately 16,500 + 1,737 = 18,237 km from the lunar center. The calculation
+  "384,400 + 16,500 = ~400,900 km from Earth center" adds Earth-Moon center distance
+  to the satellite altitude above the lunar surface, not the satellite distance from
+  the lunar center. This understates the Earth-to-satellite distance by approximately
+  1,737 km (the lunar radius), producing a calculated OWLT of 1.337 s when the correct
+  value would be approximately 400,900 + 1,737 = 402,637 km ÷ 299,792 = 1.343 s. The
+  resulting RTLT would be 2.686 s rather than the stated 2.674 s — a difference of
+  abou'
+impact: '"Earth-to-Queqiao-2 at apoapsis: approximately 384,400 + 16,500 = ~400,900
+  km from Earth center."'
+fix: 'Add the lunar radius (1,737 km) to the Earth-satellite path calculation, or
+  note explicitly that the satellite altitude above the surface is being used as a
+  proxy for the full geometric path (acceptable for back-of-envelope, not for a derivation
+  that shows calculation steps). The 2.78 s minimum RTLT figure used throughout the
+  study is already conservative enough to absorb this correction.
+
+
+  ---
+
+
+  ## Cross-Cutting Observations'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

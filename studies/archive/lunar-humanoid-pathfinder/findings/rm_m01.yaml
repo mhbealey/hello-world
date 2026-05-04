@@ -1,0 +1,32 @@
+finding_id: RM-M01
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2, periodic supervision
+  sub-calculation'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, periodic
+  supervision sub-calculation
+
+  **Number/claim:** "For 3 humanoids with overlapping checkpoint schedules (not all
+  running jointly-executed tasks simultaneously): approximately 3 × 0.83 × 0.6 concurrency
+  factor = ~1.5 person-hours."
+
+  **Problem:** The 0.6 concurrency factor — meaning, on average, only 60% of the humanoids
+  are simultaneously at a checkpoint gate requiring human attention — directly re'
+impact: See finding.
+fix: '1. Derive the 0.6 factor from first principles or bound it: estimate the fraction
+  of task time at checkpoint gates vs. executing autonomously for each jointly-executed
+  task category. Use the checkpoint interval stated earlier in the same section (15–30
+  minutes between reviews for prepared-path operations; trigger-based for manipulation).
+  If a typical jointly-executed task has 20% of its time at checkpoint gates and 80%
+  executing autonomously, and tasks are uncorrelated across robots, the probabi'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

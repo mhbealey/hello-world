@@ -1,0 +1,24 @@
+finding_id: HC-09
+reviewer: heritage-citations-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`corpus/references.bib`'
+observation: No specific claim — formatting consistency issue in the BibTeX entry
+  The `unitree2024h1` entry in `corpus/references.bib` gives `year = {2023}` in the
+  entry body, while the key name `unitree2024h1` implies 2024. (This mirrors the `ono2018msl`/year=2015
+  inconsistency flagged in Stage 6 as HC-12.) The Unitree H1 was announced/launched
+  in 2023; the 2024 key name may refer to the product page access date. The inconsistency
+  is minor but creates confusion.
+impact: No specific claim — formatting consistency issue in the BibTeX entry
+fix: 'Align the BibTeX key with the year in the entry body. Either change the key
+  to `unitree2023h1` (matching year = 2023) and update all in-text citations, or update
+  year = 2024 if the product page was substantially updated in 2024. Low priority.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

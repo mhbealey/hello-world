@@ -305,6 +305,53 @@ def run_crosscoupling(study_path: Path) -> list[Finding]:
     return findings
 
 
+# ─── DerivationDisplayGate ───────────────────────────────────────────────────
+
+_BARE_NUMBER_RE = re.compile(
+    r"^\s*\|[^|]+\|[^|]*\b(\d[\d.,]+\s*(?:kg|W|km|m|s|yr|%|°C|rad|krad|Wh|km/s|m/s)[^|]*)\|",
+    re.MULTILINE,
+)
+_DERIVATION_MARKERS = re.compile(
+    r"§[A-Z0-9]|heritage|derived|see \[|[@\[]\w|source:|±|\bref\b",
+    re.IGNORECASE,
+)
+
+
+def run_derivation(study_path: Path) -> list[Finding]:
+    """Detect bare numbers in tables that lack any derivation marker."""
+    findings = []
+    md_files = list(study_path.rglob("*.md"))
+    for md_path in sorted(md_files):
+        if ".git" in md_path.parts:
+            continue
+        text = md_path.read_text(encoding="utf-8")
+        in_table = False
+        table_lines: list[tuple[int, str]] = []
+        for lineno, line in enumerate(text.splitlines(), 1):
+            if "|" in line and "---" not in line:
+                in_table = True
+                table_lines.append((lineno, line))
+            elif in_table:
+                # Process accumulated table block
+                table_text = "\n".join(l for _, l in table_lines)
+                for tlineno, tline in table_lines:
+                    m = _BARE_NUMBER_RE.match(tline)
+                    if m:
+                        number_cell = m.group(1).strip()
+                        # Check if the row or any nearby table cell has a derivation marker
+                        if not _DERIVATION_MARKERS.search(tline):
+                            findings.append(Finding(
+                                "Nit", "derivation",
+                                str(md_path.relative_to(study_path)),
+                                f"Line {tlineno}: bare number '{number_cell}' in table row has no derivation marker",
+                                "Add a §Ax assumption reference, citation [@key], or 'derived from' note",
+                            ))
+                table_lines = []
+                in_table = False
+
+    return findings
+
+
 # ─── Runner ──────────────────────────────────────────────────────────────────
 
 _GATES = {
@@ -312,6 +359,7 @@ _GATES = {
     "wordcount": run_wordcount,
     "citations": run_citations,
     "crosscoupling": run_crosscoupling,
+    "derivation": run_derivation,
 }
 
 

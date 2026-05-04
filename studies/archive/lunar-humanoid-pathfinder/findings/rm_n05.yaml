@@ -1,0 +1,33 @@
+finding_id: RM-N05
+reviewer: reliability-margins-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1, T04/manipulation
+  category'
+observation: '
+
+  **Severity:** Minor
+
+  **Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1,
+  T04/manipulation category
+
+  **Number/claim:** "A lunar base task library must be assembled using ground simulant
+  hardware, prior to deployment, at an estimated 500–2,000 taught demonstrations per
+  new tool type."
+
+  **Problem:** This range is stated without a source. The demonstration count drives
+  pre-deployment ground operations scope: if the humanoid must master 20 tool types
+  and each requires 1,000'
+impact: See finding.
+fix: 'Cite the basis for the 500–2,000 range, or replace it with a derivation: "Based
+  on published imitation learning results (e.g., ALOHA at 50–200 demonstrations per
+  task for lab-scale manipulation \cite{zhao2023aloha}), a lunar surface task under
+  distribution shift conditions may require 5–10× more demonstrations than the lab
+  baseline to achieve comparable success rates, yielding approximately 250–2,000 demonstrations
+  per task. Using 500–2,000 as the planning range is conservative at the high end."'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

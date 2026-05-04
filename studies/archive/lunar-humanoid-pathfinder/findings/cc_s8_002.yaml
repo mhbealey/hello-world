@@ -1,0 +1,31 @@
+finding_id: CC-S8-002
+reviewer: cross-coupling-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Major
+
+  **Parameter:** Supervisory demand attributed to jointly-executed / periodic supervision
+  tasks, in person-hours per crew shift
+
+  **Source value (§02-04 Section 2, periodic supervision demand):** 0.83 person-hours
+  per humanoid (5 checkpoints × 10 minutes) × 3 humanoids × 0.6 concurrency factor
+  = **~1.5 person-hours** for the periodic supervision category.
+
+  **Downstream value (§A19 demand derivation):** 0.2 person-hr/robot-hr × 3 robots
+  × 5 hr active window = **3.0 person-hours** '
+impact: See finding.
+fix: 'Revise §A19''s demand derivation to match §02-04''s three-bucket structure.
+  The §A19 entry should read: "(a) on-demand (12 autonomy-led tasks): 0.05 person-hr/robot-hr
+  × 3 robots × 8 hr = 1.2 person-hr; (b) periodic (6 [or 7, per CC-S8-001 resolution]
+  jointly-executed tasks): ~1.5 person-hr using the §02-04 checkpoint model; (c) continuous
+  (human value floor events): ~0.75 person-hr. Total: ~3.45–3.75 person-hr/shift,
+  rounded to 4.25 with scheduling overhead." Alternatively, if the 0.2 person-hr/r'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

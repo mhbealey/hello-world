@@ -1,5 +1,8 @@
 ---
 name: executive-summary-agent
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Produces a one-page executive summary of the study auto-regenerated from current state. Invoke after major content updates and after every handback generation.
 tools:
   - Read

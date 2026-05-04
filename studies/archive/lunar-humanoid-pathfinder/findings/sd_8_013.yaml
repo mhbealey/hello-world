@@ -1,0 +1,21 @@
+finding_id: SD-8-013
+reviewer: scope-discipline-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: The final tier in the performance degradation summary covers Jupiter
+  and beyond, explicitly noted as "not in scope for the humanoid-forward architecture's
+  first operational decade." If it is not in scope, it should not appear in the body
+  of this section. The paragraph adds approximately 60 words to describe a scenario
+  the section immediately dismisses. The latency table in Section 1 already includes
+  Jupiter entries; that is sufficient coverage for an out-of-scope destination. The
+  ">60 s" tier entry in the Sheridan/Verplank mapping table (Level 9–10, fully autonomous)
+  is also sufficient coverage of the theoretical regime.
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

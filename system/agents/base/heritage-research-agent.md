@@ -1,5 +1,8 @@
 ---
 name: soviet-russian-heritage
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Cross-cutting agent that owns the Soviet/Russian engineering heritage thread. Invoke as a consultant for any agent needing heritage analysis from the Soviet/Russian space program.
 tools:
   - Read

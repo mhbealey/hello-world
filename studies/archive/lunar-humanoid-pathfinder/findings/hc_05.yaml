@@ -1,0 +1,35 @@
+finding_id: HC-05
+reviewer: heritage-citations-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/heritage-citations-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2 (Mir Baseline)'
+observation: '"The Mir Mission Chronicle establishes the baseline: across 28 long-duration
+  expeditions (1986–2000), approximately 30–40% of crew time went to unscheduled maintenance
+  and repair, 20–30% to scheduled science, 15% to mandatory exercise (two hours daily),
+  and 25–35% to communications, documentation, housekeeping, and personal time. \cite{kanas2008space}"
+  The text explicitly names "Mir Mission Chronicle" as the source ("The Mir Mission
+  Chronicle establishes the baseline") and then cites `kanas2008space` (Kanas & Manzey
+  2008, Space Psychology and Psychiatry). These are two different documents. The NASA
+  Mir Mission Chronicle is NASA TP-98-207890 (Portree & Trevino, 1999), a primary
+  institutional record of Mir operations. Kanas & Manzey is a textbook on space psychology.
+  The 30–40% maintenance figure and the crew time breakdown given are more characteristic
+  of an operational chronicle than a psychology textbook. Web search did not find
+  the 30–40% figure attributed specifically to Kanas & Man'
+impact: '"The Mir Mission Chronicle establishes the baseline: across 28 long-duration
+  expeditions (1986–2000), approximately 30–40% of crew time went to unscheduled maintenance
+  and repair, 20–30% to scheduled science, 15% to mandatory exercise (two hours daily),
+  and 25–35% to communications, documentation, h'
+fix: 'Clarify and correct the citation. If the 30–40% maintenance figure and crew
+  time breakdown come from the NASA Mir Mission Chronicle (TP-98-207890), cite that
+  document (and add it to `corpus/references.bib`). Kanas & Manzey can be retained
+  as the citation for behavioral health observations and the cognitive load discussion
+  but should not be the citation for operational time allocation statistics.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

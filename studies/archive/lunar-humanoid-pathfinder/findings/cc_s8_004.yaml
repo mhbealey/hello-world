@@ -1,0 +1,31 @@
+finding_id: CC-S8-004
+reviewer: cross-coupling-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Minor
+
+  **Parameter:** Reactive layer TRL target at 2029 gate and at 2035 IOC
+
+  **Source value (§A1 and cross-coupling log TRL 6/2029 gate entry):** Reactive layer:
+  TRL 6 by 2029; TRL 7 by 2035. The cross-coupling log TRL gate entry states: "TRL
+  6 for this layer by 2029 is the gate requirement; TRL 7 by 2035 is the deployment
+  requirement."
+
+  **Downstream value (§02-02 Section 6, Item 1):** "TRL 6 for this layer by 2029 is
+  the gate requirement; TRL 7 by 2035 is the deployment requirement'
+impact: See finding.
+fix: 'Revise §02-02 Section 3 Tier B to specify per-layer targets: "TRL 7 (reactive),
+  TRL 7 (deliberative), TRL 6–7 (supervisory) by the 2035 IOC — consistent with §A1."
+  This eliminates the ambiguity introduced by the undifferentiated "TRL 7+" formulation.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

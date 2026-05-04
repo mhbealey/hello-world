@@ -1,0 +1,24 @@
+finding_id: SD-8-001
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'Section 4 re-argues the forward-deployment case at length: what the
+  crew loses moving from ≤50 ms to 2.8 s, the medical emergency scenario, and a productivity
+  differential estimate of 5–10×. All three arguments are stated, often in nearly
+  identical language, in Section 02-01 (Overview), paragraphs 4 and 5 of Section 4
+  ("The Forward-Deployed-Human Commitment"). The Overview section already contains
+  the "operator is reviewing the robot''s history" framing, the medical emergency
+  scenario, and the latency gap quantification. Section 4 of §02-02 repeats this content
+  at approximately the same level of detail, adding only the productivity differential
+  estimate (~80 words). The section is structurally appropriate as a conclusion to
+  the latency analysis — it is correct that the latency argument should close with
+  an architectural implication — but it should do so in ~100 words, not ~500.'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

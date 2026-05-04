@@ -1,0 +1,25 @@
+finding_id: SD-8-012
+reviewer: scope-discipline-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'The Mir baseline paragraph correctly establishes a 30–40% maintenance
+  absorption range and a 25–30% remaining fraction for supervisory functions, then
+  commits to "approximately 8 person-hours per crew shift" as the conservative planning
+  value. However, the arithmetic is not shown inline: 4 crew × 8 hours × 0.25–0.30
+  = 8.0–9.6 person-hours — rounded to 8 hours. This derivation is in the text but
+  formatted as a prose sentence; for a value that anchors the entire supervisory demand
+  calculation, it should be formatted as an explicit arithmetic line for traceability.
+  Additionally, "approximately 8 person-hours per crew shift" is rounded from the
+  0.25 floor, but the 0.30 ceiling yields 9.6 person-hours — a significant difference
+  in the headroom calculation. The conservative rounding direction is correct (use
+  0.25), but the paper does not explicitly note that it uses the conservative end
+  of the range.'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

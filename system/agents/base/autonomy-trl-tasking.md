@@ -1,5 +1,8 @@
 ---
 name: autonomy-trl-tasking
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the analysis of what autonomy can do today, what it must do for the mission, and the gap between. Invoke for autonomy capability questions, TRL assessments, or task allocation between human and humanoid.
 tools:
   - Read

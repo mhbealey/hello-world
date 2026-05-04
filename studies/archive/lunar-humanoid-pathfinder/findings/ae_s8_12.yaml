@@ -1,0 +1,35 @@
+finding_id: AE-S8-12
+reviewer: aerospace-engineer-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 3, Step 2 (and
+  review prompt watch item)'
+observation: 'The review brief''s watch item states "The 0.55 gait factor referenced
+  in §02-04 from §A14." However, §02-04 does not reference §A14 or the 0.55 gait factor
+  at any point in the document. The 0.55 gait factor is registered in §A16 of the
+  margins register ("Locomotion power gait factor: 0.55") and is derived in §02-03''s
+  TRL table notes and the §01-06 power budget. §A14 covers actuator mass sensitivity
+  (342 g vs. 385 g/joint). Section §02-04 references §A8, §A9, §A15, §A11, §A1, §A17,
+  §A18, §A19 — but not §A14. The §02-04 document correctly does not invoke the gait
+  factor (which is an actuation power assumption, not a teaming model input). No cross-reference
+  error exists within §02-04 itself. The erroneous §A14 attribution is in the review
+  prompt, not the reviewed document. However, if future versions of §02-04 attempt
+  to import the gait factor assumption as a supervisor ratio input (e.g., to argue
+  that lower locomotion power implies longer unattended sortie duration), the correct
+  citation'
+impact: 'The review brief''s watch item states "The 0.55 gait factor referenced in
+  §02-04 from §A14." However, §02-04 does not reference §A14 or the 0.55 gait factor
+  at any point in the document. The 0.55 gait factor is registered in §A16 of the
+  margins register ("Locomotion power gait factor: 0.55") and is d'
+fix: 'No action required in §02-04. Confirm that §A16 (gait factor) and §A14 (actuator
+  mass) are distinct assumptions with distinct owners and that neither document cross-references
+  the wrong one.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

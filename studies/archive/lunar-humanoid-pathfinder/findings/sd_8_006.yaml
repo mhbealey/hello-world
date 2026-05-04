@@ -1,0 +1,23 @@
+finding_id: SD-8-006
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: The Notes column in the TRL assessment table (Section 1) contains multi-sentence
+  analytical paragraphs averaging 60–90 words per row, totaling approximately 600
+  words. This includes heritage citations, TRL derivation logic, gap characterization,
+  and test requirements. This is the right analytical content for a concept paper,
+  but it is embedded in a table where it cannot be efficiently read or scanned. Table
+  notes columns serve as concise annotations (one sentence, one number, one flag)
+  — not analysis paragraphs. More specifically, the gap characterization and derivation
+  content in the Notes column partially duplicates the Gap Analysis section (Section
+  3), which was written separately. The reader who wants the analytical path should
+  go to Section 3; the table should provide the positions and scores, not the analysis.
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

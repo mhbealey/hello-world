@@ -1,0 +1,32 @@
+finding_id: RM-N01
+reviewer: reliability-margins-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2, Long-Duration
+  Degradation'
+observation: '
+
+  **Severity:** Minor
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2, Long-Duration
+  Degradation
+
+  **Number/claim:** "Behavioral torpor. Crew sedentariness increased monotonically
+  across the mission... For a supervisory role, reduced spontaneous activity is a
+  leading indicator for reduced alertness and delayed anomaly response."
+
+  **Problem:** The Mars-500 finding is relevant and correctly cited, but the section
+  does not bound the performance degradation quantitatively. If be'
+impact: See finding.
+fix: 'Add a quantitative degradation bound: "The Mars-500 results suggest anomaly
+  response times and task performance scores may degrade by 10–30% over a 6-month
+  rotation for individual crew members with the most pronounced torpor effects \cite{basner2013mars500}.
+  Applying a conservative 20% performance degradation to one of four crew members
+  (25% of supervisory capacity) reduces effective supervisory capacity from 8 to approximately
+  7.4 person-hours — still above the 4.25 person-hour demand but erodi'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

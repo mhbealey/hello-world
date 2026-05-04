@@ -1,5 +1,8 @@
 ---
 name: human-factors-teaming
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the human side of the human-humanoid teaming model — supervision, cognitive load, crew composition, the long-duration human factors heritage. Invoke for human-side questions and as the integrator for Question (b).
 tools:
   - Read

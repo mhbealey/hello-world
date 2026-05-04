@@ -1,0 +1,35 @@
+finding_id: AE-S8-08
+reviewer: aerospace-engineer-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1, Navigation
+  row'
+observation: '"Navigation — 3D mapping, terrain avoidance: Current Space TRL 8. Space
+  TRL 8: Mars AutoNav (Curiosity, Perseverance) is the unambiguous heritage — stereo-camera-derived
+  point-cloud terrain classification and path planning, operating autonomously since
+  2012." The TRL 8 claim is defensible for the AutoNav algorithm in the specific application
+  of wheeled rover navigation on Mars, but it is presented in a table column titled
+  "Current Space TRL" for the general task category "Navigation — 3D mapping, terrain
+  avoidance" in the context of a bipedal humanoid on the lunar surface. This is not
+  a TRL for the mission application; it is a TRL for a related but different application
+  (wheeled rover, different gravity, different surface, different platform kinematics).
+  The notes column partially hedges this ("gap is speed and platform"), but the TRL
+  8 entry in the "Current Space TRL" column will be read by downstream agents as meaning
+  the capability is 95%+ demonstrated for the application at hand. T'
+impact: '"Navigation — 3D mapping, terrain avoidance: Current Space TRL 8. Space TRL
+  8: Mars AutoNav (Curiosity, Perseverance) is the unambiguous heritage — stereo-camera-derived
+  point-cloud terrain classification and path planning, operating autonomously since
+  2012."'
+fix: 'Split the navigation row into "Navigation algorithm (point cloud mapping and
+  path planning)" at TRL 8 (AutoNav heritage) and "Navigation for bipedal platform
+  in lunar 1/6-g" at TRL 2–3 (concept only; no biped has operated on a planetary surface).
+  Or add a column clarifying what the Space TRL 8 claim applies to, so the gap to
+  mission application is explicit. This distinction matters for the task allocation:
+  T03 (navigate to GPS sample point) is listed as "TRL 8 (met)" in the task taxonomy,
+  which '
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

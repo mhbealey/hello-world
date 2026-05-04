@@ -1,0 +1,35 @@
+finding_id: RM-M02
+reviewer: reliability-margins-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2; `study/05-cross-cutting/margins-and-assumptions.md`,
+  §A19'
+observation: '
+
+  **Severity:** Major
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 2; `study/05-cross-cutting/margins-and-assumptions.md`,
+  §A19
+
+  **Number/claim:** Section 2 of §02-04 states: "At an 8-hour nominal work shift,
+  4 crew × 8 hours × 0.25–0.30 available fraction yields approximately 8–10 person-hours
+  per crew shift available for supervisory demand. The conservative estimate is 8
+  person-hours per crew shift."
+
+
+  §A19 states: "For supervisory activities specifically, the fraction a'
+impact: See finding.
+fix: '1. Choose a single base period and apply it consistently: either (a) 8-hour
+  nominal work shift, in which case 25–30% supervisory fraction yields 2.0–2.4 hours/crew
+  member and 8–9.6 person-hours/shift for 4 crew, or (b) 12-hour waking period, in
+  which case 25% supervisory fraction yields 3 hours/crew member and 12 person-hours/shift
+  for 4 crew — which is a materially higher and less conservative estimate. The conservative
+  commitment should use (a).
+
+  2. Reconcile §A19 prose with its own calculation'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

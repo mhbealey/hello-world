@@ -1,0 +1,23 @@
+finding_id: SD-8-010
+reviewer: scope-discipline-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: Section 6 items 1 and 2 state TRL requirements for the reactive and deliberative
+  layers at the 2029 and 2035 gates (TRL 6 reactive by 2029; TRL 5 deliberative by
+  2029; TRL 7 by 2035). These are gate requirements that are already stated in §02-03
+  Section 3 (Gap Analysis by Deployment Date) and in the §A1 assumption. Section 6's
+  function is to flag what the latency analysis requires the autonomy layer to do
+  differently than it might without the latency constraint — the "close the 2.8 s
+  gap" function. Items 3 and 4 (safe-mode during relay outages; ≤50 ms on-base latency
+  validation) are genuinely new requirements flowing from the latency analysis. Items
+  1 and 2 are re-statements of existing requirements with latency framing that adds
+  little.
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

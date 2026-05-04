@@ -1,0 +1,26 @@
+finding_id: DA-8
+reviewer: devils-advocate-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/devils-advocate-findings.md
+section: null
+observation: '
+
+  **Attack:** The seven-category human value floor was defined in Section 02-03 after
+  the architecture was committed to forward deployment. A skeptical reader examining
+  the sequence of decisions notes: (1) form factor tradespace committed to bipedal
+  humanoid; (2) forward-deployed humans required by physics argument; (3) human value
+  floor defined as "things the program wants humans doing." The floor is then presented
+  as the justification for forward deployment — but forward deployment was already '
+impact: See finding.
+fix: The study must make a cleaner distinction between categories that are permanent
+  floors (crew contact, pressurized interfaces, habitat breach response, structural
+  modification — Pillar 1 physics-grounded) and categories that are 2035-era program
+  positions subject to gate revision (first execution authorization, science priority
+  decisions, OOD-response gating). The current seven-category floor with uniform permanence
+  claims is the section's most significant vulnerability to an adversarial reviewer
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,0 +1,36 @@
+finding_id: AE-S8-05
+reviewer: aerospace-engineer-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Continuous
+  supervision demand"'
+observation: '"A realistic sortie day includes approximately 1–2 continuous-supervision
+  events (a first-execution task, an EVA tool handoff sequence, a new task demonstration).
+  Estimated 1.5 continuous-supervision events per shift × 30 minutes each = 0.75 person-hours."
+  The 1.5 events/shift figure is a bare assertion. The task taxonomy in §02-03 lists
+  the tasks requiring continuous supervision: first execution of new task types (T18),
+  human-led locomotion reconfiguration (T12), and EVA tool handoff (T09 — though T09
+  is listed as jointly executed, not continuously supervised). There is no analysis
+  of how often these events occur per shift at IOC. First execution of a new task
+  type is presumably a rare event (once per new task category, not once per shift).
+  EVA tool handoff would occur only on EVA-days. Continuous supervision events at
+  the rate of 1.5/shift would imply these triggering events are nearly daily, which
+  may be aggressive at IOC when the task library is initially limited. Conversely,
+  durin'
+impact: '"A realistic sortie day includes approximately 1–2 continuous-supervision
+  events (a first-execution task, an EVA tool handoff sequence, a new task demonstration).
+  Estimated 1.5 continuous-supervision events per shift × 30 minutes each = 0.75 person-hours."'
+fix: 'Trace the 1.5 events/shift estimate to the §02-03 task taxonomy. Specify which
+  tasks drive this estimate and at what operational tempo they occur. If first-execution
+  events are uncommon after an initial commissioning period, the continuous supervision
+  demand should be stated as a function of phase (higher during commissioning, lower
+  during steady-state operations) rather than a single flat estimate.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

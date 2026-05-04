@@ -1,0 +1,37 @@
+finding_id: AE-S8-13
+reviewer: aerospace-engineer-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 1 and Section
+  2'
+observation: 'Novelty handling row: "Current Space TRL: 2. Current Terrestrial TRL:
+  3. Gap to Mission Requirement: TRL 5 by 2035; TRL 7 by 2038–2040." Task T17 (habitat
+  breach — locate and report): "Novelty handling + Navigation. Min TRL for Full Autonomy:
+  TRL 7. Must be partially autonomous." T17 requires the robot to autonomously initiate
+  inspection and locate a habitat breach on an alert — the section assigns this a
+  minimum TRL 7 requirement. But the novelty handling TRL table says TRL 5 by 2035.
+  This is a contradiction: T17 cannot simultaneously require TRL 7 and be expected
+  to execute at TRL 5. The gap is called out correctly in the 2029 gate analysis ("not
+  executable even with human-in-loop in 2029: T10 and T12 require TRL 7"), but T17
+  is not mentioned in the same breath as these demanding tasks despite sharing the
+  TRL 7 requirement.
+
+
+  Checking the task allocation table, T17 at IOC is "Jointly executed (robot locates,
+  human decides sealing action)." The "must be partially autonomous" qualificat'
+impact: 'Novelty handling row: "Current Space TRL: 2. Current Terrestrial TRL: 3.
+  Gap to Mission Requirement: TRL 5 by 2035; TRL 7 by 2038–2040." Task T17 (habitat
+  breach — locate and report): "Novelty handling + Navigation. Min TRL for Full Autonomy:
+  TRL 7. Must be partially autonomous."'
+fix: Clarify whether the TRL 7 in T17's task taxonomy row refers to full autonomy
+  (including the sealing decision) or partial autonomy (location only, with human
+  decision). If it refers to full autonomy, the 2035 jointly-executed allocation is
+  consistent — the robot is not fully autonomous at IOC. If it refers to the partial-autonomy
+  threshold required for the jointly-executed mode, the TRL must be reconciled with
+  the novelty handling TRL 5 ceiling for 2035. Add a note in the task taxonomy explaining
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

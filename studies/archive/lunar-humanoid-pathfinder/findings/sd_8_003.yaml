@@ -1,0 +1,23 @@
+finding_id: SD-8-003
+reviewer: scope-discipline-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/scope-discipline-findings.md
+section: null
+observation: 'Section 5 lists three communications architecture requirements: relay
+  availability >95%, latency budget discipline (minimize stack overhead), and bandwidth
+  secondary to latency. These are engineering requirements that belong in the far-side-base-architect''s
+  section or in the ConOps section, not in a latency tradespace analysis section.
+  The latency tradespace section''s job is to derive the latency numbers and the operational
+  implications — which it has done. The "pass these requirements downstream" function
+  is handled by Section 6 (Inputs to Autonomy-TRL-Tasking), which is the correct mechanism.
+  Section 5 reads as a requirements allocation exercise rather than a tradespace finding,
+  and it partially duplicates the §A17 relay assumption already logged in the assumptions
+  register.'
+impact: See finding.
+fix: See finding file for resolution.
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,5 +1,8 @@
 ---
 name: visualization-agent
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Produces matplotlib charts visualizing the study state — autonomy TRL curve, mass budget breakdown, comms latency by destination, agent activity over time. Invoke when a chart would clarify a data point or for the dashboard.
 tools:
   - Read

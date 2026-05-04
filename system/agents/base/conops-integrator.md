@@ -1,5 +1,8 @@
 ---
 name: conops-integrator
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the mission concept of operations — end-to-end workflow from launch through surface ops through return. The integrator for Question (c). Invoke for any timeline, duty cycle, or operational sequence question.
 tools:
   - Read

@@ -1,0 +1,34 @@
+finding_id: RM-B01
+reviewer: reliability-margins-reviewer
+severity: Blocker
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (On-Demand Supervision),
+  and Section 2 (Cognitive Load Analysis)'
+observation: '
+
+  **Severity:** Blocker
+
+  **Section:** `study/02-human-in-the-loop/04-teaming-model.md`, Section 1 (On-Demand
+  Supervision), and Section 2 (Cognitive Load Analysis)
+
+  **Number/claim:** "A conservative estimate of one OOD alert per 4-hour sortie per
+  humanoid (3 humanoids = approximately 3 alerts per shift) × 15 minutes average resolution
+  = 45 minutes of anomaly response per crew shift distributed across the team."
+
+  **Problem:** This figure is the denominator that determines whether the supervisory
+  load '
+impact: See finding.
+fix: '1. Add a derivation footnote that shows where 1 alert/sortie comes from. If
+  the figure is a parametric estimate with no heritage, state it as such explicitly:
+  "This rate is a parametric assumption with no heritage basis. It is a study planning
+  assumption, not a validated operational rate."
+
+  2. Add a sensitivity row to the cognitive load arithmetic table: "If OOD alert rate
+  is 2/sortie/humanoid (6 total/shift) at 30-min mean resolution time, anomaly response
+  budget is 3.0 person-hours. Total deman'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

@@ -1,5 +1,8 @@
 ---
 name: technology-roadmap-trl
+version: 1.0.0
+last-updated: 2026-05-04
+domain-applicability: general
 description: Owns the technology development roadmap — what TRLs need to advance, by when, with what demonstrations. Invoke for tech development planning and TRL questions at the program level.
 tools:
   - Read

@@ -1,0 +1,36 @@
+finding_id: AE-S8-07
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 3, "Derivation
+  Step 2"'
+observation: '"At TRL 7 deliberative layer (2035 IOC), 12 of 20 mission tasks are
+  autonomy-led. Each autonomy-led task reduces active supervision demand from the
+  NIP-10 continuous-control requirement to the on-demand monitoring posture (0.05
+  person-hours per robot-hour vs. effectively 1.0+ for NIP-10-style operation). The
+  factor-of-20 reduction in per-task supervision demand directly translates to a factor-of-20
+  improvement in supervisor ratio for those tasks." The final claim — "directly translates
+  to a factor-of-20 improvement in supervisor ratio" — does not follow. A factor-of-20
+  improvement in per-task supervision intensity would translate to a factor-of-20
+  improvement in supervisor ratio only if all tasks were autonomy-led. But the allocation
+  is 12/20 autonomy-led, 6/20 jointly-executed, and 2/20 human-led. The jointly-executed
+  tasks are specifically the ones that dominate supervisory demand (the periodic supervision
+  subtotal of 1.5 person-hours in the cognitive load calculation exceeds the on-'
+impact: '"At TRL 7 deliberative layer (2035 IOC), 12 of 20 mission tasks are autonomy-led.
+  Each autonomy-led task reduces active supervision demand from the NIP-10 continuous-control
+  requirement to the on-demand monitoring posture (0.05 person-hours per robot-hour
+  vs. effectively 1.0+ for NIP-10-style operat'
+fix: 'Revise Step 2 to drop the "factor-of-20 improvement in supervisor ratio" claim
+  and replace it with a proper weighted computation of effective supervision demand
+  across the 2035 task mix. The conclusion (1:2–3 supervisor ratio at IOC) is probably
+  correct; the logical path to it needs to be fixed. A task-weighted demand calculation
+  is more defensible than a single-task intensity ratio extrapolated across all tasks.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

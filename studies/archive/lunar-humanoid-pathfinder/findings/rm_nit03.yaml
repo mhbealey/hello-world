@@ -1,0 +1,38 @@
+finding_id: RM-Nit03
+reviewer: reliability-margins-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/reliability-margins-findings.md
+section: '`study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 5 and References'
+observation: '
+
+  **Severity:** Nit
+
+  **Section:** `study/02-human-in-the-loop/03-autonomy-trl-tasking.md`, Section 5
+  and References
+
+  **Number/claim:** "\cite{black2024pi0} — pi-0 VLA model; cross-task generalization;
+  supervisory layer capability baseline. [UNVERIFIED — cite pending primary source
+  confirmation]" and "\cite{unitree2024h1} — Unitree H1; bipedal locomotion on prepared
+  surfaces; commercial TRL baseline. [UNVERIFIED]"
+
+  **Problem:** Both citations appear in the main body of the section (pi-0 is cited
+  in S'
+impact: See finding.
+fix: 'Resolve both citations before Stage 9. For \cite{black2024pi0}: the pi-0 paper
+  (Black et al., Physical Intelligence, 2024) is an arXiv preprint available at arXiv:2410.24164
+  — this should be verifiable against the primary source. For \cite{unitree2024h1}:
+  Unitree''s published product documentation or press releases should be sufficient
+  to confirm locomotion capability claims. Remove [UNVERIFIED] once confirmed, or
+  revise the claim if the source does not support it.
+
+
+  ---
+
+
+  ## §A15–§A19 Completeness'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

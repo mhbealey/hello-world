@@ -1,0 +1,35 @@
+finding_id: AE-S8-04
+reviewer: aerospace-engineer-reviewer
+severity: Major
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/04-teaming-model.md`, Section 2, "Periodic supervision
+  demand"'
+observation: '"3 × 0.83 × 0.6 concurrency factor = ~1.5 person-hours. (The 0.6 concurrency
+  factor reflects that at any given time, some humanoids will be in autonomy-led phases
+  while others are at checkpoint gates; simultaneous checkpoints from all three robots
+  are rare and represent the peak demand case, not the nominal case.)" The 0.6 concurrency
+  factor is the second largest term in the periodic supervision subtotal (1.5 person-hours,
+  35% of total 4.25 person-hour demand), yet it has no derivation. It is stated as
+  a qualitative judgment ("simultaneous checkpoints from all three robots are rare")
+  without any supporting calculation. A queuing-theoretic estimate of the probability
+  of simultaneous checkpoint events across three independently-operating humanoids
+  could be derived from the checkpoint frequency and duration assumptions already
+  stated in the section. If each humanoid generates approximately 5 checkpoint events
+  per shift with ~10 minute duration in an 8-hour shift, the fraction of time each'
+impact: '"3 × 0.83 × 0.6 concurrency factor = ~1.5 person-hours. (The 0.6 concurrency
+  factor reflects that at any given time, some humanoids will be in autonomy-led phases
+  while others are at checkpoint gates; simultaneous checkpoints from all three robots
+  are rare and represent the peak demand case, not the'
+fix: Derive the 0.6 concurrency factor from first principles, or replace it with a
+  factor derived from a queuing model or simulation of checkpoint event timing across
+  three humanoids. If the factor is revised upward toward 0.9, recompute the total
+  supervisory demand and update the headroom characterization. If the 0.6 factor is
+  defended, show the reasoning (e.g., the 6 jointly-executed task categories are not
+  all running simultaneously; perhaps only 2 of 6 categories are active in a typical
+  shift win
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

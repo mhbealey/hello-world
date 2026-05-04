@@ -1,0 +1,36 @@
+finding_id: AE-S8-02
+reviewer: aerospace-engineer-reviewer
+severity: Minor
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/aerospace-engineer-findings.md
+section: '`study/02-human-in-the-loop/02-latency-tradespace.md`, Section 1, "Queqiao-2
+  Relay Geometry" and Latency Table'
+observation: 'Latency table states OWLT max of 1.46 s and RTLT max of 2.92 s for lunar
+  far side via relay. The derivation section only computes the apoapsis (most favorable)
+  geometry in detail, yielding RTLT = 2.78 s. The upper bound of 2.92 s (OWLT 1.46
+  s) appears in the table without a corresponding derivation. Internal check: 2 ×
+  1.46 = 2.92 ✓ (table is internally consistent). The implied OWLT of 1.46 s requires
+  an Earth-satellite path of 1.46 × 299,792 = 437,696 km. At lunar apogee (406,700
+  km Earth-Moon) + 17,000 km satellite altitude, the additive path would be 423,700
+  km, giving 1.413 s OWLT; the far-side surface segment adds ~17,000 ÷ 299,792 = 0.057
+  s; total OWLT ≈ 1.470 s, RTLT ≈ 2.94 s. The table''s 2.92 s is slightly below this
+  additive calculation, and neither calculation has shown its geometry assumptions.
+
+
+  This is a minor issue because the architectural conclusion is insensitive to whether
+  the upper bound is 2.88 or 2.94 s, but the derivation discipline requires both bounds
+  to be shown'
+impact: Latency table states OWLT max of 1.46 s and RTLT max of 2.92 s for lunar far
+  side via relay.
+fix: 'Add a brief parallel derivation for the upper-bound case (lunar apogee geometry,
+  satellite at maximum altitude above far-side limb) showing the geometry assumptions
+  and arithmetic. The derivation should be consistent with the correction requested
+  in AE-S8-01.
+
+
+  ---'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null

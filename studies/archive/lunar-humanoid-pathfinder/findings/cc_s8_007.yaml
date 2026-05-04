@@ -1,0 +1,42 @@
+finding_id: CC-S8-007
+reviewer: cross-coupling-reviewer
+severity: Nit
+study_id: lunar-humanoid-pathfinder
+cycle: stage-8
+file_path: review/cross-coupling-findings.md
+section: null
+observation: '
+
+  **Severity:** Nit
+
+  **Parameter:** Number of pillars in the forward-deployment justification stated
+  in §02-01 vs. developed in §02-04
+
+  **Source value (§02-04 Section 4):** Three independent pillars: (1) Latency, (2)
+  Situational Awareness, (3) Symbolic and Operational Continuity.
+
+  **Downstream value (§02-01 Section 4):** The section makes the forward-deployment
+  argument on two bases: physics/latency and task-profile requirement for real-time
+  oversight of jointly-executed tasks. Pillar 3 is not menti'
+impact: See finding.
+fix: 'Add a single sentence to §02-01 Section 4, after the medical emergency case
+  argument: "A third pillar — symbolic and operational continuity, discussed in §02-04
+  Section 4 — carries independent weight and would survive revision of the latency
+  numbers; it is not developed here but is part of the full justification." This prevents
+  any reader from believing §02-01 presents the complete case.
+
+
+  ---
+
+
+  ## Reconciliation Table
+
+
+  All parameters checked, with source, downstream, and match status.
+
+
+  | Paramete'
+status: open
+resolution_notes: null
+date_found: '2026-05-04'
+date_resolved: null
