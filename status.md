@@ -35,3 +35,5 @@ Event-driven. One line per event. `tail -f status.md` to watch live.
 2026-05-04T00:12:00Z | GATE-PASS | §02-03 at 2,984 words — PASSES hard cap 3,000; all four Q(b) sections now within gate
 2026-05-04T00:14:00Z | AGENT-DONE | Stage 8 original DA reviewer final cleanup (stale notification — findings already written earlier)
 2026-05-04T00:15:00Z | WAVE2-PASS | CC/AE/RM re-review: AE-S8-06 RESOLVED, CC-S8-001 RESOLVED, CC-S8-003 RESOLVED — all three blockers cleared
+2026-05-04T00:16:00Z | WAVE2-PASS | DA re-review: DA-5/DA-8 RESOLVED, DA-6 RESOLVED, DA-7 RESOLVED — overall PASS
+2026-05-04T00:17:00Z | FILE-WRITTEN | handback-stage8.md generated — 150,951 chars, gate passed
