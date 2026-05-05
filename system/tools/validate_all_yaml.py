@@ -4,6 +4,7 @@ Schema mapping (by path pattern):
   */cross_coupling.yaml              → schemas/cross_coupling.schema.yaml
   */assumption_registry.yaml         → schemas/assumption_registry.schema.yaml
   */visual/manifest.yaml             → schemas/visual_artifacts.schema.yaml
+  */findings/*.yaml                  → schemas/finding.schema.yaml
   system/orchestration/schemas/*.schema.yaml → self-referential (skipped)
 
 Usage:
@@ -49,13 +50,20 @@ def _find_schema(yaml_path: Path) -> tuple[str | None, dict | None]:
     if name in _SCHEMA_MAP:
         schema_name = _SCHEMA_MAP[name]
         return schema_name, _load_schema(schema_name)
+
     stem = yaml_path.stem
     if stem in _STEM_MAP:
         schema_name = _STEM_MAP[stem]
         return schema_name, _load_schema(schema_name)
+
+    # findings/*.yaml — any YAML file whose immediate parent directory is "findings"
+    if yaml_path.parent.name == "findings":
+        return "finding.schema.yaml", _load_schema("finding.schema.yaml")
+
     # Check if parent directory name gives a hint
     if "handback" in str(yaml_path):
         return "handback.schema.yaml", _load_schema("handback.schema.yaml")
+
     return None, None
 
 

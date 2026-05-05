@@ -12,7 +12,7 @@ repos:
         language: python
         entry: python system/tools/validate_all_yaml.py --quiet
         pass_filenames: false
-        types: [yaml]
+        types_or: [yaml, markdown]
         additional_dependencies: [pyyaml, jsonschema]
 
       - id: pytest-fast
