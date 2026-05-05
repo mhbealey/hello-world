@@ -7,8 +7,8 @@ additionalProperties: false
 properties:
   finding_id:
     type: string
-    description: "Reviewer-namespaced ID, e.g. AE-001, HC-003, DA-007, CC-VIS-002"
-    pattern: "^[A-Z][A-Z0-9-]+-\\d+$"
+    description: "Reviewer-namespaced ID. e.g. AE-001, HC-003, RM-B01, RM-Nit01. Must start with uppercase letter."
+    minLength: 3
   reviewer:
     type: string
     enum:
@@ -26,23 +26,23 @@ properties:
   study_id:
     type: string
   cycle:
-    type: ["integer", "string"]
-    description: "Cycle number or 'stage-N' for pre-v1.0 findings"
+    oneOf:
+      - type: integer
+        description: "Cycle number as integer for v1.0+ studies. Use this for all new studies."
+      - type: string
+        pattern: "^stage-\\d+$"
+        description: "Legacy pre-v1.0 format only (e.g. stage-8). Do not use for new studies."
+    description: "Cycle identifier. New studies must use integer (e.g. 1, 2, 3). Bare strings like '01' are invalid."
   file_path:
     type: string
-    description: "Study-relative path to the file containing the finding"
   section:
     type: ["string", "null"]
-    description: "Section heading or anchor within the file"
   observation:
     type: string
-    description: "What the reviewer found"
   impact:
     type: string
-    description: "Which claim or commitment is at risk"
   fix:
     type: string
-    description: "Specific change required to resolve"
   status:
     type: string
     enum: [open, resolved, deferred, wont-fix]
