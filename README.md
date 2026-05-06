@@ -2,49 +2,77 @@
 
 Analytical infrastructure for a private space program. Studies are produced outputs. The agent system, tooling, and gates are the persistent product.
 
-## First study
+## Studies
 
-**Lunar Humanoid Pathfinder** — `studies/archive/lunar-humanoid-pathfinder/`
+| Study | Status | Domain |
+|-------|--------|--------|
+| Lunar Humanoid Pathfinder | Archived (`studies/archive/lunar-humanoid-pathfinder/`) | lunar-surface |
+| Orbital Industrial Spaceport | Active, Cycle 1 complete (`studies/active/01-orbital-platform/`) | orbital-platform |
 
-Concept study examining humanoid-forward architecture for space exploration, with a lunar far side permanent base as the testbed. Eight stages, completed 2026-05-04.
+## What this system does
+
+Multi-agent analytical framework for space architecture concept studies. An orchestrator dispatches specialized agents to produce documents; agents share state through a cross-coupling parameter database and assumption registry; gates validate output before handback.
+
+Each study produces: a set of scoped analytical documents, a locked cross-coupling parameter DB, a numbered assumption registry, and a handback summary for session continuity.
 
 ## Repo structure
 
-| Directory | Purpose |
-|-----------|---------|
-| `system/` | Agents, orchestration, tools, retro, state |
-| `studies/active/` | Studies in progress |
-| `studies/archive/` | Completed studies (read-only) |
-| `program/` | Roadmap, milestones, work packages |
-| `team/` | Roles, onboarding |
-| `business/` | Legal, pitch materials |
-| `ops/` | Audits, architecture decision records |
+```
+system/agents/base/      14 domain-neutral agents
+system/agents/domain/    Study-specific overlays (lunar-surface, orbital-platform)
+system/agents/compose.py Merge base + overlay at dispatch
+system/tools/            cross_coupling_db, assumption_registry, render tools, gates
+system/orchestration/    Study scaffolding, handback generation
 
-## System v1.0
+studies/active/          Studies in progress
+studies/archive/         Completed studies (read-only)
 
-Restructured from a single-study repo to a program-level infrastructure on 2026-05-04. Key changes:
-
-- Study content moved to `studies/archive/lunar-humanoid-pathfinder/`
-- Agents generified and split into base/domain/meta/reviewer layers
-- Six reviewer types promoted to first-class agent files
-- CLAUDE.md rewritten to describe the system, not the study
-- AlphaEdge application code deleted (88 files)
-
-See `ops/audits/audit-v1.0-2026-05-04.md` for the full restructure audit.
+ops/decisions/           Architecture Decision Records
+ops/handoff/             Handoff packages
+```
 
 ## Running the system
 
-Build the study site:
-```
-python system/tools/build_site.py --study lunar-humanoid-pathfinder
-```
-
-Generate a handback:
-```
-python system/orchestration/handback.py --stage N --study <study-id>
+**Compose a domain-specific agent prompt:**
+```bash
+python -m system.agents.compose teleoperation-latency orbital-platform
+python -m system.agents.compose teleoperation-latency --base-only
 ```
 
-Start a new study:
+**Query the cross-coupling database:**
+```bash
+python -m system.tools.cross_coupling_db --db studies/active/01-orbital-platform/cross_coupling.yaml list
+python -m system.tools.cross_coupling_db --db studies/active/01-orbital-platform/cross_coupling.yaml list-locked
+python -m system.tools.cross_coupling_db --db studies/active/01-orbital-platform/cross_coupling.yaml set <param> <value> --set-by <agent> --basis "<basis>" --lock
 ```
+
+**Render parameter DB and assumption registry to Markdown:**
+```bash
+python -m system.tools.render_cross_coupling --db studies/active/01-orbital-platform/cross_coupling.yaml
+python -m system.tools.render_assumptions --db studies/active/01-orbital-platform/assumption_registry.yaml
+```
+
+**Run tests:**
+```bash
+python -m pytest system/tests/
+```
+
+**Generate a handback:**
+```bash
+python system/orchestration/handback.py --stage N --study 01-orbital-platform
+```
+
+**Start a new study:**
+```bash
 python system/orchestration/new_study.py --id <id> --title "<title>" --domain <domain>
 ```
+
+## Active study status
+
+**01-orbital-platform** — Kilometer-scale orbital industrial spaceport at ~400 km LEO. Four study questions: (a) architectural configuration, (b) operations and traffic, (c) habitation and economics, (d) roadmap and partnership.
+
+Cycle 1 complete. Four decisions locked. Cycle 2 awaits three founder decisions (orbital inclination, interface standard strategy, manufacturing product line). See `studies/active/01-orbital-platform/cycles/cycle-01/handback.md`.
+
+## System version
+
+v1.1 — Base/overlay agent split, compose.py, orbital-platform domain, cross_coupling_db lock/supersede, render tools. 2026-05-06.

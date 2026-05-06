@@ -1,0 +1,171 @@
+study_id: 01-orbital-platform
+last_updated: '2026-05-06'
+next_id: 13
+entries:
+- id: A1
+  short_name: starship_cost_realization
+  statement: Starship operational cost to LEO is $100–500/kg by 2030, enabling commercial
+    spaceport economics.
+  basis: SpaceX public roadmap; NASA Starship HLS contract basis; assume $500/kg for
+    planning (conservative vs. $100 target)
+  risk_level: critical
+  owner_agent: cost-program
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: launch_cost_per_kg_usd
+- id: A2
+  short_name: target_altitude_400km
+  statement: Spaceport operates at 400 km altitude, 51.6° inclination (ISS heritage
+    orbit).
+  basis: ISS heritage; accessible from all current human-rated launch vehicles; TDRS
+    relay infrastructure already operational
+  risk_level: medium
+  owner_agent: destinations-trajectories
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: target_altitude_km
+- id: A3
+  short_name: modular_truss_node
+  statement: Modular truss-and-node is the primary structural architecture; no monolithic
+    or distributed-formation alternative.
+  basis: 'ISS truss assembly: 13 years of flight heritage; incremental funding model
+    compatible; ISS S-truss mass heritage 14 t for 109 m'
+  risk_level: low
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: structural_concept
+- id: A4
+  short_name: phase1_mass_500t
+  statement: Phase 1 build-out target is 500 t on-orbit mass (anchor node + power
+    + 4 docking ports).
+  basis: ISS is 420 t; Phase 1 adds ~20% for additional docking ports and manufacturing
+    stub. Concept-phase margin 30% applies.
+  risk_level: medium
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: phase1_mass_t
+- id: A5
+  short_name: primary_power_500kw
+  statement: Phase 1 primary power is ≥500 kW solar. Full build-out target ≥2 MW.
+  basis: 'ISS: 215 kW. Industrial manufacturing loads require ×2–3. Solar array TRL
+    9 from ISS heritage.'
+  risk_level: medium
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: primary_power_kw
+- id: A6
+  short_name: traffic_throughput_ioc
+  statement: IOC traffic is 2–4 visiting vehicles/month; full operations is 20+ vehicles/month.
+  basis: LAX analogy scaled to early commercial space; current ISS sees ~12 visiting
+    vehicles/year; spaceport target is 10× ISS
+  risk_level: high
+  owner_agent: conops-integrator
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: monthly_traffic_vehicles_ioc
+- id: A7
+  short_name: crew_ioc_8_12
+  statement: IOC resident crew is 8–12 on rotating 6-month tours.
+  basis: ISS standard 6–7 crew; larger platform and 24/7 industrial ops require 8
+    minimum; 12 provides adequate shift coverage
+  risk_level: medium
+  owner_agent: human-factors-teaming
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: crew_count_ioc
+- id: A8
+  short_name: interface_standard_2028
+  statement: Truss node docking interface standard must be locked by end of 2028 to
+    enable commercial partner commitments.
+  basis: Commercial partners need 5+ years to build compatible hardware before IOC;
+    2035 IOC requires 2028 standard lock
+  risk_level: critical
+  owner_agent: technology-roadmap-trl
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: null
+- id: A9
+  short_name: auto_docking_trl9
+  statement: Fully autonomous docking to cooperative port is TRL 9 — solved. Traffic
+    management (20 vehicles/month) is TRL 3–4.
+  basis: SpaceX Dragon autonomous docking since 2020; Northrop MEV non-cooperative
+    docking TRL 9; multi-vehicle management unflown
+  risk_level: medium
+  owner_agent: autonomy-trl-tasking
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: null
+- id: A10
+  short_name: commercial_crew_30day_orient
+  statement: Non-astronaut commercial crew can reach operational competency in ≤30
+    days on-orbit orientation.
+  basis: Analogous to offshore oil platform operator training; Axiom private astronaut
+    missions demonstrate non-astronaut LEO operations; 30 days is aspirational, requires
+    validation
+  risk_level: high
+  owner_agent: human-factors-teaming
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2033-crew-training-validation
+  superseded_by: null
+  cross_coupling_param: null
+- id: A11
+  short_name: debris_risk_area_scaling
+  statement: Debris impact probability scales linearly with platform area; 1 km platform
+    has ~100× ISS debris exposure.
+  basis: ISS collision probability ~1/1000 per year per module; 1 km platform has
+    ×100 area; requires module isolation capability as design requirement
+  risk_level: critical
+  owner_agent: fault-management-sustainment
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: null
+- id: A12
+  short_name: revenue_model_depot_mfg
+  statement: 'Primary revenue streams at full operations: propellant depot services,
+    module leasing, transit hub fees, in-space manufacturing premiums.'
+  basis: No commercial spaceport has operated; revenue model is speculative. Depot
+    resale margin depends on Starship economics (§A1 coupling). Manufacturing premium
+    products (pharmaceuticals, fiber optics) have demonstrable microgravity advantage.
+  risk_level: high
+  owner_agent: cost-program
+  date_added: '2026-05-06'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: null

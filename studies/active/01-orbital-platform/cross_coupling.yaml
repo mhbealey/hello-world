@@ -1,0 +1,95 @@
+study_id: unknown
+last_updated: '2026-05-06'
+entries:
+- param_id: structural_concept
+  parameter: structural concept
+  value: modular-truss-and-node
+  set_by: integrator-systems-architect
+  basis: ISS truss-and-node is TRL 9; modular expansion enables incremental funding;
+    strongest counterargument (distributed constellation) loses on traffic management
+    complexity. §A3.
+  date_set: '2026-05-06'
+  affects:
+  - mass_power_budget_closure
+  - debris_risk_area_scaling
+  locked: true
+  locked_date: '2026-05-06'
+  superseded_by: null
+- param_id: target_altitude_km
+  parameter: target altitude km
+  value: '400'
+  set_by: destinations-trajectories
+  basis: 'ISS heritage orbit; accessible from all human-rated launchers; TDRS infrastructure;
+    drag manageable. §A2. Flag for founder decision: 28.5° vs 51.6° inclination TBD.'
+  date_set: '2026-05-06'
+  affects:
+  - launch_cost_per_kg_usd
+  - stationkeeping_propellant_budget
+  locked: true
+  locked_date: '2026-05-06'
+  superseded_by: null
+- param_id: phase1_mass_t
+  parameter: phase1 mass t
+  value: '500'
+  set_by: integrator-systems-architect
+  basis: ISS is 420 t; Phase 1 adds 20% for additional docking ports and manufacturing
+    stub. 30% concept margin gives 650 t not-to-exceed. §A4.
+  date_set: '2026-05-06'
+  affects:
+  - launch_cost_per_kg_usd
+  - stationkeeping_propellant_budget
+  locked: true
+  locked_date: '2026-05-06'
+  superseded_by: null
+- param_id: primary_power_kw
+  parameter: primary power kw
+  value: '500'
+  set_by: integrator-systems-architect
+  basis: ISS 215 kW. Industrial loads require ×2–3. 500 kW is Phase 1 design-to; full
+    build-out target ≥2 MW. §A5.
+  date_set: '2026-05-06'
+  affects:
+  - solar_array_mass
+  - thermal_rejection_area
+  locked: true
+  locked_date: '2026-05-06'
+  superseded_by: null
+- param_id: launch_cost_per_kg_usd
+  parameter: launch cost per kg usd
+  value: '500'
+  set_by: cost-program
+  basis: 'Starship planning assumption: $500/kg conservative vs. $100/kg aspirational.
+    §A1. This is the primary commercial sensitivity — all economics cascade from this
+    number.'
+  date_set: '2026-05-06'
+  affects:
+  - phase1_mass_t
+  - full_buildup_cost_estimate_B
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: monthly_traffic_vehicles_ioc
+  parameter: monthly traffic vehicles ioc
+  value: '3'
+  set_by: conops-integrator
+  basis: IOC midpoint of 2–4 vehicles/month range. §A6. Traffic management system
+    must handle 3 concurrent approaches at IOC.
+  date_set: '2026-05-06'
+  affects:
+  - traffic_management_trl_requirement
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: crew_count_ioc
+  parameter: crew count ioc
+  value: '10'
+  set_by: human-factors-teaming
+  basis: Midpoint of 8–12 IOC range. §A7. Three 8-hour shifts × 2 minimum per shift
+    = 6 minimum; 10 allows shift overlap and rest margin.
+  date_set: '2026-05-06'
+  affects:
+  - life_support_mass
+  - crew_transport_cost_per_year
+  locked: false
+  locked_date: null
+  superseded_by: null

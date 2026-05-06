@@ -1,0 +1,99 @@
+study_id: 01-orbital-platform
+title: "Orbital Industrial Spaceport — Concept Study"
+version: 0.1
+status: active
+created: 2026-05-06
+last_updated: 2026-05-06
+domain: orbital-platform
+
+description: >
+  Concept study for a kilometer-scale orbital industrial spaceport in low Earth orbit (~400 km).
+  "An airport in LEO" — the first permanent commercial platform designed for scale manufacturing,
+  propellant logistics, and crew transit at industrial throughput. Not a science station;
+  not a tourism hotel. A working spaceport.
+
+visual_identity:
+  palette: "matte black anodized aluminum, copper accent line"
+  aesthetic: "Sugimoto-meets-Ive — industrial precision, no ornament"
+
+four_questions:
+  a:
+    label: "Architectural Configuration"
+    question: "What is the optimal structural and systems architecture for a 1 km-class orbital spaceport?"
+    primary_agents:
+      - integrator-systems-architect
+      - destinations-trajectories
+      - robotics-actuation-structures
+    word_budget: 6000
+    output_path: "01-question-a/"
+
+  b:
+    label: "Operations and Traffic"
+    question: "How does a spaceport at this scale manage multi-vessel traffic, docking, and crew operations?"
+    primary_agents:
+      - conops-integrator
+      - teleoperation-latency
+      - human-factors-teaming
+    word_budget: 5000
+    output_path: "02-question-b/"
+
+  c:
+    label: "Habitation and Economics"
+    question: "What habitation model and economic structure sustains a commercial spaceport at this scale?"
+    primary_agents:
+      - cost-program
+      - human-factors-teaming
+      - fault-management-sustainment
+    word_budget: 5000
+    output_path: "03-question-c/"
+
+  d:
+    label: "Roadmap and Partnership"
+    question: "What technology development and partnership sequence delivers IOC by 2035?"
+    primary_agents:
+      - technology-roadmap-trl
+      - autonomy-trl-tasking
+      - heritage-research-agent
+    word_budget: 4000
+    output_path: "04-question-d/"
+
+cycle_structure:
+  cycle_01:
+    type: planning
+    description: "Scope definition, heritage baseline, initial cross-coupling locks, assumption seeding"
+    outputs:
+      - study-config.yaml
+      - cross_coupling.yaml (seeded)
+      - assumption_registry.yaml (seeded)
+      - heritage-baseline.md
+      - architectural-scope.md
+      - cycle-02-scaffold.md
+    handback_word_budget: 5000
+
+  cycle_02:
+    type: analysis
+    description: "Deep analysis for all four questions, subsystem agents in parallel"
+    outputs:
+      - "01-question-a/architecture-analysis.md"
+      - "02-question-b/operations-analysis.md"
+      - "03-question-c/economics-analysis.md"
+      - "04-question-d/roadmap-analysis.md"
+    handback_word_budget: 8000
+
+  cycle_03:
+    type: synthesis
+    description: "Cross-question integration, executive summary, review pass"
+    outputs:
+      - "05-cross-cutting/integration.md"
+      - "00-front-matter/executive-summary.md"
+      - "review/review-cycle-03.md"
+    handback_word_budget: 5000
+
+dispatch_mode: parallel
+gates:
+  - WordCountGate
+  - CitationIntegrityGate
+  - CrossCouplingConsistencyGate
+  - FrontmatterValidator
+
+archive_path: "studies/archive/01-orbital-platform"
