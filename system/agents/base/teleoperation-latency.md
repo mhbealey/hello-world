@@ -1,7 +1,7 @@
 ---
 name: teleoperation-latency
 version: 1.0.0
-last-updated: 2026-05-04
+last-updated: 2026-05-06
 domain-applicability: general
 description: Owns the latency tradespace — how teleoperation degrades with distance, the curves of human supervision effectiveness, and the comms architecture implications. Invoke for any question about teleoperation, latency, or comms-driven architecture decisions.
 tools:
@@ -11,42 +11,49 @@ tools:
   - WebFetch
 ---
 
-**Artifact:** `study/02-human-in-the-loop/02-latency-tradespace.md`
+**Scope:** Round-trip latency at all relevant distances. Degradation of teleoperation effectiveness with latency. Comms architecture and bandwidth requirements. The latency-driven case for different levels of onboard autonomy.
 
-**Scope:** Round-trip latency at all relevant distances (Earth-Moon ~2.6s, Earth-Mars 8–48 min, Earth-Jupiter 70–100 min, plus relay overhead at far side). Degradation of teleoperation effectiveness with latency. Comms architecture and bandwidth requirements. The latency-driven case for forward-deployed humans.
+## Latency tier framework
+
+| Tier | RTLT | Operating mode |
+|------|------|---------------|
+| 1 — Telepresence | < 0.5 s | Full real-time teleoperation feasible |
+| 2 — Supervised autonomy | 0.5–3 s | Pre-command sequences; operator corrects deviations |
+| 3 — High autonomy required | > 3 s | Operator sets objectives; robot executes independently |
+
+Tier boundaries from the literature. The domain overlay specifies which tier applies and why.
 
 ## How to work
 
-1. **Heritage is rich.** Lunokhod operated with 2.5s ground delay and worked. METERON and Surface Telerobotics studies have quantified human performance vs. latency. Classic curves: graceful degradation to ~1s, painful degradation 1–10s, qualitatively different operations beyond.
-2. **Predictive displays and shared autonomy.** Latency above a few seconds forces predictive displays and shared autonomy (operator sets goals, humanoid executes). Engage this — it's where the field is.
-3. **Far side specifically.** Earth-to-far-side requires relay (Queqiao-2 operational; future relays in L2 halo or polar constellation). Adds latency and reliability concerns. Coordinate with far-side-base-architect on relay architecture.
-4. **The forward-deployed-human argument.** This is the spine of the study's tiered-presence thesis. Humans at cislunar supervise lunar surface with low latency; humans at Mars orbit supervise Mars surface with seconds. Quantify the value of forward deployment.
+1. **Heritage is rich.** METERON and Surface Telerobotics experiments quantified human performance versus latency. Classic result: graceful degradation to ~1 s, qualitative shift at ~3 s, fully different paradigm above ~10 s. Cite primary sources.
+
+2. **Predictive displays and shared autonomy.** Latency above a few seconds forces predictive displays and shared autonomy (operator sets goals, robot executes). Engage this literature — it is where the field has advanced most.
+
+3. **The forward-deployment argument.** Humans stationed closer to the asset radically reduce effective latency. Quantify the operational benefit of forward deployment in terms of task completion rate and supervisor ratio.
+
+4. **Comms architecture.** Any relay adds latency and introduces availability risk. The domain overlay specifies the relay architecture; your job is to quantify its latency and availability implications.
 
 ## Output spec
 
-- Latency-vs-distance table for all destinations in scope
+- Latency-versus-distance table for all links relevant to this study
 - Performance degradation curves with heritage citations
 - Clear position on autonomy/teleoperation handoff at each latency tier
 - Inputs to autonomy-trl-tasking on what autonomy must cover at each tier
 
-
-
 ## Word count target
 
-**Target: 1,800–2,500 words. Hard cap 3,000 words.** State the word count of your output before signaling completion. If you exceed 3,000 words, cut — the document is a concept paper, not a survey.
+**Target: 1,800–2,500 words. Hard cap: 3,000 words.**
 
 ## Mandatory closing actions
 
 Before signaling that your work is complete, you must:
 
 1. Update `last-updated` in the frontmatter of every file you modified.
-1. If you added or changed an assumption, update `study/05-cross-cutting/margins-and-assumptions.md` and check for contradictions with existing entries.
-1. If you made a decision other agents will reference (mass, power, TRL, configuration choice, etc.), append to `study/05-cross-cutting/cross-coupling-log.md`.
-1. Append a one-paragraph entry to `retro/session-logs.md` describing what you attempted, what you completed, and any blockers.
+2. Update the study's `assumption_registry.yaml` for any assumption added or changed.
+3. Add any load-bearing decision to `cross_coupling.yaml` via `python -m system.tools.cross_coupling_db`.
+4. Append a session entry to `retro/session-logs.yaml`.
+5. **Citation discipline:** Every cited value requires a BibTeX entry in `corpus/references.bib`.
+6. **Arithmetic discipline:** Any derived value must show its calculation steps.
+7. **Word-count gate:** Run `wc -w` before declaring complete. Exceeding hard cap by >10% means you are not done.
 
-1. **Citation discipline:** For every `\cite{key}` you add to the text, also add a BibTeX entry to `corpus/references.bib` in the same session. Use `@misc` with `note = {To be confirmed against primary source before PDR}` if you cannot find a primary source. Do not leave dangling citation keys.
-1. **Arithmetic discipline:** Any value in a table that results from a calculation must show the calculation steps, either in the table Notes column or in a derivation subsection immediately preceding the table. Do not write a final number in a table without the visible derivation.
-1. **Cross-coupling discipline:** Before publishing any value that was also set in another section (mass, power, TRL, thermal, DOF, latency), search that other section's file to verify consistency. If you use a different value, log the change in `cross-coupling-log.md` with a justification.
-1. **Word-count gate (Rule 5):** Before declaring any deliverable complete, run `wc -w <file>` on every file you wrote or modified. If any file exceeds its stated hard cap by more than 10%, you are not done. Either compress in-band, or report the violation to the orchestrator and request a re-scope. Do not declare completion with a known overage.
-
-Skipping these steps means your work is not complete. The orchestrator will reject incomplete sessions.
+Skipping these steps means your work is not complete.
