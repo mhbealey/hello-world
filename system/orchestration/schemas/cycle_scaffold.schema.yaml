@@ -1,0 +1,24 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "Cycle Scaffold"
+description: "Schema for cycle scaffold frontmatter (cycle-NN/scaffold.md)"
+type: object
+required: [title, study_id, cycle, status, last-updated]
+additionalProperties: true
+properties:
+  title:
+    type: string
+  study_id:
+    type: string
+  cycle:
+    type: ["integer", "string"]
+  status:
+    type: string
+    enum: [scaffold, founder-approved, executing, reviewing, closed]
+  last-updated:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
+  founder_approved:
+    type: boolean
+  founder_approved_date:
+    type: string
+    pattern: "^\\d{4}-\\d{2}-\\d{2}$"
