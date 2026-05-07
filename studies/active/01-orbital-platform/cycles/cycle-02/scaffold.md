@@ -2,8 +2,10 @@
 title: "Cycle 2 Scaffold — Orbital Industrial Spaceport"
 study_id: 01-orbital-platform
 cycle: 2
-status: scaffold
-last-updated: 2026-05-06
+status: founder-approved
+founder_approved: true
+founder_approved_date: 2026-05-07
+last-updated: 2026-05-07
 ---
 
 # Cycle 2 Scaffold: Analysis Phase
