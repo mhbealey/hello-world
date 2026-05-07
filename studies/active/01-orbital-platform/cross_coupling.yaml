@@ -97,10 +97,10 @@ entries:
   parameter: orbital inclination deg
   value: '51.6'
   set_by: founder
-  basis: 51.6° matches ISS heritage orbit; enables international access and full TDRS
-    ground station coverage; accessible from Baikonur, Kennedy, and Kourou; commercial
-    upside of international partnerships outweighs ~15% Starship payload mass advantage
-    of 28.5°. Founder decision 2026-05-07.
+  basis: '"Inclination 51.6 because international partnership matters." Founder,
+    2026-05-07. Technical: ISS heritage orbit; TDRS coverage; accessible from Baikonur,
+    Kennedy, Kourou; international access upside outweighs ~15% Starship payload
+    advantage of 28.5°.'
   date_set: '2026-05-07'
   affects: []
   locked: true
@@ -110,12 +110,10 @@ entries:
   parameter: interface standard strategy
   value: open-founder-operator
   set_by: founder
-  basis: 'Open interface standard with founder-operator governance body. Analogy:
-    FAA-equivalent for space docking ports and utility connections. Open standard
-    maximizes commercial ecosystem and reduces adoption barriers; proprietary standard
-    extracts licensing fees but slows competitor adoption and limits the platform''s
-    role as commons infrastructure. Governance body modeled on IATA or IEEE standards
-    bodies, with platform operator holding founding seat. Founder decision 2026-05-07.'
+  basis: '"Open standard because we''re building infrastructure not a closed ecosystem."
+    Founder, 2026-05-07. Technical: FAA-equivalent governance body, founder-operator
+    holds founding seat; open standard maximizes ecosystem adoption over proprietary
+    licensing model.'
   date_set: '2026-05-07'
   affects: []
   locked: true
@@ -125,12 +123,10 @@ entries:
   parameter: primary manufacturing product
   value: pharmaceuticals
   set_by: founder
-  basis: 'Pharmaceuticals selected as primary Phase 2 manufacturing product. Rationale:
-    protein crystallization in microgravity yields measurably superior crystal quality
-    for structural biology and drug development; pharmaceutical industry will pay
-    premium for this advantage; highest commercial TRL of the three candidate products;
-    clearest path to revenue before IOC. ZBLAN fiber optics retained as secondary
-    product line; exotic alloys deferred to Phase 3. Founder decision 2026-05-07.'
+  basis: '"Pharmaceuticals because demonstrated commercial value beats speculative
+    upside at this stage." Founder, 2026-05-07. Technical: protein crystallization
+    microgravity advantage is proven; pharma industry will pay; highest commercial
+    TRL of three candidates. ZBLAN secondary; exotic alloys deferred to Phase 3.'
   date_set: '2026-05-07'
   affects: []
   locked: true
