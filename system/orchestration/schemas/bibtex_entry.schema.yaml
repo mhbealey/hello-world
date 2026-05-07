@@ -1,0 +1,68 @@
+$schema: "https://json-schema.org/draft/2020-12/schema"
+title: "BibTeX Entry"
+description: "Schema for a single BibTeX corpus entry."
+type: object
+required: [key, entry_type, fields]
+additionalProperties: false
+properties:
+  key:
+    type: string
+    description: "BibTeX citation key (alphanumeric and underscores only)"
+    pattern: "^[a-zA-Z0-9_:.-]+$"
+  entry_type:
+    type: string
+    enum: [article, book, inproceedings, techreport, misc, report, online]
+  fields:
+    type: object
+    description: "BibTeX fields; required fields vary by entry_type"
+    properties:
+      title:
+        type: string
+      author:
+        type: string
+      year:
+        type: ["string", "integer"]
+      journal:
+        type: string
+      volume:
+        type: ["string", "integer"]
+      pages:
+        type: string
+      publisher:
+        type: string
+      institution:
+        type: string
+      booktitle:
+        type: string
+      url:
+        type: string
+      doi:
+        type: string
+      note:
+        type: string
+      howpublished:
+        type: string
+      organization:
+        type: string
+      address:
+        type: string
+      number:
+        type: ["string", "integer"]
+    additionalProperties: true
+
+required_fields_by_type:
+  article:
+    - title
+    - author
+  book:
+    - title
+    - author
+  techreport:
+    - title
+    - institution
+  misc:
+    - title
+  inproceedings:
+    - title
+    - author
+    - booktitle
