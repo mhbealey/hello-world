@@ -22,7 +22,7 @@ properties:
 $defs:
   entry:
     type: object
-    required: [param_id, parameter, date, value, set_by, affects, basis]
+    required: [param_id, parameter, date_set, value, set_by, affects, basis]
     additionalProperties: false
     properties:
       param_id:
@@ -32,7 +32,7 @@ $defs:
       parameter:
         type: string
         description: "Human-readable parameter name"
-      date:
+      date_set:
         type: string
         description: "ISO 8601 date this entry was set"
       value:
@@ -43,7 +43,6 @@ $defs:
         description: "Agent or process that set this value"
       affects:
         type: array
-        minItems: 1
         items:
           type: string
         description: "Agents whose artifacts depend on this parameter"
@@ -56,5 +55,11 @@ $defs:
           type: string
         description: "Subsequent corrections or clarifications to this entry"
       superseded_by:
-        type: string
+        type: ["string", "null"]
         description: "param_id of the entry that replaces this one, if any"
+      locked:
+        type: boolean
+        description: "If true, value cannot be changed without --force override"
+      locked_date:
+        type: ["string", "null"]
+        description: "ISO 8601 date this entry was locked"

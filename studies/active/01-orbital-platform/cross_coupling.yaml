@@ -1,5 +1,5 @@
 study_id: 01-orbital-platform
-last_updated: '2026-05-07'
+last_updated: '2026-05-12'
 entries:
 - param_id: structural_concept
   parameter: structural concept
@@ -97,10 +97,10 @@ entries:
   parameter: orbital inclination deg
   value: '51.6'
   set_by: founder
-  basis: '"Inclination 51.6 because international partnership matters." Founder,
-    2026-05-07. Technical: ISS heritage orbit; TDRS coverage; accessible from Baikonur,
-    Kennedy, Kourou; international access upside outweighs ~15% Starship payload
-    advantage of 28.5°.'
+  basis: '"Inclination 51.6 because international partnership matters." Founder, 2026-05-07.
+    Technical: ISS heritage orbit; TDRS coverage; accessible from Baikonur, Kennedy,
+    Kourou; international access upside outweighs ~15% Starship payload advantage
+    of 28.5°.'
   date_set: '2026-05-07'
   affects: []
   locked: true
@@ -131,4 +131,294 @@ entries:
   affects: []
   locked: true
   locked_date: '2026-05-07'
+  superseded_by: null
+- param_id: reboost_propellant_kg_per_year
+  parameter: reboost propellant kg per year
+  value: '1800'
+  set_by: destinations-trajectories
+  basis: 'Phase 1 (500 t platform) drag-makeup propellant at solar mean, 30% concept
+    margin. ISS heritage scaled: 7,000-8,000 kg/yr at 420 t and ~1.2x area-scaling
+    factor. Self-supplied from on-station depot. §A13.'
+  date_set: '2026-05-11'
+  affects:
+  - cost_program_consumables
+  - depot_throughput_t_year
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: phase1_launches_starship_equiv
+  parameter: phase1 launches starship equiv
+  value: '5'
+  set_by: destinations-trajectories
+  basis: Phase 1 manifest delivers 400 t design-to / 500 t not-to-exceed via 4-5 Starship
+    cargo flights (100 t/flight planning baseline) plus 2 Falcon Heavy for docking
+    ports. 5 chosen as conservative midpoint for cost-program input. §A14.
+  date_set: '2026-05-11'
+  affects:
+  - phase1_program_cost_M
+  - launch_cost_per_kg_usd
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: ioc_cargo_resupply_t_per_year
+  parameter: ioc cargo resupply t per year
+  value: '180'
+  set_by: destinations-trajectories
+  basis: 'IOC cargo: 15 t/month consumables for 10 crew + industrial ops. ISS heritage
+    7-8 t/month for 6 crew scaled to 10 crew with industrial overhead. Drives Starship
+    cargo cadence at IOC (~4 flights/year for consumables alone). §A15.'
+  date_set: '2026-05-11'
+  affects:
+  - cost_program_consumables
+  - monthly_traffic_vehicles_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: approach_window_spacing_min
+  parameter: approach window spacing min
+  value: '22.5'
+  set_by: destinations-trajectories
+  basis: Minimum approach-window spacing = 1/4 orbital period at 400 km (92.7 min).
+    Ensures positive separation if approach abort occurs. Jointly owned with conops-integrator
+    for traffic-management software requirements. §A16.
+  date_set: '2026-05-11'
+  affects:
+  - traffic_management_trl_requirement
+  - monthly_traffic_vehicles_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: node_spacing_m
+  parameter: node spacing m
+  value: '50'
+  set_by: integrator-systems-architect
+  basis: Canadarm2 17 m reach envelope covers node-to-node servicing in a single arm
+    relocation; 50 m gives 2x reach + safety overhead. Architecture-analysis.md §2.1.
+  date_set: '2026-05-12'
+  affects:
+  - truss_segment_count
+  - node_count
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: pressurized_volume_phase1_m3
+  parameter: pressurized volume phase1 m3
+  value: '800'
+  set_by: integrator-systems-architect
+  basis: 600 m^3 habitat (10 crew x 60 m^3 per NESC commercial-LEO floor) + 200 m^3
+    industrial (pharma manufacturing module). Architecture-analysis.md §2.2.
+  date_set: '2026-05-12'
+  affects:
+  - eclss_mass
+  - habitat_mass_t
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: dc_bus_voltage_v
+  parameter: dc bus voltage v
+  value: '600'
+  set_by: integrator-systems-architect
+  basis: ISS 160 V is mass-untenable at 500 kW (conductor mass ~10 t); 600 V cuts
+    conductor mass ~14x. One heritage step beyond ISS. Architecture-analysis.md §2.3.
+  date_set: '2026-05-12'
+  affects:
+  - wiring_harness_mass
+  - power_conditioning_mass
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: thermal_rejection_capacity_kw
+  parameter: thermal rejection capacity kw
+  value: '600'
+  set_by: integrator-systems-architect
+  basis: 20% margin over 500 kW primary power bounds off-nominal industrial load spikes
+    during eclipse exit. Architecture-analysis.md §3.
+  date_set: '2026-05-12'
+  affects:
+  - radiator_mass
+  - radiator_area_m2
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: module_isolation_response_time_s
+  parameter: module isolation response time s
+  value: '300'
+  set_by: integrator-systems-architect
+  basis: ISS Class III response heritage (~5 min for time-critical events). Applied
+    at node level so single MMOD hit does not decompress two adjacent modules. Architecture-analysis.md
+    §2.4.
+  date_set: '2026-05-12'
+  affects:
+  - fmea_top20
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: solar_array_area_phase1_m2
+  parameter: solar array area phase1 m2
+  value: '2500'
+  set_by: integrator-systems-architect
+  basis: EOL sizing for 500 kW after 5-year ~5%/yr triple-junction GaAs degradation;
+    ~650 kW BOL. Architecture-analysis.md §4.
+  date_set: '2026-05-12'
+  affects:
+  - solar_array_mass
+  - mmod_exposure_area
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: crew_rotation_period_months
+  parameter: crew rotation period months
+  value: '6'
+  set_by: conops-integrator
+  basis: Phase 1 rotation cadence; ISS heritage 6-month Increment baseline; couples
+    directly to Crew Dragon flight cadence (~7 flights/yr at 10 crew, 4 seats/Dragon).
+    §A22.
+  date_set: '2026-05-12'
+  affects:
+  - crew_transport_cost_per_year
+  - monthly_traffic_vehicles_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: shifts_per_day
+  parameter: shifts per day
+  value: '3'
+  set_by: conops-integrator
+  basis: Three overlapping 8-hour UTC shifts with 1-hour handover. ISS heritage scaled
+    to 10 crew + industrial 24/7 ops. operations-analysis.md §3. §A23.
+  date_set: '2026-05-12'
+  affects:
+  - crew_count_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: evas_per_crew_pair_per_week
+  parameter: evas per crew pair per week
+  value: '2'
+  set_by: conops-integrator
+  basis: ISS EVA-cadence heritage; SAA radiation and suit thermal cycling constrain
+    to 2/week/crew pair at 51.6 deg. Sets IOC EVA budget to ~1/day platform-wide.
+    operations-analysis.md §3. §A24.
+  date_set: '2026-05-12'
+  affects:
+  - fmea_top20
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: reboost_cadence_days
+  parameter: reboost cadence days
+  value: '90'
+  set_by: conops-integrator
+  basis: Phase 1 cadence at solar mean (compresses to ~45 days at solar max); reboost
+    scheduled in 7-day inter-campaign window to avoid disturbing pharma crystallization.
+    Derived from §A13 drag-makeup budget. operations-analysis.md §7.
+  date_set: '2026-05-12'
+  affects:
+  - reboost_propellant_kg_per_year
+  - monthly_traffic_vehicles_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: relay_continuity_required
+  parameter: relay continuity required
+  value: continuous
+  set_by: conops-integrator
+  basis: Continuous voice+data is prerequisite for 24/7 industrial ops with non-astronaut
+    crew; per-orbit ~10-min ground passes (no-relay contingency) cannot support 30-min
+    supervisory backstop. Architectural dependency on commercial TDRS-successor by
+    Gate 1. §A25.
+  date_set: '2026-05-12'
+  affects:
+  - fmea_top20
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: comms_bandwidth_sustained_mbps
+  parameter: comms bandwidth sustained mbps
+  value: '100'
+  set_by: teleoperation-latency
+  basis: 'IOC ground-to-platform downlink design-to: 4 manipulator workstations (15
+    Mbps each, low-latency H.265 stereo HD) + 3 SA cameras (10 Mbps) + telemetry (6
+    Mbps) + voice + 30% margin = ~125 Mbps; rounded to 100 Mbps sustained / 150 Mbps
+    peak requirement. Inside ISS TDRS Ku capacity (~300 Mbps) and Starlink Gen 2 terminal
+    capacity (>=200 Mbps). Sized in comms-latency.md §5. §A26.'
+  date_set: '2026-05-12'
+  affects:
+  - fmea_top20
+  - cost_program_consumables
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: phase1_program_cost_design_to_b
+  parameter: phase1 program cost design to b
+  value: '15'
+  set_by: cost-program
+  basis: 'Phase 1 (500 t) program cost design-to from parametric decomposition: launch
+    $0.55B + modules $5B + power/thermal $2.2B + robotics $1.0B + mfg module $0.8B
+    + ports $0.5B + int&test $2.0B + ops $1.0B + reserves $2.0B. Range 11-18B. economics-analysis.md
+    "Phase 1 Cost Decomposition".'
+  date_set: '2026-05-12'
+  affects:
+  - breakeven_year_post_ioc
+  - bridge_financing_design_to_b
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: crew_transport_cost_M_per_year_ioc
+  parameter: crew transport cost M per year ioc
+  value: '1400'
+  set_by: cost-program
+  basis: 10 crew on 6-mo rotation (§A22) = 20 crew-rotation seats/yr; Crew Dragon
+    4 seats/flight = 5 flights/yr; $200M/flight ($50M/seat heritage Crew Dragon contract)
+    = $1.0B; with cargo+spare seat allowance 7 effective rotation flights/yr -> $1.4B/yr
+    design-to. Dominates IOC opex 5x vs cargo. economics-analysis.md "IOC Operating
+    Cost".
+  date_set: '2026-05-12'
+  affects:
+  - crew_count_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: ioc_revenue_design_to_M_per_year
+  parameter: ioc revenue design to M per year
+  value: '1000'
+  set_by: cost-program
+  basis: IOC revenue design-to from §primary_manufacturing_product=pharmaceuticals
+    anchor ($300M) + propellant depot ($100M) + module leasing ($150M) + transit fees
+    ($50M) + NASA CLD government anchor ($400M) = ~$1.0B/yr. Range $0.8-1.5B/yr. economics-analysis.md
+    "Revenue Model".
+  date_set: '2026-05-12'
+  affects:
+  - breakeven_year_post_ioc
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: breakeven_year_post_ioc
+  parameter: breakeven year post ioc
+  value: '7'
+  set_by: cost-program
+  basis: 'Operating cash-flow breakeven 7 yrs post-IOC under design-to scenario: IOC
+    opex $2.3B/yr, IOC revenue $1.0B/yr; pharma Phase 2 scaling + ZBLAN online + depot
+    growth closes gap by year 7. Stress case 10+ yrs; aspirational case ($100/kg Starship)
+    4 yrs. economics-analysis.md "Operating Break-Even".'
+  date_set: '2026-05-12'
+  affects:
+  - bridge_financing_design_to_b
+  locked: false
+  locked_date: null
+  superseded_by: null
+- param_id: bridge_financing_design_to_b
+  parameter: bridge financing design to b
+  value: '5'
+  set_by: cost-program
+  basis: 'Cumulative cash-flow shortfall IOC to breakeven (yr 7): $4-6B; design-to
+    $5B. Must be pre-committed by Gate 1 (2028) as senior infra debt + founder equity
+    + sovereign infrastructure capital. International access at 51.6 deg supports
+    sovereign capital pool. economics-analysis.md "Operating Break-Even and Bridge
+    Financing".'
+  date_set: '2026-05-12'
+  affects:
+  - 'null'
+  locked: false
+  locked_date: null
   superseded_by: null

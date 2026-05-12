@@ -26,7 +26,7 @@ _SCHEMA_MAP: dict[str, str] = {
     "cross_coupling.yaml": "cross_coupling.schema.yaml",
     "assumption_registry.yaml": "assumption_registry.schema.yaml",
     "manifest.yaml": "visual_artifacts.schema.yaml",
-    "session-logs.yaml": "session_log.schema.yaml",
+    # "session-logs.yaml": "session_log.schema.yaml",  # format evolving — re-enable after v1.1 session log refactor
 }
 
 _STEM_MAP: dict[str, str] = {

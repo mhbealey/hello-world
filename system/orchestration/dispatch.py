@@ -124,7 +124,8 @@ def parse_dispatch_plan(scaffold_text: str, study_config: dict) -> list[AgentTas
     # Look for lines like: | agent-id | output_path | word_cap | notes |
     table_re = re.compile(
         r"\|\s*([a-z][a-z0-9-]+)\s*\|"      # agent-id
-        r"\s*`?([^`|\n]+?)`?\s*\|"           # output path
+        r"[^|]*\|"                               # description (skip)
+        r"\s*`([^`]+)`\s*\|"                  # output path (must be backtick-quoted)
         r"\s*([0-9,]+|TBD)?\s*\|",           # word budget (optional)
     )
 
@@ -134,7 +135,7 @@ def parse_dispatch_plan(scaffold_text: str, study_config: dict) -> list[AgentTas
     seen_depends: list[str] = []
 
     for line in scaffold_text.splitlines():
-        if re.search(r"## Agent dispatch plan", line, re.IGNORECASE):
+        if re.search(r"## (?:Cycle \d+ )?Agent dispatch plan", line, re.IGNORECASE):
             in_dispatch = True
             continue
         if in_dispatch and line.startswith("## "):
@@ -267,6 +268,7 @@ def dispatch_cycle(
     study_slug: str,
     cycle_number: int,
     dry_run: bool = False,
+    agent_filter: str | None = None,
 ) -> CycleDispatchReport:
     """
     Dispatch all agents for a cycle per the scaffold.
@@ -306,6 +308,8 @@ def dispatch_cycle(
 
     for wave_idx, wave in enumerate(waves):
         for task in wave:
+            if agent_filter and task.agent_id != agent_filter:
+                continue
             result = DispatchResult(
                 agent_id=task.agent_id,
                 status="queued",
@@ -328,13 +332,63 @@ def dispatch_cycle(
                 # Structured failure handling: any exception sets failed status
                 # and logs the failure mode — never silently absorbed.
                 try:
-                    # Placeholder for actual agent invocation
-                    # In production: invoke claude --prompt <composed_prompt>
-                    # and capture output to task.output_path
-                    raise NotImplementedError(
-                        "Live dispatch requires claude CLI. Use dry_run=True "
-                        "for scaffolding validation."
+                    import subprocess
+                    import tempfile
+                    import shutil
+                    import os
+
+                    claude_bin = shutil.which("claude")
+                    if not claude_bin:
+                        raise RuntimeError(
+                            "claude CLI not found in PATH. "
+                            "Install with: npm install -g @anthropic-ai/claude-code"
+                        )
+
+                    prompt = compose_for_domain(task.agent_id, domain)
+                    study_dir = _studies_root() / study_slug
+                    context_block = (
+                        f"Study: {study_slug}\n"
+                        f"Cycle: {cycle_number}\n"
+                        f"Output path: {task.output_path}\n"
+                        f"Word budget: {task.word_budget} words\n"
+                        f"Cross-coupling DB: {study_dir / 'cross_coupling.yaml'}\n"
+                        f"Assumption registry: {study_dir / 'assumption_registry.yaml'}\n"
+                        f"\n---\n\n"
                     )
+                    full_prompt = context_block + prompt
+
+                    out_path = study_dir / "cycles" / f"cycle-{cycle_number:02d}" / task.output_path
+                    out_path.parent.mkdir(parents=True, exist_ok=True)
+
+                    tmp_path = None
+                    timeout_s = 300
+                    proc = subprocess.run(
+                        [claude_bin, "--print", "--dangerously-skip-permissions",
+                         full_prompt],
+                        capture_output=True,
+                        text=True,
+                        timeout=timeout_s,
+                        cwd=str(_repo_root()),
+                    )
+
+                    output_text = proc.stdout.strip()
+
+                    if proc.returncode != 0:
+                        raise RuntimeError(
+                            f"claude exited {proc.returncode}: {proc.stderr[:200]}"
+                        )
+
+                    if not output_text:
+                        raise RuntimeError("claude returned empty output")
+
+                    out_path.write_text(output_text, encoding="utf-8")
+                    result.status = "complete"
+                    result.word_count = len(output_text.split())
+
+                except subprocess.TimeoutExpired:
+                    result.status = "timeout"
+                    result = classify_failure(result)
+                    result.failure_detail = f"Agent timed out after 300s"
                 except Exception as exc:
                     result.status = "failed"
                     result = classify_failure(result)
@@ -380,9 +434,11 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--cycle", required=True, type=int)
     parser.add_argument("--dry-run", action="store_true",
                         help="Resolve dependencies and compose prompts without executing")
+    parser.add_argument("--agent", default=None, metavar="AGENT_ID",
+                        help="Run a single agent only (for testing live dispatch)")
     args = parser.parse_args(argv)
 
-    report = dispatch_cycle(args.study, args.cycle, dry_run=args.dry_run)
+    report = dispatch_cycle(args.study, args.cycle, dry_run=args.dry_run, agent_filter=args.agent)
 
     mode = "[DRY RUN] " if args.dry_run else ""
     print(f"{mode}Cycle {report.cycle} dispatch — {report.dispatched_at}")

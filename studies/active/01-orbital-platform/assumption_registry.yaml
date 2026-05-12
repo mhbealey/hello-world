@@ -1,6 +1,6 @@
 study_id: 01-orbital-platform
-last_updated: '2026-05-06'
-next_id: 13
+last_updated: '2026-05-12'
+next_id: 32
 entries:
 - id: A1
   short_name: starship_cost_realization
@@ -169,3 +169,304 @@ entries:
   go_no_go_gate: null
   superseded_by: null
   cross_coupling_param: null
+- id: A13
+  short_name: reboost_propellant_phase1
+  statement: Phase 1 (500 t platform) requires ~1,800 kg/year reboost propellant at
+    solar mean (design-to with 30% margin); ~3,600 kg/year at solar max.
+  basis: ISS heritage at 420 t reboosts ~7,000-8,000 kg/yr; scaling by mass ratio
+    (~1.19x) and drag-area factor gives 1,400 kg/yr nominal; 30% concept margin yields
+    1,800 kg/yr design-to. Solar cycle drives 2-3x peak variation.
+  risk_level: medium
+  owner_agent: destinations-trajectories
+  date_added: '2026-05-11'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: reboost_propellant_kg_per_year
+- id: A14
+  short_name: phase1_starship_manifest
+  statement: Phase 1 (400 t design-to, 500 t NTE) is delivered by 4-5 Starship cargo
+    flights plus 2 Falcon Heavy flights across a 24-36 month assembly window.
+  basis: Starship 100 t/flight planning baseline to 400 km/51.6 deg; Falcon Heavy
+    ~22 t/flight to same orbit. Backup plan exists at 12-15 FH/NG flights if Starship
+    slips, but program economics require Starship cadence.
+  risk_level: high
+  owner_agent: destinations-trajectories
+  date_added: '2026-05-11'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2030-starship-operational-cadence
+  superseded_by: null
+  cross_coupling_param: phase1_launches_starship_equiv
+- id: A15
+  short_name: ioc_cargo_resupply_180t
+  statement: IOC cargo resupply demand is ~180 t/year (~15 t/month consumables + ORU
+    for 10 crew + industrial operations).
+  basis: ISS heritage 7-8 t/month consumables for 6 crew; scaled to 10 crew with industrial-operations
+    overhead. Drives Starship cargo cadence of ~4 flights/year at IOC for consumables
+    alone.
+  risk_level: medium
+  owner_agent: destinations-trajectories
+  date_added: '2026-05-11'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: ioc_cargo_resupply_t_per_year
+- id: A16
+  short_name: approach_window_22_5min
+  statement: Minimum approach-window spacing for visiting vehicles is 22.5 minutes
+    (1/4 orbital period at 400 km), enforced to maintain positive separation on approach-abort.
+  basis: 'Orbital period at 400 km = 92.7 min; 1/4 orbit ensures the prior vehicle
+    has cleared the approach corridor before the next vehicle enters. Heritage: Dragon
+    and Progress approach corridors operate well within this spacing on ISS.'
+  risk_level: low
+  owner_agent: destinations-trajectories
+  date_added: '2026-05-11'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: approach_window_spacing_min
+- id: A17
+  short_name: node_spacing_50m
+  statement: Truss-node spacing is 50 m, set by single-arm Canadarm2-class reach envelope
+    for node-to-node servicing.
+  basis: Canadarm2 17 m reach; 50 m gives 2x reach + safety overhead; 25 m mass-inefficient;
+    100 m breaks single-arm coverage and concentrates module-isolation failures.
+  risk_level: low
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: node_spacing_m
+- id: A18
+  short_name: pressurized_volume_800m3
+  statement: Phase 1 pressurized volume is 800 m^3 (600 m^3 habitat + 200 m^3 industrial).
+  basis: NESC commercial-LEO floor of 60 m^3 per crew x 10 crew = 600 m^3 habitat.
+    Pharma manufacturing module 200 m^3 (Kibo-class scaled with separate ECLSS loop).
+  risk_level: medium
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: pressurized_volume_phase1_m3
+- id: A19
+  short_name: dc_bus_600v
+  statement: Primary power bus is 600 V DC, stepped down to 120 V / 28 V for crew-touched
+    volumes.
+  basis: ISS 160 V is mass-untenable at 500 kW continuous (~10 t conductor mass).
+    600 V cuts conductor mass ~14x. No flight heritage at 600 V continuous in human-rated
+    pressurized platform; 2028-2030 demonstration roadmap must validate before PDR.
+  risk_level: high
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: dc_bus_voltage_v
+- id: A20
+  short_name: thermal_plus_20pct_over_power
+  statement: Thermal rejection capacity is sized 20% above primary power (600 kW for
+    500 kW primary).
+  basis: Bounds off-nominal industrial load spikes during eclipse exit when batteries
+    discharging into resistive heat. ISS radiator areal mass 7.4 kg/m^2 heritage.
+  risk_level: low
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: thermal_rejection_capacity_kw
+- id: A21
+  short_name: module_isolation_300s
+  statement: Every node supports hatch-closure isolation of any single attached module
+    within 300 s of a confirmed debris-prediction alarm, with power and ECLSS continuity
+    preserved to remaining nodes.
+  basis: ISS Class III response heritage (~5 min for time-critical events). Required
+    because A11 puts 1 km platform at ~100x ISS debris exposure; degrading the >95%
+    Whipple survival probability case.
+  risk_level: medium
+  owner_agent: integrator-systems-architect
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: module_isolation_response_time_s
+- id: A22
+  short_name: crew_rotation_6mo
+  statement: IOC crew rotation period is 6 months per Increment, matching ISS heritage;
+    Crew Dragon (4 seats) is the rotation vehicle, driving ~7 crew rotation flights/year
+    at IOC crew of 10.
+  basis: ISS Increment cadence is 6 months; medical, psychological, and bone-density
+    data for longer tours are sparse outside the Mir/Mars-500 record. 6-month tour
+    preserves heritage and matches commercial Dragon contract structure.
+  risk_level: low
+  owner_agent: conops-integrator
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: crew_rotation_period_months
+- id: A23
+  short_name: shifts_3_per_day
+  statement: Three overlapping 8-hour UTC shifts with 1-hour handover overlap; 24/7
+    industrial operations on a UTC clock independent of local orbital time.
+  basis: ISS 3-shift heritage scaled to 10 crew; pharmaceutical crystallization campaigns
+    require uninterrupted thermal control for 14-28 days, foreclosing any night-shift
+    slowdown. Handover overlap is a hard requirement for non-astronaut crew given
+    A10's 30-day-training assumption.
+  risk_level: low
+  owner_agent: conops-integrator
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: shifts_per_day
+- id: A24
+  short_name: eva_cadence_2_per_pair_week
+  statement: Maximum 2 EVAs per crew pair per week, preferentially scheduled on night-side
+    (eclipse) passes for thermal envelope; hard SAA-avoidance window of ~6 h/day at
+    51.6 deg inclination.
+  basis: ISS EVA cadence heritage; suit thermal cycling and crew workload caps. IOC
+    platform-wide EVA budget is ~1/day on average — sufficient for scheduled maintenance
+    with no margin for unplanned debris-strike repair. Margin recovered in Phase 2
+    via robotic on-orbit servicing, not by adding EVA hours.
+  risk_level: medium
+  owner_agent: conops-integrator
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: evas_per_crew_pair_per_week
+- id: A25
+  short_name: relay_continuous_required
+  statement: Continuous voice+data relay coverage is an operational architecture prerequisite,
+    not a convenience; per-orbit ~10-min ground-station passes are a contingency mode
+    only, insufficient for 24/7 industrial ops with non-astronaut commercial crew.
+  basis: TDRS provides this for ISS today but is sunsetting; commercial TDRS-successor
+    must be operational by Gate 1. The supervisory backstop case for off-nominal events
+    in a 30-min-out-of-the-loop window is unacceptable when crew lack full astronaut
+    response training (A10 coupling).
+  risk_level: high
+  owner_agent: conops-integrator
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: relay_continuity_required
+- id: A26
+  short_name: comms_bandwidth_100mbps
+  statement: IOC sustained downlink design-to is 100 Mbps (150 Mbps peak), sized for
+    4 manipulator workstations + 3 SA cameras + process and engineering telemetry
+    + voice with 30% margin.
+  basis: 'comms-latency.md §5 derivation: 4 x 15 Mbps stereo HD low-latency H.265
+    manipulator video + 3 x 10 Mbps SA video + 2 Mbps process + 4 Mbps engineering
+    + voice ~= 96 Mbps; 30% margin -> ~125 Mbps; rounded to 100 sustained / 150 peak.
+    Inside ISS Ku/TDRS aggregate (~300 Mbps) and Starlink Gen 2 terminal (>= 200 Mbps).
+    Uplink ~20% of downlink (command + voice return). Sized for Tier 1 telepresence
+    operation - relay-fallback Tier 2 mode requires only voice + monitor bandwidth
+    (~5 Mbps).'
+  risk_level: medium
+  owner_agent: teleoperation-latency
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: comms_bandwidth_sustained_mbps
+- id: A27
+  short_name: phase1_cost_15B
+  statement: Phase 1 (500 t platform IOC) program cost is $11-18B, design-to $15B,
+    with launch ~4% and pressurized modules ~35% of capex.
+  basis: 'Parametric decomposition: launch 5 SS + 2 FH = $0.55B; modules (800 m^3)
+    $5B at Axiom/Vast benchmarks; power+thermal (500 kW, 600 V) $2.2B; robotics $1B;
+    mfg module $0.8B; integration 15-20% NESC; reserves 15%. Below ISS per-year cost.'
+  risk_level: medium
+  owner_agent: cost-program
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: phase1_program_cost_design_to_B
+- id: A28
+  short_name: crew_dragon_seat_cost_50M
+  statement: Crew Dragon seat cost holds at $50M ($200M/flight, 4 seats) through Phase
+    2; second commercial provider or Starship-derived crew variant required to halve
+    seat cost in Phase 3.
+  basis: Current Crew Dragon NASA contract structure; Dream Chaser crew variant unflown;
+    Starship crew variant deferred. Second-provider competition is the realistic lever
+    to drop seat cost to $25M before Phase 3.
+  risk_level: high
+  owner_agent: cost-program
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2030-starship-operational-cadence
+  superseded_by: null
+  cross_coupling_param: null
+- id: A29
+  short_name: pharma_revenue_300M_ioc
+  statement: Pharmaceutical (protein crystallization) revenue at IOC is $200-400M/yr
+    scaling to $600-1000M/yr in Phase 2; assumes platform captures 5-10% of specialty
+    pharma crystallization research market plus 1-3% of high-value protein production
+    market.
+  basis: Microgravity protein crystallization advantage proven (McPherson & DeLucas,
+    npj Microgravity 2015). Market adoption velocity is the risk, not technology.
+    3-year lag adds $2-3B to bridge financing.
+  risk_level: high
+  owner_agent: cost-program
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: ioc_revenue_design_to_M_per_year
+- id: A30
+  short_name: operating_breakeven_year7
+  statement: Operating cash-flow breakeven arrives at IOC + 7 years (~2042) under
+    design-to scenario; aspirational case ($100/kg Starship, fast pharma adoption)
+    closes at IOC + 4 years; stress case (Starship $150/kg, pharma lag, halved NASA
+    anchor) requires program restructure or $8-10B government bridge.
+  basis: 'Revenue trajectory: $1.0B IOC -> $2.5B at IOC+7 (pharma Phase 2 + ZBLAN
+    + depot scaling); opex stable $2.3-2.6B. Cumulative shortfall IOC to breakeven
+    $4-6B.'
+  risk_level: high
+  owner_agent: cost-program
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: null
+  superseded_by: null
+  cross_coupling_param: breakeven_year_post_ioc
+- id: A31
+  short_name: bridge_financing_4to6B
+  statement: Bridge financing of $4-6B (design-to $5B) must be pre-committed by Gate
+    1 (2028) to cover the operating cash-flow trough from IOC to breakeven; structured
+    as senior infrastructure debt plus founder and sovereign-infrastructure equity,
+    not year-by-year raises.
+  basis: Cumulative IOC-to-yr-7 shortfall integration. 51.6 deg inclination (§A2)
+    supports sovereign capital pool (Baikonur/Kourou/Kennedy access); founder-locked
+    open-interface decision positions platform as infrastructure asset, accessing
+    larger capital pool than closed commercial product.
+  risk_level: critical
+  owner_agent: cost-program
+  date_added: '2026-05-12'
+  last_reviewed: null
+  status: active
+  go_no_go_gate: 2028-interface-standards-lock
+  superseded_by: null
+  cross_coupling_param: bridge_financing_design_to_B

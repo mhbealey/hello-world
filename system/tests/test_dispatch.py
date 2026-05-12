@@ -33,10 +33,10 @@ FIXTURE_SCAFFOLD = textwrap.dedent("""
 
     ## Agent dispatch plan
 
-    | agent-id | output | word cap | notes |
-    |----------|--------|----------|-------|
-    | teleoperation-latency | 02-question-b/comms.md | 2,000 | parallel |
-    | cost-program | 03-question-c/econ.md | 3,000 | parallel |
+    | agent-id | description | output | word cap |
+    |----------|-------------|--------|----------|
+    | teleoperation-latency | Latency analysis | `02-question-b/comms.md` | 2,000 |
+    | cost-program | Cost estimate | `03-question-c/econ.md` | 3,000 |
 
     ## Gates
 
@@ -205,15 +205,35 @@ class TestDispatchCycleDryRun:
         assert report.session_log_entry is not None
         assert report.session_log_entry["dry_run"] is True
 
-    def test_live_dispatch_raises_not_implemented(self):
-        """Live dispatch requires claude CLI; confirms failure is logged not absorbed."""
-        report = dispatch_cycle(STUDY_SLUG, 2, dry_run=False)
-        # All results should be failed (NotImplementedError from stub)
-        assert all(r.status == "failed" for r in report.results)
-        # Failure mode must be set — never silently absorbed
+    def test_live_dispatch_executes_and_logs(self, monkeypatch):
+        """Live dispatch invokes claude CLI and logs results — never silently absorbed.
+        Uses monkeypatch to mock subprocess so no real API calls are made in tests.
+        """
+        import subprocess
+        import system.orchestration.dispatch as d
+
+        # Mock shutil.which to return a fake claude path
+        monkeypatch.setattr("shutil.which", lambda name: "/usr/bin/claude" if name == "claude" else None)
+
+        # Mock subprocess.run to return fake successful output
+        fake_result = subprocess.CompletedProcess(
+            args=[],
+            returncode=0,
+            stdout="Mock agent output for testing purposes. " * 50,
+            stderr="",
+        )
+        monkeypatch.setattr("subprocess.run", lambda *a, **kw: fake_result)
+
+        report = dispatch_cycle(STUDY_SLUG, 2, dry_run=False, agent_filter="destinations-trajectories")
+
+        # At least one result should be present
+        assert len(report.results) >= 1
+        # Results must have status set — never silently absorbed
         for r in report.results:
-            assert r.failure_mode is not None
-            assert r.failure_detail is not None
+            assert r.status is not None
+            if r.status == "failed":
+                assert r.failure_mode is not None
+                assert r.failure_detail is not None
 
     def test_unapproved_scaffold_raises(self, tmp_path, monkeypatch):
         import system.orchestration.dispatch as d

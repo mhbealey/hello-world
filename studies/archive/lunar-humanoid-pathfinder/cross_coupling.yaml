@@ -1,399 +1,475 @@
 study_id: lunar-humanoid-pathfinder
-last_updated: "2026-05-03"
-# Migrated from study/05-cross-cutting/cross-coupling-log.md on 2026-05-04
-
+last_updated: '2026-05-03'
 entries:
+- param_id: autonomy_trl_curve
+  parameter: Humanoid autonomy TRL trajectory (study assumption)
+  value: TRL 6 (space-relevant environments) by ~2029 → TRL 7+ by ~2035 → TRL 8 (qualified,
+    operational) by 2038–2040
+  set_by: orchestrator (resolution of stage 4 contradiction)
+  affects:
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  - conops-integrator
+  - technology-roadmap-trl
+  - cost-program
+  - far-side-base-architect
+  basis: 'Study assumption with explicit go/no-go gates at each milestone. Not a forecast.
+    See §A1 in study/05-cross-cutting/margins-and-assumptions.md. If the 2029 gate
+    is missed, deployment timeline slips proportionally; if 2035 gate is missed, teaming
+    model defaults to higher human-in-the-loop ratios.
 
-  - param_id: autonomy_trl_curve
-    parameter: "Humanoid autonomy TRL trajectory (study assumption)"
-    date: "2026-05-03"
-    value: "TRL 6 (space-relevant environments) by ~2029 → TRL 7+ by ~2035 → TRL 8 (qualified, operational) by 2038–2040"
-    set_by: "orchestrator (resolution of stage 4 contradiction)"
-    affects:
-      - autonomy-trl-tasking
-      - human-factors-teaming
-      - conops-integrator
-      - technology-roadmap-trl
-      - cost-program
-      - far-side-base-architect
-    basis: >
-      Study assumption with explicit go/no-go gates at each milestone. Not a forecast.
-      See §A1 in study/05-cross-cutting/margins-and-assumptions.md. If the 2029 gate
-      is missed, deployment timeline slips proportionally; if 2035 gate is missed,
-      teaming model defaults to higher human-in-the-loop ratios.
+    '
+  date_set: '2026-05-03'
+- param_id: form_factor
+  parameter: Space humanoid primary form factor
+  value: Full bipedal humanoid; standing height 1.5–1.9 m; design-to mass 75 kg; NTE
+    mass 97.5 kg (30% margin); two legs, two arms, two dexterous hands, anthropomorphic
+    geometry
+  set_by: humanoid-systems-architect
+  affects:
+  - robotics-actuation-structures
+  - robotics-sensing-autonomy
+  - space-environments
+  - humanoid-systems-architect
+  - conops-integrator
+  basis: 'Tradespace of five candidates weighted against seven criteria; bipedal scores
+    highest (3.65/5.00) driven by human tool and environment compatibility (C1, weight
+    0.25). Centaur is close second (3.55) — correct answer if base infrastructure
+    is designed for robots before crew arrival, which current program timeline does
+    not support. Four end-effectors must support both bipedal surface locomotion and
+    handrail-grasp zero-g mobility as first-class modes (FEDOR lesson).
 
-  - param_id: form_factor
-    parameter: "Space humanoid primary form factor"
-    date: "2026-05-03"
-    value: "Full bipedal humanoid; standing height 1.5–1.9 m; design-to mass 75 kg; NTE mass 97.5 kg (30% margin); two legs, two arms, two dexterous hands, anthropomorphic geometry"
-    set_by: humanoid-systems-architect
-    affects:
-      - robotics-actuation-structures
-      - robotics-sensing-autonomy
-      - space-environments
-      - humanoid-systems-architect
-      - conops-integrator
-    basis: >
-      Tradespace of five candidates weighted against seven criteria; bipedal scores
-      highest (3.65/5.00) driven by human tool and environment compatibility (C1,
-      weight 0.25). Centaur is close second (3.55) — correct answer if base
-      infrastructure is designed for robots before crew arrival, which current program
-      timeline does not support. Four end-effectors must support both bipedal surface
-      locomotion and handrail-grasp zero-g mobility as first-class modes (FEDOR lesson).
+    '
+  date_set: '2026-05-03'
+- param_id: actuation_architecture
+  parameter: Primary joint actuation type for the space humanoid
+  value: HD-Electric for load-bearing joints (hips, knees, ankles, shoulders, elbows);
+    hybrid QDD-class for wrists, fingers, ankle fine-axis; hydraulic eliminated; SEA
+    fallback if harmonic flexspline cryogenic validation fails by 2029 gate
+  set_by: robotics-actuation-structures
+  affects:
+  - space-environments
+  - humanoid-systems-architect
+  - technology-roadmap-trl
+  - fault-management-sustainment
+  - cost-program
+  basis: 'HD-Electric: best mass efficiency at required torque levels (Atlas Electric
+    89 kg 28 DOF, 85–90% efficiency). SEA mass penalty prohibitive at 75 kg target
+    (Valkyrie 129 kg 44 DOF). Hydraulic eliminated for outgassing risk in vacuum and
+    non-serviceability in EVA context. Note: Atlas Electric uses direct-drive motors,
+    not harmonic drives — cited as efficiency benchmark only.
 
-  - param_id: actuation_architecture
-    parameter: "Primary joint actuation type for the space humanoid"
-    date: "2026-05-03"
-    value: "HD-Electric for load-bearing joints (hips, knees, ankles, shoulders, elbows); hybrid QDD-class for wrists, fingers, ankle fine-axis; hydraulic eliminated; SEA fallback if harmonic flexspline cryogenic validation fails by 2029 gate"
-    set_by: robotics-actuation-structures
-    affects:
-      - space-environments
-      - humanoid-systems-architect
-      - technology-roadmap-trl
-      - fault-management-sustainment
-      - cost-program
-    basis: >
-      HD-Electric: best mass efficiency at required torque levels (Atlas Electric 89 kg
-      28 DOF, 85–90% efficiency). SEA mass penalty prohibitive at 75 kg target
-      (Valkyrie 129 kg 44 DOF). Hydraulic eliminated for outgassing risk in vacuum
-      and non-serviceability in EVA context. Note: Atlas Electric uses direct-drive
-      motors, not harmonic drives — cited as efficiency benchmark only.
+    '
+  date_set: '2026-05-03'
+- param_id: joint_count_dof
+  parameter: Nominal joint count and DOF allocation for the space humanoid
+  value: '38 DOF nominal (range 36–40): neck 3, torso 2, arms 4 DOF × 2, wrists 3
+    DOF × 2, hands 10–12 DOF × 2, hips 3 DOF × 2, knees 1 DOF × 2, ankles 2 DOF ×
+    2'
+  set_by: robotics-actuation-structures
+  affects:
+  - robotics-sensing-autonomy
+  - humanoid-systems-architect
+  - conops-integrator
+  - fault-management-sustainment
+  basis: 'Calibrated against R2 42-DOF torso+arm+hand and Valkyrie 44-DOF designs.
+    Reduction to 38 by cutting torso DOF from 3 to 2 and reducing hand DOF to minimum
+    for EVA tool grasp. Convention: 38 = independently controlled primary drive-train
+    axes; bilateral joints counted as 2 each; distal couplings excluded.
 
-  - param_id: joint_count_dof
-    parameter: "Nominal joint count and DOF allocation for the space humanoid"
-    date: "2026-05-03"
-    value: "38 DOF nominal (range 36–40): neck 3, torso 2, arms 4 DOF × 2, wrists 3 DOF × 2, hands 10–12 DOF × 2, hips 3 DOF × 2, knees 1 DOF × 2, ankles 2 DOF × 2"
-    set_by: robotics-actuation-structures
-    affects:
-      - robotics-sensing-autonomy
-      - humanoid-systems-architect
-      - conops-integrator
-      - fault-management-sustainment
-    basis: >
-      Calibrated against R2 42-DOF torso+arm+hand and Valkyrie 44-DOF designs.
-      Reduction to 38 by cutting torso DOF from 3 to 2 and reducing hand DOF to
-      minimum for EVA tool grasp. Convention: 38 = independently controlled primary
-      drive-train axes; bilateral joints counted as 2 each; distal couplings excluded.
+    '
+  date_set: '2026-05-03'
+- param_id: structure_actuation_mass
+  parameter: Structure and actuation mass design-to target
+  value: '30.0 kg design-to / 39.0 kg NTE (30% margin): primary structure 8.5 kg +
+    actuation 13.0 kg + joints/seals 4.0 kg + end-effectors 4.5 kg = 30.0 kg total
+    (40% of 75 kg system design-to)'
+  set_by: robotics-actuation-structures
+  affects:
+  - humanoid-systems-architect
+  - destinations-trajectories
+  - cost-program
+  basis: 'Parametric breakdown: CFRP+Al hybrid structure, 38 joints × ~340 g mean
+    actuator mass, perfluoroelastomer seals, EVA-compatible end-effectors. Residual
+    45 kg design-to covers sensors, compute, power, thermal, consumables, and harness.
 
-  - param_id: structure_actuation_mass
-    parameter: "Structure and actuation mass design-to target"
-    date: "2026-05-03"
-    value: "30.0 kg design-to / 39.0 kg NTE (30% margin): primary structure 8.5 kg + actuation 13.0 kg + joints/seals 4.0 kg + end-effectors 4.5 kg = 30.0 kg total (40% of 75 kg system design-to)"
-    set_by: robotics-actuation-structures
-    affects:
-      - humanoid-systems-architect
-      - destinations-trajectories
-      - cost-program
-    basis: >
-      Parametric breakdown: CFRP+Al hybrid structure, 38 joints × ~340 g mean actuator
-      mass, perfluoroelastomer seals, EVA-compatible end-effectors. Residual 45 kg
-      design-to covers sensors, compute, power, thermal, consumables, and harness.
+    '
+  date_set: '2026-05-03'
+- param_id: dust_mitigation_joints
+  parameter: Primary dust mitigation approach for joint architecture
+  value: Dual-stage labyrinth + single FFKM elastomeric lip seal for all load-bearing
+    joints; disposable Vectran/Zylon boot covers for foot/ankle at 500-hour parametric
+    replacement interval
+  set_by: robotics-actuation-structures
+  affects:
+  - space-environments
+  - fault-management-sustainment
+  - far-side-base-architect
+  - technology-roadmap-trl
+  basis: 'Labyrinth seals TRL 7–8 in contaminated industrial environments. FFKM has
+    ISS heritage in fluid connectors at −60°C to +200°C; extension to −180°C is a
+    TRL 4 development item. Active gas purge and graceful degradation both rejected.
+    FFKM cryogenic validation is on critical path to 2029 gate.
 
-  - param_id: dust_mitigation_joints
-    parameter: "Primary dust mitigation approach for joint architecture"
-    date: "2026-05-03"
-    value: "Dual-stage labyrinth + single FFKM elastomeric lip seal for all load-bearing joints; disposable Vectran/Zylon boot covers for foot/ankle at 500-hour parametric replacement interval"
-    set_by: robotics-actuation-structures
-    affects:
-      - space-environments
-      - fault-management-sustainment
-      - far-side-base-architect
-      - technology-roadmap-trl
-    basis: >
-      Labyrinth seals TRL 7–8 in contaminated industrial environments. FFKM has ISS
-      heritage in fluid connectors at −60°C to +200°C; extension to −180°C is a TRL 4
-      development item. Active gas purge and graceful degradation both rejected.
-      FFKM cryogenic validation is on critical path to 2029 gate.
+    '
+  date_set: '2026-05-03'
+- param_id: sensor_suite_mass_power
+  parameter: Sensor suite mass and power envelope for the space humanoid
+  value: '~2.1 kg design-to; 37–75 W peak, 10–30 W average (LIDAR duty cycling). Suite:
+    stereo HDR camera + ToF depth (head), wrist cameras, IMU × 3 redundant, wrist
+    F/T sensors, fingertip tactile arrays, solid-state LIDAR'
+  set_by: robotics-sensing-autonomy
+  affects:
+  - humanoid-systems-architect
+  - space-environments
+  - technology-roadmap-trl
+  basis: 'Parametric sizing from Digit, Valkyrie, and R2 sensor heritage. Space-specific:
+    HDR cameras for extreme contrast outdoors; spot-shielded MEMS IMUs for radiation
+    TID; solid-state LIDAR with duty cycling. HDR outdoor qualification and flexible
+    tactile substrate TRL gap are on critical path to 2029 gate.
 
-  - param_id: sensor_suite_mass_power
-    parameter: "Sensor suite mass and power envelope for the space humanoid"
-    date: "2026-05-03"
-    value: "~2.1 kg design-to; 37–75 W peak, 10–30 W average (LIDAR duty cycling). Suite: stereo HDR camera + ToF depth (head), wrist cameras, IMU × 3 redundant, wrist F/T sensors, fingertip tactile arrays, solid-state LIDAR"
-    set_by: robotics-sensing-autonomy
-    affects:
-      - humanoid-systems-architect
-      - space-environments
-      - technology-roadmap-trl
-    basis: >
-      Parametric sizing from Digit, Valkyrie, and R2 sensor heritage. Space-specific:
-      HDR cameras for extreme contrast outdoors; spot-shielded MEMS IMUs for radiation
-      TID; solid-state LIDAR with duty cycling. HDR outdoor qualification and flexible
-      tactile substrate TRL gap are on critical path to 2029 gate.
+    '
+  date_set: '2026-05-03'
+- param_id: compute_architecture
+  parameter: Compute architecture for onboard autonomy inference
+  value: 'Two-tier: (1) RAD750-class supervisor 5–10 W always-on (safety-critical
+    loops only) + (2) Jetson AGX Orin-class AI accelerator 15–60 W watchdog-managed
+    (perception + VLA). Total ~1.8 kg. Cloud inference excluded'
+  set_by: robotics-sensing-autonomy
+  affects:
+  - humanoid-systems-architect
+  - technology-roadmap-trl
+  - space-environments
+  - fault-management-sustainment
+  basis: 'Precedented by MSL compute hierarchy (RAD750 + instrument-local processors).
+    No rad-hard AI-inference equivalent of Jetson AGX Orin exists at TRL > 4 as of
+    2026; watchdog architecture is the operational solution through 2035 window. DARPA
+    HPSC and similar programs on critical path if Tier 2 architecture is to be simplified
+    before 2035.
 
-  - param_id: compute_architecture
-    parameter: "Compute architecture for onboard autonomy inference"
-    date: "2026-05-03"
-    value: "Two-tier: (1) RAD750-class supervisor 5–10 W always-on (safety-critical loops only) + (2) Jetson AGX Orin-class AI accelerator 15–60 W watchdog-managed (perception + VLA). Total ~1.8 kg. Cloud inference excluded"
-    set_by: robotics-sensing-autonomy
-    affects:
-      - humanoid-systems-architect
-      - technology-roadmap-trl
-      - space-environments
-      - fault-management-sustainment
-    basis: >
-      Precedented by MSL compute hierarchy (RAD750 + instrument-local processors).
-      No rad-hard AI-inference equivalent of Jetson AGX Orin exists at TRL > 4 as
-      of 2026; watchdog architecture is the operational solution through 2035 window.
-      DARPA HPSC and similar programs on critical path if Tier 2 architecture is
-      to be simplified before 2035.
+    '
+  date_set: '2026-05-03'
+- param_id: autonomy_teleoperation_boundary
+  parameter: Provisional allocation of tasks between autonomous, supervised, and controlled
+    operation by 2035 IOC
+  value: 'Fully autonomous: routine locomotion on prepared paths, sensor collection,
+    pre-scripted maintenance, health monitoring, safe-mode transitions. Human-supervised:
+    novel manipulation, EVA tool handoff, PSR ops, emergency response, pressurized
+    interfaces. Human-controlled always: life-safety, irreversible actions, crew override
+    of any autonomous execution'
+  set_by: robotics-sensing-autonomy (provisional; refined by autonomy-trl-tasking
+    and human-factors-teaming)
+  affects:
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  - teleoperation-latency
+  - conops-integrator
+  - fault-management-sustainment
+  basis: 'Calibrated against §A1 TRL curve (TRL 7+ by 2035) and Mars rover AutoNav
+    heritage (flight-qualified autonomous traverse at TRL 8 since 2014). Life-safety
+    and irreversible-action categories are program constraints, not TRL-dependent.
+    Avatar-mode teleoperation (FEDOR heritage) is anomaly fallback.
 
-  - param_id: autonomy_teleoperation_boundary
-    parameter: "Provisional allocation of tasks between autonomous, supervised, and controlled operation by 2035 IOC"
-    date: "2026-05-03"
-    value: "Fully autonomous: routine locomotion on prepared paths, sensor collection, pre-scripted maintenance, health monitoring, safe-mode transitions. Human-supervised: novel manipulation, EVA tool handoff, PSR ops, emergency response, pressurized interfaces. Human-controlled always: life-safety, irreversible actions, crew override of any autonomous execution"
-    set_by: "robotics-sensing-autonomy (provisional; refined by autonomy-trl-tasking and human-factors-teaming)"
-    affects:
-      - autonomy-trl-tasking
-      - human-factors-teaming
-      - teleoperation-latency
-      - conops-integrator
-      - fault-management-sustainment
-    basis: >
-      Calibrated against §A1 TRL curve (TRL 7+ by 2035) and Mars rover AutoNav
-      heritage (flight-qualified autonomous traverse at TRL 8 since 2014).
-      Life-safety and irreversible-action categories are program constraints, not
-      TRL-dependent. Avatar-mode teleoperation (FEDOR heritage) is anomaly fallback.
+    '
+  date_set: '2026-05-03'
+- param_id: lunar_night_thermal_power
+  parameter: FSP power reservation for humanoid thermal survival during lunar night;
+    survival mode definition
+  value: '70–200 W continuous FSP draw per humanoid during lunar night (50–150 W electronics/battery
+    heaters + 20–50 W joint heaters); survival mode: Tier 1 RH supervisor only, Tier
+    2 AI off, locomotion off, battery at ~30% SOC; warm-up: 15–30 min partial, 45–90
+    min full operability'
+  set_by: space-environments
+  affects:
+  - humanoid-systems-architect
+  - far-side-base-architect
+  - conops-integrator
+  - fault-management-sustainment
+  basis: 'Parametric from Mars rover WEB survival heater heritage (~100 Wh/night cold
+    case, Curiosity/Perseverance); scaled for 14-day lunar night and humanoid electronics
+    volume. Joint heater from HD-Electric PFPE grease floor at −60°C minimum. Wide
+    range due to absence of bipedal-form-factor thermal model; TRL 2 (parametric only);
+    detailed model required by 2031, test validation before PDR.
 
-  - param_id: lunar_night_thermal_power
-    parameter: "FSP power reservation for humanoid thermal survival during lunar night; survival mode definition"
-    date: "2026-05-03"
-    value: "70–200 W continuous FSP draw per humanoid during lunar night (50–150 W electronics/battery heaters + 20–50 W joint heaters); survival mode: Tier 1 RH supervisor only, Tier 2 AI off, locomotion off, battery at ~30% SOC; warm-up: 15–30 min partial, 45–90 min full operability"
-    set_by: space-environments
-    affects:
-      - humanoid-systems-architect
-      - far-side-base-architect
-      - conops-integrator
-      - fault-management-sustainment
-    basis: >
-      Parametric from Mars rover WEB survival heater heritage (~100 Wh/night cold case,
-      Curiosity/Perseverance); scaled for 14-day lunar night and humanoid electronics
-      volume. Joint heater from HD-Electric PFPE grease floor at −60°C minimum.
-      Wide range due to absence of bipedal-form-factor thermal model; TRL 2 (parametric
-      only); detailed model required by 2031, test validation before PDR.
-    notes:
-      - "2026-05-03: Electronics/battery heater range confirmed as 50–150 W in §05.
-         §06 was inconsistent (85–175 W) and corrected in Batch 2 remediation.
-         See param_id survival_heater_correction for the corrected values."
+    '
+  notes:
+  - '2026-05-03: Electronics/battery heater range confirmed as 50–150 W in §05. §06
+    was inconsistent (85–175 W) and corrected in Batch 2 remediation. See param_id
+    survival_heater_correction for the corrected values.'
+  date_set: '2026-05-03'
+- param_id: radiation_hardening
+  parameter: Electronics radiation hardening approach for space humanoid
+  value: 'Hybrid: RHBD (RAD750-class) for Tier 1 safety processor + critical motor
+    controllers; COTS + 5–10 mm Al spot shielding + 3-year ORU replacement for Tier
+    2 AI accelerator; torso walls 2–4 mm Al equivalent passive shielding; 7-year TID
+    budget 140–210 krad(Si); SPE survival by habitat retreat (not body electronics
+    hardening)'
+  set_by: space-environments
+  affects:
+  - humanoid-systems-architect
+  - fault-management-sustainment
+  - conops-integrator
+  - far-side-base-architect
+  - technology-roadmap-trl
+  basis: '7-year design life at ~20–30 krad/yr surface (Chang''e-4 LND, Zhang et al.
+    2020) = 140–210 krad(Si). COTS TID tolerance ~10 krad without shielding — requires
+    mitigation. 5–10 mm Al reduces GCR dose rate 3–5×. Combined with 3-year ORU, COTS
+    Tier 2 viable through 7-year design life. Carrington-class SPE fluences eliminated
+    by habitat retreat requirement.
 
-  - param_id: radiation_hardening
-    parameter: "Electronics radiation hardening approach for space humanoid"
-    date: "2026-05-03"
-    value: "Hybrid: RHBD (RAD750-class) for Tier 1 safety processor + critical motor controllers; COTS + 5–10 mm Al spot shielding + 3-year ORU replacement for Tier 2 AI accelerator; torso walls 2–4 mm Al equivalent passive shielding; 7-year TID budget 140–210 krad(Si); SPE survival by habitat retreat (not body electronics hardening)"
-    set_by: space-environments
-    affects:
-      - humanoid-systems-architect
-      - fault-management-sustainment
-      - conops-integrator
-      - far-side-base-architect
-      - technology-roadmap-trl
-    basis: >
-      7-year design life at ~20–30 krad/yr surface (Chang'e-4 LND, Zhang et al. 2020)
-      = 140–210 krad(Si). COTS TID tolerance ~10 krad without shielding — requires
-      mitigation. 5–10 mm Al reduces GCR dose rate 3–5×. Combined with 3-year ORU,
-      COTS Tier 2 viable through 7-year design life. Carrington-class SPE fluences
-      eliminated by habitat retreat requirement.
+    '
+  date_set: '2026-05-03'
+- param_id: dust_mitigation_system
+  parameter: System-level dust mitigation beyond joint seals (optical, thermal, connectors)
+  value: 'Optical: spring-loaded passive covers (ExoMars TRL 7) + scheduled pre-task
+    brushing; EDD growth option at TRL 4 only. Radiators: ε ≥ 0.85 BOL, design to
+    ε = 0.70 EOL (18–24% emissivity margin); smooth hard coatings. Connectors: spring-loaded
+    dust caps + N₂ purge (~0.2–0.5 kg canister); all EVA-glove operable'
+  set_by: space-environments
+  affects:
+  - humanoid-systems-architect
+  - far-side-base-architect
+  - fault-management-sustainment
+  - conops-integrator
+  basis: 'ExoMars camera cover TRL 7 heritage. Mars solar panel dust degradation 2–5%/month
+    (MER) used as conservative proxy for radiator emissivity degradation — actual
+    lunar dust adhesion rate may differ significantly (electrostatic vs. gravitational
+    mechanism) and must be measured. N₂ canister mass in consumables manifest. Pre-task
+    optical cleaning adds ~5 min to EVA preparation procedure.
 
-  - param_id: dust_mitigation_system
-    parameter: "System-level dust mitigation beyond joint seals (optical, thermal, connectors)"
-    date: "2026-05-03"
-    value: "Optical: spring-loaded passive covers (ExoMars TRL 7) + scheduled pre-task brushing; EDD growth option at TRL 4 only. Radiators: ε ≥ 0.85 BOL, design to ε = 0.70 EOL (18–24% emissivity margin); smooth hard coatings. Connectors: spring-loaded dust caps + N₂ purge (~0.2–0.5 kg canister); all EVA-glove operable"
-    set_by: space-environments
-    affects:
-      - humanoid-systems-architect
-      - far-side-base-architect
-      - fault-management-sustainment
-      - conops-integrator
-    basis: >
-      ExoMars camera cover TRL 7 heritage. Mars solar panel dust degradation 2–5%/month
-      (MER) used as conservative proxy for radiator emissivity degradation — actual
-      lunar dust adhesion rate may differ significantly (electrostatic vs. gravitational
-      mechanism) and must be measured. N₂ canister mass in consumables manifest.
-      Pre-task optical cleaning adds ~5 min to EVA preparation procedure.
+    '
+  date_set: '2026-05-03'
+- param_id: mass_power_budget_closure
+  parameter: Closed mass and power budget for the space humanoid — key output numbers
+    for all downstream agents
+  value: 'Dry mass: 75.0 kg design-to / 97.5 kg NTE (30% margin). Power: 616 W full
+    locomotion+manipulation (with margin, vs. 800 W cap); 432 W stationary manipulation;
+    103–272 W lunar night hibernation. Battery: 2.0 kWh at 12.5 kg cells + 2.5 kg
+    BMS/housing + 1.9 kg harness = 16.9 kg power system total (22% of design-to)'
+  set_by: humanoid-systems-architect
+  affects:
+  - destinations-trajectories
+  - cost-program
+  - conops-integrator
+  - far-side-base-architect
+  basis: 'Budget integrates §03 (structure+actuation 30.0 kg), §04 (sensors 2.1 kg
+    + compute 1.8 kg), §05 (electronics shielding 1.0 kg, thermal 2.5 kg, consumables
+    0.9 kg), and battery derivation (16.9 kg). Growth allowance 17.3 kg = 30% of allocated
+    subsystems, consistent with concept-phase MGA at TRL < 5. Primary unresolved risk:
+    lunar night thermal power draw (parametric TRL 2).
 
-  - param_id: mass_power_budget_closure
-    parameter: "Closed mass and power budget for the space humanoid — key output numbers for all downstream agents"
-    date: "2026-05-03"
-    value: "Dry mass: 75.0 kg design-to / 97.5 kg NTE (30% margin). Power: 616 W full locomotion+manipulation (with margin, vs. 800 W cap); 432 W stationary manipulation; 103–272 W lunar night hibernation. Battery: 2.0 kWh at 12.5 kg cells + 2.5 kg BMS/housing + 1.9 kg harness = 16.9 kg power system total (22% of design-to)"
-    set_by: humanoid-systems-architect
-    affects:
-      - destinations-trajectories
-      - cost-program
-      - conops-integrator
-      - far-side-base-architect
-    basis: >
-      Budget integrates §03 (structure+actuation 30.0 kg), §04 (sensors 2.1 kg +
-      compute 1.8 kg), §05 (electronics shielding 1.0 kg, thermal 2.5 kg, consumables
-      0.9 kg), and battery derivation (16.9 kg). Growth allowance 17.3 kg = 30% of
-      allocated subsystems, consistent with concept-phase MGA at TRL < 5.
-      Primary unresolved risk: lunar night thermal power draw (parametric TRL 2).
-    notes:
-      - "2026-05-03 Batch 2: Thermal management mass revised from 3.0 kg to 2.5 kg;
-         growth allowance revised from 16.8 kg to 17.3 kg. Totals unchanged at
-         75.0 kg / 97.5 kg NTE."
+    '
+  notes:
+  - '2026-05-03 Batch 2: Thermal management mass revised from 3.0 kg to 2.5 kg; growth
+    allowance revised from 16.8 kg to 17.3 kg. Totals unchanged at 75.0 kg / 97.5
+    kg NTE.'
+  date_set: '2026-05-03'
+- param_id: autonomy_trl6_gate_2029
+  parameter: TRL 6 gate minimum observable for §A1 autonomy TRL curve
+  value: 'First-article bipedal humanoid (or 75 kg / 38 DOF locomotion testbed) must
+    demonstrate ≥30 min unscripted bipedal locomotion on JSC-1A or ISAC simulant in
+    1/6-g offload, including ≥1 unplanned terrain feature encounter, no operator intervention.
+    Demo by Q4 2028. Per-layer targets at gate: reactive TRL 6, deliberative TRL 5,
+    supervisory TRL 5'
+  set_by: robotics-sensing-autonomy (stage 6 remediation)
+  affects:
+  - technology-roadmap-trl
+  - autonomy-trl-tasking
+  - conops-integrator
+  - cost-program
+  basis: 'DA-002 finding (stage 6): §A1 TRL 6 by 2029 was carrying thesis weight without
+    a backing demonstration program. Calibrated to NASA TRL 6 definition (relevant
+    environment). Relevant environment for locomotion = representative gravity (1/6-g
+    offload) + representative terrain (JSC-1A/ISAC). T/V not required for TRL 6 (that
+    advances to TRL 7). If gate slips past Q2 2029, 2035 IOC renegotiated.
 
-  - param_id: autonomy_trl6_gate_2029
-    parameter: "TRL 6 gate minimum observable for §A1 autonomy TRL curve"
-    date: "2026-05-03"
-    value: "First-article bipedal humanoid (or 75 kg / 38 DOF locomotion testbed) must demonstrate ≥30 min unscripted bipedal locomotion on JSC-1A or ISAC simulant in 1/6-g offload, including ≥1 unplanned terrain feature encounter, no operator intervention. Demo by Q4 2028. Per-layer targets at gate: reactive TRL 6, deliberative TRL 5, supervisory TRL 5"
-    set_by: "robotics-sensing-autonomy (stage 6 remediation)"
-    affects:
-      - technology-roadmap-trl
-      - autonomy-trl-tasking
-      - conops-integrator
-      - cost-program
-    basis: >
-      DA-002 finding (stage 6): §A1 TRL 6 by 2029 was carrying thesis weight without
-      a backing demonstration program. Calibrated to NASA TRL 6 definition (relevant
-      environment). Relevant environment for locomotion = representative gravity
-      (1/6-g offload) + representative terrain (JSC-1A/ISAC). T/V not required for
-      TRL 6 (that advances to TRL 7). If gate slips past Q2 2029, 2035 IOC renegotiated.
+    '
+  date_set: '2026-05-03'
+- param_id: survival_heater_correction
+  parameter: §06 survival heater range corrected to §05 confirmed value; radiator
+    sizing flagged open
+  value: 'Electronics/battery survival heater: 50–150 W (corrected from 85–175 W).
+    Joint heaters: 20–50 W unchanged. Pre-margin survival total: 79–209 W; with 30%
+    margin: 103–272 W (both close against 300 W FSP provision). Radiator sizing OPEN:
+    required 0.7–1.5 m² vs. prior 0.3 m² claim (insufficient by ~3×)'
+  set_by: humanoid-systems-architect (Batch 2 stage 6 remediation)
+  affects:
+  - far-side-base-architect
+  - space-environments
+  basis: 'Findings P1-B (cross-coupling-reviewer Blocker: §05/§06 heater value inconsistency)
+    and P2-2 (aerospace-engineer-reviewer Blocker: radiator area insufficient by ~3×).
+    Removed circular ≤150 W survival-mode design goal. FSP provision (300 W) is the
+    correct closure criterion — it is external to the humanoid budget and provides
+    honest margin across the full parametric range.
 
-  - param_id: survival_heater_correction
-    parameter: "§06 survival heater range corrected to §05 confirmed value; radiator sizing flagged open"
-    date: "2026-05-03"
-    value: "Electronics/battery survival heater: 50–150 W (corrected from 85–175 W). Joint heaters: 20–50 W unchanged. Pre-margin survival total: 79–209 W; with 30% margin: 103–272 W (both close against 300 W FSP provision). Radiator sizing OPEN: required 0.7–1.5 m² vs. prior 0.3 m² claim (insufficient by ~3×)"
-    set_by: "humanoid-systems-architect (Batch 2 stage 6 remediation)"
-    affects:
-      - far-side-base-architect
-      - space-environments
-    basis: >
-      Findings P1-B (cross-coupling-reviewer Blocker: §05/§06 heater value
-      inconsistency) and P2-2 (aerospace-engineer-reviewer Blocker: radiator area
-      insufficient by ~3×). Removed circular ≤150 W survival-mode design goal.
-      FSP provision (300 W) is the correct closure criterion — it is external to
-      the humanoid budget and provides honest margin across the full parametric range.
+    '
+  date_set: '2026-05-03'
+- param_id: latency_architecture
+  parameter: Latency architecture decisions from the latency tradespace analysis
+  value: 'On-base ≤50 ms RTLT (crew workstation to humanoid, wired/radio target).
+    Earth-relay: 2.78–2.92 s RTLT minimum (physics floor, Queqiao-2, not a design
+    choice). Relay availability: >95% simultaneous Earth+far-side LOS required; single
+    Queqiao-2 provides ~75–85%; two-satellite constellation phased 180° apart required
+    to reach >95%'
+  set_by: teleoperation-latency
+  affects:
+  - far-side-base-architect
+  - conops-integrator
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  basis: 'Physics derivation in §02-02 Section 1. Queqiao-2 orbital parameters from
+    CNSA 2024. 50 ms target provides 4× margin below 200 ms direct teleoperation degradation
+    threshold (METERON heritage). >95% relay availability derived from ConOps requirement
+    for anomaly reporting and scheduled op uploads without interrupting multi-day
+    operational cycles. Two-satellite constellation is an architectural prerequisite,
+    not a growth option.
 
-  - param_id: latency_architecture
-    parameter: "Latency architecture decisions from the latency tradespace analysis"
-    date: "2026-05-03"
-    value: "On-base ≤50 ms RTLT (crew workstation to humanoid, wired/radio target). Earth-relay: 2.78–2.92 s RTLT minimum (physics floor, Queqiao-2, not a design choice). Relay availability: >95% simultaneous Earth+far-side LOS required; single Queqiao-2 provides ~75–85%; two-satellite constellation phased 180° apart required to reach >95%"
-    set_by: teleoperation-latency
-    affects:
-      - far-side-base-architect
-      - conops-integrator
-      - autonomy-trl-tasking
-      - human-factors-teaming
-    basis: >
-      Physics derivation in §02-02 Section 1. Queqiao-2 orbital parameters from
-      CNSA 2024. 50 ms target provides 4× margin below 200 ms direct teleoperation
-      degradation threshold (METERON heritage). >95% relay availability derived from
-      ConOps requirement for anomaly reporting and scheduled op uploads without
-      interrupting multi-day operational cycles. Two-satellite constellation is an
-      architectural prerequisite, not a growth option.
+    '
+  date_set: '2026-05-03'
+- param_id: latency_tier_handoff
+  parameter: Latency tier at which the autonomy/teleoperation handoff occurs
+  value: 'Tier A (≤50 ms RTLT): supervised autonomy + direct teleop available; unrestricted
+    human-supervised task range. Tier B (~2.8 s RTLT, Earth-relay): supervisory control
+    only; TRL 6 reactive + TRL 5 deliberative required; Earth supervision limited
+    to pre-validated operations. Tier C (8.7–42 min RTLT, Mars): fully autonomous;
+    TRL 7+ deliberative+supervisory required'
+  set_by: teleoperation-latency
+  affects:
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  - conops-integrator
+  - fault-management-sustainment
+  basis: 'Lunokhod NIP-10 at 2.5 s RTLT establishes Tier B performance ceiling. METERON
+    SUPVIS Justin at 800 ms establishes goal-level supervisory commanding robust to
+    latency when robot has deliberative autonomy. Tier A/B distinction is a physics
+    argument, not TRL — a TRL 10 robot cannot overcome 2.8 s RTLT for real-time emergency
+    response. Primary architectural rationale for forward deployment.
 
-  - param_id: latency_tier_handoff
-    parameter: "Latency tier at which the autonomy/teleoperation handoff occurs"
-    date: "2026-05-03"
-    value: "Tier A (≤50 ms RTLT): supervised autonomy + direct teleop available; unrestricted human-supervised task range. Tier B (~2.8 s RTLT, Earth-relay): supervisory control only; TRL 6 reactive + TRL 5 deliberative required; Earth supervision limited to pre-validated operations. Tier C (8.7–42 min RTLT, Mars): fully autonomous; TRL 7+ deliberative+supervisory required"
-    set_by: teleoperation-latency
-    affects:
-      - autonomy-trl-tasking
-      - human-factors-teaming
-      - conops-integrator
-      - fault-management-sustainment
-    basis: >
-      Lunokhod NIP-10 at 2.5 s RTLT establishes Tier B performance ceiling.
-      METERON SUPVIS Justin at 800 ms establishes goal-level supervisory commanding
-      robust to latency when robot has deliberative autonomy. Tier A/B distinction
-      is a physics argument, not TRL — a TRL 10 robot cannot overcome 2.8 s RTLT
-      for real-time emergency response. Primary architectural rationale for forward
-      deployment.
+    '
+  date_set: '2026-05-03'
+- param_id: task_allocation_ioc
+  parameter: Task-level allocation between autonomy-led, jointly executed, and human-led
+    operations at IOC (2035) and full operation (2040)
+  value: 'At 2035 IOC: 12/20 autonomy-led, 6/20 jointly-executed, 2/20 human-led.
+    Autonomy-led: prepared path transit, GPS navigation, pre-taught sample collection,
+    Tier 2 ORU replacement (after first supervised run), structure inspection, equipment
+    transport, SPE shelter return, joint safe-stop, EVA prep assistance, radiator
+    replacement (after first), terrain mapping, radio telescope calibration. Jointly-executed:
+    unstructured traverse, solar panel install, EVA tool handoff, novel sample, hardware
+    anomaly, habitat breach locate. Human-led: load-bearing joint failure reconfig,
+    new tool demonstration'
+  set_by: autonomy-trl-tasking
+  affects:
+  - human-factors-teaming
+  - conops-integrator
+  - cost-program
+  - far-side-base-architect
+  basis: 'Derived from TRL gap analysis in §02-03 against §A1 autonomy curve and 20-task
+    mission taxonomy. Validates and extends §04 provisional boundary. No contradiction
+    with §04 found. At 2040 full operation: 16–17/20 autonomy-led after TRL 8 advancement.
 
-  - param_id: task_allocation_ioc
-    parameter: "Task-level allocation between autonomy-led, jointly executed, and human-led operations at IOC (2035) and full operation (2040)"
-    date: "2026-05-03"
-    value: "At 2035 IOC: 12/20 autonomy-led, 6/20 jointly-executed, 2/20 human-led. Autonomy-led: prepared path transit, GPS navigation, pre-taught sample collection, Tier 2 ORU replacement (after first supervised run), structure inspection, equipment transport, SPE shelter return, joint safe-stop, EVA prep assistance, radiator replacement (after first), terrain mapping, radio telescope calibration. Jointly-executed: unstructured traverse, solar panel install, EVA tool handoff, novel sample, hardware anomaly, habitat breach locate. Human-led: load-bearing joint failure reconfig, new tool demonstration"
-    set_by: autonomy-trl-tasking
-    affects:
-      - human-factors-teaming
-      - conops-integrator
-      - cost-program
-      - far-side-base-architect
-    basis: >
-      Derived from TRL gap analysis in §02-03 against §A1 autonomy curve and
-      20-task mission taxonomy. Validates and extends §04 provisional boundary.
-      No contradiction with §04 found. At 2040 full operation: 16–17/20
-      autonomy-led after TRL 8 advancement.
+    '
+  date_set: '2026-05-03'
+- param_id: human_value_floor
+  parameter: Tasks permanently human-led regardless of autonomy TRL advancement
+  value: 'Seven categories: (1) first execution authorization of any task type in
+    operational environment; (2) all physical contact with suited crew; (3) any action
+    on pressurized interfaces or life support hardware; (4) emergency responses affecting
+    crew habitat access; (5) habitat structural modification; (6) science priority
+    decisions; (7) any situation the robot flags as outside its operational envelope
+    (OOD)'
+  set_by: autonomy-trl-tasking
+  affects:
+  - human-factors-teaming
+  - conops-integrator
+  - fault-management-sustainment
+  basis: 'Three rationales: (a) exploration is structurally OOD; (b) consequence asymmetry
+    between authorization gate cost (2–5 min) and failure cost in life-safety/irreversible
+    contexts; (c) §A9 constraint that foundation models must correctly withhold action
+    on OOD inputs, requiring a human to decide. Floor is a program position, not a
+    TRL gap — does not change as TRL advances.
 
-  - param_id: human_value_floor
-    parameter: "Tasks permanently human-led regardless of autonomy TRL advancement"
-    date: "2026-05-03"
-    value: "Seven categories: (1) first execution authorization of any task type in operational environment; (2) all physical contact with suited crew; (3) any action on pressurized interfaces or life support hardware; (4) emergency responses affecting crew habitat access; (5) habitat structural modification; (6) science priority decisions; (7) any situation the robot flags as outside its operational envelope (OOD)"
-    set_by: autonomy-trl-tasking
-    affects:
-      - human-factors-teaming
-      - conops-integrator
-      - fault-management-sustainment
-    basis: >
-      Three rationales: (a) exploration is structurally OOD; (b) consequence
-      asymmetry between authorization gate cost (2–5 min) and failure cost in
-      life-safety/irreversible contexts; (c) §A9 constraint that foundation models
-      must correctly withhold action on OOD inputs, requiring a human to decide.
-      Floor is a program position, not a TRL gap — does not change as TRL advances.
-    notes:
-      - "2026-05-03 DA-5 (stage 8): floor requires two-tier structure. See
-         param_id da_human_value_floor_two_tier for the required revision."
+    '
+  notes:
+  - '2026-05-03 DA-5 (stage 8): floor requires two-tier structure. See param_id da_human_value_floor_two_tier
+    for the required revision.'
+  date_set: '2026-05-03'
+- param_id: supervisor_ratio
+  parameter: Human-to-humanoid supervisor ratio at IOC and full operation
+  value: 1:2–3 (1 human per 2–3 humanoids) at IOC 2035. 1:4–5 at full operation 2038–2040.
+    Hard ceiling ~1:8–10 due to human value floor saturation with 4-person crew. Ratio
+    range reflects difference between peak-demand (~1:1.5 effective) and nominal operations
+    (1:3 effective) with one crew unavailable
+  set_by: human-factors-teaming
+  affects:
+  - conops-integrator
+  - cost-program
+  - far-side-base-architect
+  basis: 'Derived in §02-04 Section 3 from NIP-10 heritage (5:1 at near-zero TRL),
+    §A1 TRL 7 by 2035 (12/20 tasks autonomy-led), cognitive load arithmetic (4.25
+    person-hours demand vs. 8 person-hours capacity at 4-person crew), post-2035 TRL
+    8 (16–17/20 tasks), and human value floor ceiling. See §A18 in study/05-cross-cutting/margins-and-assumptions.md.
 
-  - param_id: supervisor_ratio
-    parameter: "Human-to-humanoid supervisor ratio at IOC and full operation"
-    date: "2026-05-03"
-    value: "1:2–3 (1 human per 2–3 humanoids) at IOC 2035. 1:4–5 at full operation 2038–2040. Hard ceiling ~1:8–10 due to human value floor saturation with 4-person crew. Ratio range reflects difference between peak-demand (~1:1.5 effective) and nominal operations (1:3 effective) with one crew unavailable"
-    set_by: human-factors-teaming
-    affects:
-      - conops-integrator
-      - cost-program
-      - far-side-base-architect
-    basis: >
-      Derived in §02-04 Section 3 from NIP-10 heritage (5:1 at near-zero TRL),
-      §A1 TRL 7 by 2035 (12/20 tasks autonomy-led), cognitive load arithmetic
-      (4.25 person-hours demand vs. 8 person-hours capacity at 4-person crew),
-      post-2035 TRL 8 (16–17/20 tasks), and human value floor ceiling.
-      See §A18 in study/05-cross-cutting/margins-and-assumptions.md.
+    '
+  date_set: '2026-05-03'
+- param_id: crew_composition_ioc
+  parameter: Crew size and humanoid fleet size at Initial Operational Capability (2035)
+  value: 4 crew, 3 humanoids, periodic supervision as default. Supervisory demand
+    ~4.25 person-hours/shift; supervisory capacity ~8 person-hours/shift (Mir-baseline).
+    Headroom ~2×. Continuous supervision is a time-limited exception mode, not baseline.
+    Earth oversight is mission-plan-level, not moment-to-moment
+  set_by: human-factors-teaming
+  affects:
+  - conops-integrator
+  - cost-program
+  - far-side-base-architect
+  - destinations-trajectories
+  basis: 'Derived in §02-04 Section 2 from Mir crew time baseline (25–30% available
+    fraction for supervision at 4-person crew scale) and §02-03 task allocation (12
+    autonomy-led + 6 jointly-executed + 2 human-led at IOC). See §A19 in study/05-cross-cutting/margins-and-assumptions.md.
 
-  - param_id: crew_composition_ioc
-    parameter: "Crew size and humanoid fleet size at Initial Operational Capability (2035)"
-    date: "2026-05-03"
-    value: "4 crew, 3 humanoids, periodic supervision as default. Supervisory demand ~4.25 person-hours/shift; supervisory capacity ~8 person-hours/shift (Mir-baseline). Headroom ~2×. Continuous supervision is a time-limited exception mode, not baseline. Earth oversight is mission-plan-level, not moment-to-moment"
-    set_by: human-factors-teaming
-    affects:
-      - conops-integrator
-      - cost-program
-      - far-side-base-architect
-      - destinations-trajectories
-    basis: >
-      Derived in §02-04 Section 2 from Mir crew time baseline (25–30% available
-      fraction for supervision at 4-person crew scale) and §02-03 task allocation
-      (12 autonomy-led + 6 jointly-executed + 2 human-led at IOC).
-      See §A19 in study/05-cross-cutting/margins-and-assumptions.md.
+    '
+  date_set: '2026-05-03'
+- param_id: da_human_value_floor_two_tier
+  parameter: 'DA finding (stage 8): human value floor two-tier structure required'
+  value: 'Floor must distinguish: (A) physics-grounded permanent categories — crew
+    contact, pressurized interfaces, habitat breach response, structural modification
+    (categories 2,3,4,5); (B) IOC-era program positions subject to gate revision —
+    first execution auth, science priority, OOD gating (categories 1,6,7). Current
+    single-tier uniform-permanence treatment is primary vulnerability to adversarial
+    review'
+  set_by: devils-advocate-reviewer (stage 8)
+  affects:
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  - conops-integrator
+  - technology-roadmap-trl
+  basis: 'DA-5 (Blocker) and DA-8 (Major) from stage 8 DA review in review/devils-advocate-findings.md.
+    Categories 1, 6, 7 were defined after forward-deployment commitment and correspond
+    to 2026-era TRL gaps — characterization weakens as TRL advances. Categories 2,
+    3, 4, 5 are physics-and-consequence-grounded and survive any credible 2035-era
+    forecast.
 
-  - param_id: da_human_value_floor_two_tier
-    parameter: "DA finding (stage 8): human value floor two-tier structure required"
-    date: "2026-05-03"
-    value: "Floor must distinguish: (A) physics-grounded permanent categories — crew contact, pressurized interfaces, habitat breach response, structural modification (categories 2,3,4,5); (B) IOC-era program positions subject to gate revision — first execution auth, science priority, OOD gating (categories 1,6,7). Current single-tier uniform-permanence treatment is primary vulnerability to adversarial review"
-    set_by: "devils-advocate-reviewer (stage 8)"
-    affects:
-      - autonomy-trl-tasking
-      - human-factors-teaming
-      - conops-integrator
-      - technology-roadmap-trl
-    basis: >
-      DA-5 (Blocker) and DA-8 (Major) from stage 8 DA review in
-      review/devils-advocate-findings.md. Categories 1, 6, 7 were defined after
-      forward-deployment commitment and correspond to 2026-era TRL gaps —
-      characterization weakens as TRL advances. Categories 2, 3, 4, 5 are
-      physics-and-consequence-grounded and survive any credible 2035-era forecast.
+    '
+  date_set: '2026-05-03'
+- param_id: da_task_redesign_gap
+  parameter: 'DA finding (stage 8): task redesign path for jointly-executed tasks
+    not evaluated'
+  value: §02-03 does not evaluate whether the six jointly-executed tasks could be
+    redesigned (mechanical interlocks, force-limit parameters, pre-validated envelopes)
+    to eliminate real-time supervision. Forward deployment is presented as the only
+    alternative to Earth-relay supervision without demonstrating task redesign fails.
+    Medical emergency scenario is strongest forward-deployment justification and should
+    be elevated to primary
+  set_by: devils-advocate-reviewer (stage 8)
+  affects:
+  - autonomy-trl-tasking
+  - human-factors-teaming
+  - conops-integrator
+  basis: 'DA-6 (Major) from stage 8 review in review/devils-advocate-findings.md.
+    Attack: Lunokhod and Mars rovers operated without forward deployment by accommodating
+    task profiles to the supervision regime. Study has not demonstrated the far-side
+    base task profile cannot be similarly accommodated.
 
-  - param_id: da_task_redesign_gap
-    parameter: "DA finding (stage 8): task redesign path for jointly-executed tasks not evaluated"
-    date: "2026-05-03"
-    value: "§02-03 does not evaluate whether the six jointly-executed tasks could be redesigned (mechanical interlocks, force-limit parameters, pre-validated envelopes) to eliminate real-time supervision. Forward deployment is presented as the only alternative to Earth-relay supervision without demonstrating task redesign fails. Medical emergency scenario is strongest forward-deployment justification and should be elevated to primary"
-    set_by: "devils-advocate-reviewer (stage 8)"
-    affects:
-      - autonomy-trl-tasking
-      - human-factors-teaming
-      - conops-integrator
-    basis: >
-      DA-6 (Major) from stage 8 review in review/devils-advocate-findings.md.
-      Attack: Lunokhod and Mars rovers operated without forward deployment by
-      accommodating task profiles to the supervision regime. Study has not
-      demonstrated the far-side base task profile cannot be similarly accommodated.
+    '
+  date_set: '2026-05-03'

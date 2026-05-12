@@ -186,3 +186,48 @@
   note = {ZBLAN fluoride glass fiber has 100× lower attenuation than silica fiber; microgravity prevents crystallization defects. Secondary manufacturing product candidate.},
 }
 
+% ── Teleoperation & Latency Heritage ───────────────────────────────────────────
+
+@book{sheridan_ferrell_telerobotics,
+  title = {Telerobotics, Automation, and Human Supervisory Control},
+  author = {Sheridan, Thomas B.},
+  publisher = {MIT Press},
+  year = {1992},
+  note = {Canonical reference for move-and-wait threshold (~250 ms RTLT) and graceful-degradation curves vs. latency. Builds on Ferrell 1965/1966 manipulator-with-delay experiments. Primary heritage for Tier 1/2/3 latency-tier framework.},
+}
+
+@misc{meteron_iss_haptic,
+  title = {METERON: Multi-Purpose End-to-End Robotic Operation Network — ISS Haptic Teleoperation Experiments},
+  author = {{ESA / DLR}},
+  year = {2017},
+  note = {Haptics-1, Haptics-2, Interact, and Analog-1 experiments. ISS-crew to ground rover and ground operator to ISS-mounted rover with controlled delay injection. Confirms ~1 s graceful degradation, ~3 s paradigm shift, ~10 s sequenced-only thresholds.},
+}
+
+@misc{surface_telerobotics_iss,
+  title = {Surface Telerobotics: ISS Crew Teleoperation of Ground Rovers},
+  author = {{NASA Ames Intelligent Robotics Group}},
+  year = {2013},
+  note = {Three ISS-crew sessions teleoperating K10 planetary rovers at Ames Research Center. Validates supervised-autonomy mode under sub-second LEO-to-ground latency. Reference operational record for human-supervised mobile robotics from LEO.},
+}
+
+@misc{robonaut2_iss_teleop,
+  title = {Robonaut 2 On-Orbit Operations and Teleoperation Performance},
+  author = {{NASA Johnson Robonaut Team}},
+  year = {2014},
+  note = {R2 humanoid operated from inside ISS (RTLT < 20 ms) for fine manipulation; same hardware operated via TDRS Ku from ground (RTLT ~550 ms) was usable for monitoring only, not real-time dexterous tasks. Closest direct analog for orbital platform manipulator workstation.},
+}
+
+@misc{tdrs_iss_kuband,
+  title = {ISS Ku-Band Communications via TDRS: Architecture and Bandwidth},
+  author = {NASA},
+  year = {2020},
+  note = {ISS Ku-band forward/return link via TDRS GEO relay constellation; aggregate ~300 Mbps; RTLT ~550 ms typical via single-GEO bent-pipe. Baseline heritage for crewed-platform comms architecture; TDRS constellation sunsetting drives §A25.},
+}
+
+@misc{starlink_gen2_capacity,
+  title = {Starlink Gen 2: LEO-Mesh Inter-Satellite Optical Links and Terminal Capacity},
+  author = {{SpaceX}},
+  year = {2024},
+  note = {Gen 2 LEO constellation with optical inter-satellite links; per-terminal sustained capacity ≥ 200 Mbps; total RTLT including mesh hops typically < 80 ms for ground-to-LEO use cases. Primary candidate for orbital platform commercial continuous-coverage service.},
+}
+

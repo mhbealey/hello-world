@@ -1,0 +1,30 @@
+- event: cycle_dispatch
+  study_id: 01-orbital-platform
+  cycle: 2
+  timestamp: '2026-05-12T21:52:14.254798+00:00'
+  dry_run: false
+  agents:
+  - agent_id: destinations-trajectories
+    status: complete
+    wave: 0
+    output_path: 01-question-a/trajectories.md
+    failure_mode: null
+  summary:
+    total: 1
+    queued: 0
+    failed: 0
+- event: cycle_dispatch
+  study_id: 01-orbital-platform
+  cycle: 2
+  timestamp: '2026-05-12T21:52:38.805521+00:00'
+  dry_run: false
+  agents:
+  - agent_id: destinations-trajectories
+    status: complete
+    wave: 0
+    output_path: 01-question-a/trajectories.md
+    failure_mode: null
+  summary:
+    total: 1
+    queued: 0
+    failed: 0
