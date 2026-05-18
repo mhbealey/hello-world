@@ -1,0 +1,23 @@
+study_id: micro-01-design-platform
+title: Design Firm Operating Platform
+type: micro-study
+status: active
+created_date: 2026-05-13
+domain: design-firm-operations
+target_word_count: 6000
+word_count_gates:
+  per_agent_max: 1200
+  per_agent_min: 600
+  total_max: 6000
+cost_gate_monthly_max_usd: 500
+agents:
+  parallel:
+    - sales-operations-agent
+    - web-platform-agent
+    - client-experience-agent
+    - financial-systems-agent
+    - legal-contracts-agent
+    - operations-governance-agent
+  sequential:
+    - security-architecture-agent
+    - integration-recommendations-agent
